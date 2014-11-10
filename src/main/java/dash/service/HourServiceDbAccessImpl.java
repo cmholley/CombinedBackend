@@ -12,7 +12,6 @@ import org.springframework.context.support.ApplicationObjectSupport;
 import org.springframework.security.acls.model.MutableAclService;
 import org.springframework.transaction.annotation.Transactional;
 
-
 import dash.dao.HourDao;
 import dash.dao.HourEntity;
 
@@ -25,27 +24,23 @@ import dash.pojo.Task;
 import dash.security.CustomPermission;
 import dash.security.GenericAclController;
 
-
 public class HourServiceDbAccessImpl extends ApplicationObjectSupport implements
-HourService {
+		HourService {
 
 	@Autowired
 	HourDao hourDao;
 
 	@Autowired
 	private MutableAclService mutableAclService;
-	
+
 	@Autowired
 	private GroupService groupService;
-	
+
 	@Autowired
 	private TaskService taskService;
 
 	@Autowired
 	private GenericAclController<Hour> aclController;
-
-	
-
 
 	/********************* Create related methods implementation ***********************/
 	@Override
@@ -61,60 +56,59 @@ HourService {
 		return hourId;
 	}
 
-	
-
-	//Inactive
+	// Inactive
 	@Override
 	@Transactional
 	public void createHours(List<Hour> hours) throws AppException {
 		for (Hour hour : hours) {
-			//createHour(hour);
+			// createHour(hour);
 		}
 	}
 
-
-	// ******************** Read related methods implementation **********************
+	// ******************** Read related methods implementation
+	// **********************
 	@Override
-	public List<Hour> getHours(int numberOfHours, Long startIndex, boolean onlyPending) throws AppException{
-		
-		List<HourEntity> hours = hourDao.getHours(numberOfHours, startIndex, onlyPending, "ASC");
+	public List<Hour> getHours(int numberOfHours, Long startIndex,
+			boolean onlyPending) throws AppException {
+		List<HourEntity> hours = hourDao.getHours(numberOfHours, startIndex,
+				onlyPending, "ASC");
 		return getHoursFromEntities(hours);
 	}
-	
-	@Override
-	public List<Hour> getHoursByGroup(int numberOfHours, Long startIndex, Group group, boolean onlyPending) throws AppException {
 
-		//verify optional parameter numberDaysToLookBack first
+	@Override
+	public List<Hour> getHoursByGroup(int numberOfHours, Long startIndex,
+			Group group, boolean onlyPending) throws AppException {
+
+		// verify optional parameter numberDaysToLookBack first
 		List<Task> tasksByGroup = taskService.getTasksByGroup(group);
-		List<HourEntity> groupHours= new ArrayList<HourEntity>();
-		for(Task task: tasksByGroup){
-			groupHours.addAll( hourDao.getHours(numberOfHours, startIndex, task, onlyPending));
+		List<HourEntity> groupHours = new ArrayList<HourEntity>();
+		for (Task task : tasksByGroup) {
+			groupHours.addAll(hourDao.getHours(numberOfHours, startIndex, task,
+					onlyPending));
 		}
-		
 
 		return getHoursFromEntities(groupHours);
 	}
-	
+
 	@Override
-	public List<Hour> getHoursByMyUser(int numberOfHours, Long startIndex, boolean onlyPending) throws AppException {
-		
-		
-		List<HourEntity> hours = hourDao.getHours(numberOfHours, startIndex, onlyPending, "DESC");
+	public List<Hour> getHoursByMyUser(int numberOfHours, Long startIndex,
+			boolean onlyPending) throws AppException {
+
+		List<HourEntity> hours = hourDao.getHours(numberOfHours, startIndex,
+				onlyPending, "DESC");
 		return getHoursFromEntities(hours);
-		
+
 	}
-	
 
 	@Override
 	public Hour getHourById(Long id) throws AppException {
 		HourEntity hourById = hourDao.getHourById(id);
 		if (hourById == null) {
 			throw new AppException(Response.Status.NOT_FOUND.getStatusCode(),
-					404,
-					"The hour you requested with id " + id
-					+ " was not found in the database",
+					404, "The hour you requested with id " + id
+							+ " was not found in the database",
 					"Verify the existence of the hour with the id " + id
-					+ " in the database", AppConstants.DASH_POST_URL);
+							+ " in the database", AppConstants.DASH_POST_URL);
 		}
 
 		return new Hour(hourDao.getHourById(id));
@@ -128,17 +122,13 @@ HourService {
 
 		return response;
 	}
-	
 
-	
-	
-
-//	public List<Hour> getRecentHours(int numberOfDaysToLookBack) {
-//		List<HourEntity> recentHours = hourDao
-//				.getRecentHours(numberOfDaysToLookBack);
-//
-//		return getHoursFromEntities(recentHours);
-//	}
+	// public List<Hour> getRecentHours(int numberOfDaysToLookBack) {
+	// List<HourEntity> recentHours = hourDao
+	// .getRecentHours(numberOfDaysToLookBack);
+	//
+	// return getHoursFromEntities(recentHours);
+	// }
 
 	@Override
 	public int getNumberOfHours() {
@@ -148,21 +138,18 @@ HourService {
 
 	}
 
-
-
 	/********************* UPDATE-related methods implementation ***********************/
 	@Override
 	@Transactional
 	public void updateFullyHour(Hour hour) throws AppException {
-		Hour verifyHourExistenceById = verifyHourExistenceById(hour
-				.getId());
+		Hour verifyHourExistenceById = verifyHourExistenceById(hour.getId());
 		if (verifyHourExistenceById == null) {
-			throw new AppException(Response.Status.NOT_FOUND.getStatusCode(),
+			throw new AppException(
+					Response.Status.NOT_FOUND.getStatusCode(),
 					404,
 					"The resource you are trying to update does not exist in the database",
 					"Please verify existence of data in the database for the id - "
-							+ hour.getId(),
-							AppConstants.DASH_POST_URL);
+							+ hour.getId(), AppConstants.DASH_POST_URL);
 		}
 		copyAllProperties(verifyHourExistenceById, hour);
 		verifyHourExistenceById.setPending(true);
@@ -170,22 +157,26 @@ HourService {
 
 		hourDao.updateHour(new HourEntity(verifyHourExistenceById));
 	}
-	
+
 	@Override
 	@Transactional
 	public void updateFullyHour(Hour hour, Group group) throws AppException {
-		updateFullyHour(hour);		
+		updateFullyHour(hour);
 	}
 
 	private void copyAllProperties(Hour verifyHourExistenceById, Hour hour) {
 
-		BeanUtilsBean withNull=new BeanUtilsBean();
+		BeanUtilsBean withNull = new BeanUtilsBean();
 		try {
-			withNull.copyProperty(verifyHourExistenceById, "title", hour.getTitle());
-			withNull.copyProperty(verifyHourExistenceById, "start_time", hour.getStart_time());
-			withNull.copyProperty(verifyHourExistenceById, "end_time", hour.getEnd_time());
-			withNull.copyProperty(verifyHourExistenceById, "duration", hour.getDuration());
-			
+			withNull.copyProperty(verifyHourExistenceById, "title",
+					hour.getTitle());
+			withNull.copyProperty(verifyHourExistenceById, "start_time",
+					hour.getStart_time());
+			withNull.copyProperty(verifyHourExistenceById, "end_time",
+					hour.getEnd_time());
+			withNull.copyProperty(verifyHourExistenceById, "duration",
+					hour.getDuration());
+
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 		} catch (InvocationTargetException e) {
@@ -193,7 +184,6 @@ HourService {
 		}
 
 	}
-
 
 	/********************* DELETE-related methods implementation ***********************/
 
@@ -215,7 +205,6 @@ HourService {
 	}
 
 	@Override
-	
 	public Hour verifyHourExistenceById(Long id) {
 		HourEntity hourById = hourDao.getHourById(id);
 		if (hourById == null) {
@@ -228,10 +217,11 @@ HourService {
 	@Override
 	@Transactional
 	public void updatePartiallyHour(Hour hour) throws AppException {
-		//do a validation to verify existence of the resource
+		// do a validation to verify existence of the resource
 		Hour verifyHourExistenceById = verifyHourExistenceById(hour.getId());
 		if (verifyHourExistenceById == null) {
-			throw new AppException(Response.Status.NOT_FOUND.getStatusCode(),
+			throw new AppException(
+					Response.Status.NOT_FOUND.getStatusCode(),
 					404,
 					"The resource you are trying to update does not exist in the database",
 					"Please verify existence of data in the database for the id - "
@@ -243,16 +233,16 @@ HourService {
 		hourDao.updateHour(new HourEntity(verifyHourExistenceById));
 
 	}
+
 	@Override
 	@Transactional
 	public void updatePartiallyHour(Hour hour, Group group) throws AppException {
 		updatePartiallyHour(hour);
 	}
-	
 
 	private void copyPartialProperties(Hour verifyHourExistenceById, Hour hour) {
 
-		BeanUtilsBean notNull=new NullAwareBeanUtilsBean();
+		BeanUtilsBean notNull = new NullAwareBeanUtilsBean();
 		try {
 			notNull.copyProperties(verifyHourExistenceById, hour);
 		} catch (IllegalAccessException e) {
@@ -263,24 +253,21 @@ HourService {
 
 	}
 
-
-
 	@Override
 	@Transactional
 	public void approveHour(Hour hour, boolean approved) throws AppException {
-		
+
 		hour.setApproved(approved);
 		hour.setPending(false);
 		hourDao.updateHour(new HourEntity(hour));
-		
-		
-	}
-	
-	@Override
-	@Transactional
-	public void approveHour(Hour hour, Group group, boolean approved) throws AppException {
-		approveHour(hour, approved);
+
 	}
 
+	@Override
+	@Transactional
+	public void approveHour(Hour hour, Group group, boolean approved)
+			throws AppException {
+		approveHour(hour, approved);
+	}
 
 }
