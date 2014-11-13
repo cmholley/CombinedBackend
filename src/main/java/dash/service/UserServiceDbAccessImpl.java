@@ -1,6 +1,16 @@
  package dash.service;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.file.DirectoryNotEmptyException;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +40,11 @@ import dash.helpers.NullAwareBeanUtilsBean;
 import dash.pojo.User;
 import dash.security.UserLoginController;
 
+/**
+ * An implementation of the user service for the VMA Core.
+ * @author Tyler.swensen@gmail.com
+ *
+ */
 
 public class UserServiceDbAccessImpl extends ApplicationObjectSupport implements
 UserService {
@@ -364,7 +379,93 @@ UserService {
 		mutableAclService.deleteAcl(oid, false);
 
 	}
+	
+	/*----------------------------------------------------------
+	 * The Following Methods are to manipulate uploaded files
+	 * ------------------------------------------------------------
+	 */
+	
+	public void uploadFile(InputStream uploadedInputStream,
+			String uploadedFileLocation, User user) throws AppException{
+	 
+			try {
+				File file= new File(uploadedFileLocation);
+				file.getParentFile().mkdirs();
+				OutputStream out = new FileOutputStream(file);
+				int read = 0;
+				byte[] bytes = new byte[1024];
+				
+				out = new FileOutputStream(new File(uploadedFileLocation));
+				while ((read = uploadedInputStream.read(bytes)) != -1) {
+					out.write(bytes, 0, read);
+				}
+				out.flush();
+				out.close();
+			} catch (IOException e) {
+	 
+				throw new AppException(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), 500, "Could not upload file due to IOException",
+						"\n\n"+e.getMessage(),
+						AppConstants.DASH_POST_URL);
+			}
+	 
+		}
+	
+	@Override
+	public void deleteUploadFile(String uploadedFileLocation,
+			User user) throws AppException {
+		Path path = Paths.get(uploadedFileLocation);
+		try {
+		    Files.delete(path);
+		} catch (NoSuchFileException x) {
+			x.printStackTrace();
+			throw new AppException(Response.Status.NOT_FOUND.getStatusCode(),
+					404,
+					"NoSuchFileException thrown, Operation unsuccesful.", "Please ensure the file you are attempting to"
+					+ " delete exists at "+path+".", AppConstants.DASH_POST_URL);
+			
+					
+		} catch (DirectoryNotEmptyException x) {
+			x.printStackTrace();
+			throw new AppException(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
+					404,
+					"DirectoryNotEmptyException thrown, operation unsuccesful.", "This method should not attempt to delete,"
+							+ " This should be considered a very serious error. Occured at "+path+".",
+					AppConstants.DASH_POST_URL);
+		} catch (IOException x) {
+			x.printStackTrace();
+			throw new AppException(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
+					500,
+					"IOException thrown and the designated file was not deleted.", 
+					" Permission problems occured at "+path+".",
+					AppConstants.DASH_POST_URL);
+		}
+		
+	}
 
+	@Override
+	public List<String> getFileNames(User user) {
+		List<String> results = new ArrayList<String>();
+
+		
+		
+		File[] files = new File(AppConstants.APPLICATION_UPLOAD_LOCATION_FOLDER+"/"+user.getPicture()).listFiles();
+		//If this pathname does not denote a directory, then listFiles() returns null. 
+
+		if(files != null){
+			for (File file : files) {
+			    if (file.isFile()) {
+			        results.add(file.getName());
+			    }
+			}
+		}
+		return results;
+	}
+
+	/*-------------------------------------------------------------
+	 * The Following methods are to modify User roles for the app.
+	 * ------------------------------------------------------------
+	 */
+	
 	@Override
 	@Transactional
 	public void setRoleUser(User user) {

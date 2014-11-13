@@ -1,6 +1,7 @@
 package dash.service;
 
 
+import java.io.InputStream;
 import java.util.List;
 
 import org.springframework.security.access.prepost.PostAuthorize;
@@ -79,12 +80,24 @@ public interface UserService {
 	
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public void setRoleAdmin(User user);
+	
+	
 	/*
 	 * ******************** Delete related methods **********************
 	 * 
 	 * Deletions temporarily disabled while a deactivate method is worked on
 	 */
+	
 
+	@PreAuthorize("hasPermission(#user, 'delete') or hasRole('ROLE_ADMIN')")
+	public void deleteUploadFile(String uploadedFileLocation, User user) throws AppException;
+
+	@PreAuthorize("hasPermission(#user, 'write') or hasRole('ROLE_ADMIN')")
+	public void uploadFile(InputStream uploadedInputStream,
+			String uploadedFileLocation, User user) throws AppException;
+	
+	@PreAuthorize("hasPermission(#user, 'read') or hasRole('ROLE_ADMIN')")
+	public List<String> getFileNames(User user);	
 
 //	@PreAuthorize("hasPermission(#user, 'DELETE') or hasRole('ROLE_ADMIN')")
 //	public void deleteUser(User user);

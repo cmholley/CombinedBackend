@@ -1,5 +1,6 @@
 package dash.dao;
 
+import java.io.File;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -117,6 +118,20 @@ UserDao {
 		entityManager.persist(user);
 		entityManager.flush();// force insert to receive the id of the user
 
+		// create hashed folder name for documents
+				String fileName = user.getId().toString();
+				int hashcode = fileName.hashCode();
+				int mask = 255;
+				int firstDir = hashcode & mask;
+				int secondDir = (hashcode >> 8) & mask;
+				StringBuilder path = new StringBuilder(File.separator);
+				path.append(String.format("%03d", firstDir));
+				path.append(File.separator);
+				path.append(String.format("%03d", secondDir));
+				path.append(File.separator);
+				path.append(fileName);
+				user.setPicture(path.toString());
+				entityManager.merge(user);
 		// Give admin over new user to the new user
 
 		return user.getId();

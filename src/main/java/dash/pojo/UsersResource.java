@@ -1,6 +1,8 @@
 package dash.pojo;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.util.List;
 
@@ -8,6 +10,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -17,7 +20,11 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +33,7 @@ import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
 import dash.errorhandling.AppException;
+import dash.filters.AppConstants;
 import dash.service.UserService;
 
 /**
@@ -38,6 +46,8 @@ import dash.service.UserService;
 @Component
 @Path("/users")
 public class UsersResource {
+	
+	private static final String userPicturePath= AppConstants.APPLICATION_UPLOAD_LOCATION_FOLDER + "/users";
 
 	@Autowired
 	private UserService userService;
@@ -336,9 +346,111 @@ public class UsersResource {
 	}
 */
 	
+	@POST
+	@Path("/upload")
+	@Consumes({ MediaType.MULTIPART_FORM_DATA })
+	public Response uploadFile(
+			@QueryParam("id") Long id,
+		@FormDataParam("file") InputStream uploadedInputStream,
+		@FormDataParam("file") FormDataContentDisposition fileDetail,
+		@HeaderParam("Content-Length") final long fileSize) throws AppException {
+						
+		
+		
+		User user= userService.getUserById(id);
+		
+		//TODO: Generate directory if not set
+		if(user.getPicture()==null)	{
+			String fileName = user.getId().toString();
+			int hashcode = fileName.hashCode();
+			int mask = 255;
+			int firstDir = hashcode & mask;
+			int secondDir = (hashcode >> 8) & mask;
+			StringBuilder path = new StringBuilder(File.separator);
+			path.append(String.format("%03d", firstDir));
+			path.append(File.separator);
+			path.append(String.format("%03d", secondDir));
+			path.append(File.separator);
+			path.append(fileName);
+			user.setPicture(path.toString());
+			partialUpdateUser(user.getId(), user);
+		}
+		String uploadedFileLocation = userPicturePath+"/"
+				+user.getPicture()+"/" + fileDetail.getFileName().replaceAll("%20", "_").toLowerCase();;
+		// save it
+		userService.uploadFile(uploadedInputStream, uploadedFileLocation, user);
+ 
+		String output = "File uploaded to : " + uploadedFileLocation;
+ 
+		return Response.status(200).entity(output).build();
+ 
+	}
+	
+	@GET
+	@Path("/upload")
+	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	public Response getFileNames(@QueryParam("userId") Long id) throws AppException{
+		
+		User user= userService.getUserById(id);
+		JaxbList<String> fileNames=new JaxbList<String>(userService.getFileNames(user));
+		return Response.status(200).entity(fileNames).build();
+	}
+	
+//	//Gets a specific file and allows the user to download the pdf
+//	@GET
+//	@Path("/upload")
+//	public Response getFile(@QueryParam("userId") Long id,
+//			@QueryParam("fileName") String fileName) throws AppException {
+//		
+//		User user= userService.getUserById(id);
+//		
+//		if(user==null){
+//			return Response.status(Response.Status.BAD_REQUEST)
+//					.entity("Invalid userId, unable to locate user with id: "+id).build();
+//		}
+//		
+//		String uploadedFileLocation = AppConstants.APPLICATION_UPLOAD_LOCATION_FOLDER+user.getPicture()+"/" + fileName;
+//		
+//		
+//		return Response.ok(userService.getUploadFile(uploadedFileLocation, user))
+//				.type("application/pdf").build(); 
+//	}
+	
+	@DELETE
+	@Path("/upload")
+	public Response deleteUpload(
+			@QueryParam("userId") Long id,
+			@QueryParam("fileName") String fileName) throws AppException{
+		
+		User user= userService.getUserById(id);
+		
+		String uploadedFileLocation = userPicturePath+"/"+user.getPicture()+"/" + fileName;
+		// save it
+		userService.deleteUploadFile(uploadedFileLocation, user);
+ 
+		String output = "File removed from: " + uploadedFileLocation;
+		
+		return Response.status(200).entity(output).build();
+	}
 	
 	public void setuserService(UserService userService) {
 		this.userService = userService;
+	}
+	
+	@XmlRootElement(name="fileNames")
+	public static class JaxbList<T>{
+	    protected List<T> list;
+
+	    public JaxbList(){}
+
+	    public JaxbList(List<T> list){
+	    	this.list=list;
+	    }
+
+	    @XmlElement(name="fileName")
+	    public List<T> getList(){
+	    	return list;
+	    }
 	}
 
 }

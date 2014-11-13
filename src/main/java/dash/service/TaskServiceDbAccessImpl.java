@@ -146,8 +146,6 @@ TaskService {
 	}
 	
 	@Override
-	// TODO: This doesnt need to exist. It is the exact same thing as
-	// getTaskById(Long)
 	public Task verifyTaskExistenceById(Long id) {
 		TaskEntity taskById = taskDao.getTaskById(id);
 		if (taskById == null) {
