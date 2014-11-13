@@ -63,6 +63,10 @@ public class UserEntity implements Serializable {
 	/** path to stored picture of the user */
 	@Column(name = "picture")
 	private String picturePath;
+	
+	
+	@Column(name= "profile_picture_filename")
+	private String profile_picture_filename;
 
 	/** insertion date in the database */
 	@Column(name = "insertion_date")
@@ -73,7 +77,7 @@ public class UserEntity implements Serializable {
 	public UserEntity( String username, 
 			String firstName,  String lastName,  String city,
 			String homePhone,  String cellPhone,  String email,
-			String picturePath) {
+			String picturePath, String profile_picture_filename) {
 
 		this.username = username;
 		this.firstName = firstName;
@@ -83,6 +87,7 @@ public class UserEntity implements Serializable {
 		this.cellPhone = cellPhone;
 		this.email = email;
 		this.picturePath = picturePath;
+		this.profile_picture_filename= profile_picture_filename;
 
 	}
 
@@ -96,6 +101,14 @@ public class UserEntity implements Serializable {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	public String getProfile_picture_filename() {
+		return profile_picture_filename;
+	}
+
+	public void setProfile_picture_filename(String profile_picture_filename) {
+		this.profile_picture_filename = profile_picture_filename;
 	}
 
 	public String getUsername() {

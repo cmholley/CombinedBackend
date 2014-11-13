@@ -102,10 +102,11 @@ public class UsersResource {
 			@FormParam("homePhone") String homePhone,
 			@FormParam("cellPhone") String cellPhone,
 			@FormParam("email") String email,
-			@FormParam("picturePath") String picturePath) throws AppException {
+			@FormParam("picturePath") String picturePath,
+			@FormParam("profile_picture_filename")String profile_picture_filename) throws AppException {
 
 		User user = new User(username, password, firstName, lastName, city,
-				homePhone, cellPhone, email, picturePath);
+				homePhone, cellPhone, email, picturePath, profile_picture_filename);
 
 		Long createUserid = userService.createUser(user);
 
@@ -375,13 +376,21 @@ public class UsersResource {
 			user.setPicture(path.toString());
 			partialUpdateUser(user.getId(), user);
 		}
+		
+		if(!userService.getFileNames(user).isEmpty()){
+			List<String> files = userService.getFileNames(user);
+			for (String file:files){
+				deleteUpload(user.getId(), file);
+			}
+		}
 		String uploadedFileLocation = userPicturePath+"/"
 				+user.getPicture()+"/" + fileDetail.getFileName().replaceAll("%20", "_").toLowerCase();;
 		// save it
 		userService.uploadFile(uploadedInputStream, uploadedFileLocation, user);
  
 		String output = "File uploaded to : " + uploadedFileLocation;
- 
+		user.setProfile_picture_filename(fileDetail.getFileName());
+		userService.updatePartiallyUser(user);
 		return Response.status(200).entity(output).build();
  
 	}
@@ -429,7 +438,8 @@ public class UsersResource {
 		userService.deleteUploadFile(uploadedFileLocation, user);
  
 		String output = "File removed from: " + uploadedFileLocation;
-		
+		user.setProfile_picture_filename("");
+		userService.updatePartiallyUser(user);
 		return Response.status(200).entity(output).build();
 	}
 	

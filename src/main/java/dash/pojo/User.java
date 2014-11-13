@@ -66,6 +66,10 @@ public class User implements Serializable {
 	/** path to stored picture of the user */
 	@XmlElement(name = "picturePath")
 	private String picturePath;
+	
+	/** name of a photo stored at picturePath that is the selected profile photo*/
+	@XmlElement(name= "profile_picture_filename")
+	private String profile_picture_filename;
 
 	/** insertion date in the database */
 	@XmlElement(name = "insertionDate")
@@ -88,7 +92,7 @@ public class User implements Serializable {
 	public User( String username,  String password,
 			String firstName,  String lastName,  String city,
 			String homePhone,  String cellPhone,  String email,
-			String picturePath) {
+			String picturePath, String profile_picture_filename) {
 
 		this.username = username;
 		this.password = password;
@@ -99,9 +103,19 @@ public class User implements Serializable {
 		this.cellPhone = cellPhone;
 		this.email = email;
 		this.picturePath = picturePath;
+		this.profile_picture_filename= profile_picture_filename;
 	}
 
 	public User() {
+	}
+
+	
+	public String getProfile_picture_filename() {
+		return profile_picture_filename;
+	}
+
+	public void setProfile_picture_filename(String profile_picture_filename) {
+		this.profile_picture_filename = profile_picture_filename;
 	}
 
 	public String getUsername() {
