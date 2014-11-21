@@ -40,5 +40,8 @@ public class ResponseCorsFilter implements Filter {
 		response.addHeader(
 				"Access-Control-Allow-Headers",
 				"Cache-Control, Pragma, Origin, Authorization, Content-Type, X-Requested-With, X-XSRF-TOKEN");
+		
+		//Exposes all headers so that Restangular client may retrieve data from it.
+		//response.addHeader("Access-Control-Expose-Headers", "ObjectId");
 	}
 }

@@ -41,7 +41,7 @@ public class GroupResource {
 		Long createGroupId = groupService.createGroup(group);
 		return Response.status(Response.Status.CREATED)
 				// 201
-				.entity("A new group has been created")
+				.entity(String.valueOf(createGroupId))
 				.header("Location", String.valueOf(createGroupId))
 		         .header("ObjectId", String.valueOf(createGroupId)).build();
 	}

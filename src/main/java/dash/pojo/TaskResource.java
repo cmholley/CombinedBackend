@@ -44,7 +44,7 @@ public class TaskResource {
 		Long createTaskId = taskService.createTask(task, group);
 		return Response.status(Response.Status.CREATED)
 				// 201
-				.entity("A new task has been created")
+				.entity(String.valueOf(createTaskId))
 				.header("Location", String.valueOf(createTaskId))
 				.header("ObjectId", String.valueOf(createTaskId)).build();
 	}
