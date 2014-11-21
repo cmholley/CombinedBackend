@@ -7,6 +7,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import dash.errorhandling.AppException;
 import dash.pojo.Message;
 import dash.pojo.Task;
+
 /*
  * Message Service
  * @Author CarlSteven
@@ -14,8 +15,8 @@ import dash.pojo.Task;
 public interface MessageService {
 	/*
 	 * ******************** Create related methods **********************
-	 *
-	 *Create a new post and set the current user as owner and manager.
+	 * 
+	 * Create a new post and set the current user as owner and manager.
 	 */
 	@PreAuthorize("hasPermission(#task, 'member') or hasPermission(#task, 'manager')")
 	public Long createMessage(Message message, Task task) throws AppException;
@@ -29,19 +30,20 @@ public interface MessageService {
 	/*
 	 * ******************* Read related methods ********************
 	 */
-//	public List<Post> getMessagesByMyTasks(int numberOfPosts, Long startIndex) throws AppException;
-	
-	
+	// public List<Post> getMessagesByMyTasks(int numberOfPosts, Long
+	// startIndex) throws AppException;
+
 	@PreAuthorize("hasPermission(#task, 'member') or hasPermission(#task, 'manager')")
-	public List<Message> getMessagesByTask(int numberOfPosts, Long startIndex, Task task) throws AppException;
-	
+	public List<Message> getMessagesByTask(int numberOfPosts, Long startIndex,
+			Task task) throws AppException;
+
 	/**
 	 * Returns a post given its id
 	 *
 	 * @param id
 	 * @return
 	 * @throws AppException
-	 */	
+	 */
 	public Message getMessageById(Long id) throws AppException;
 
 	/*
@@ -51,24 +53,24 @@ public interface MessageService {
 	public void updateFullyMessage(Message message) throws AppException;
 
 	@PreAuthorize("(hasPermission(#message, 'write') or hasRole('ROLE_MODERATOR')) and (hasPermission(#task, 'member') or hasPermission(#task, 'manager'))")
-	public void updatePartiallyMessage(Message message, Task task) throws AppException;
+	public void updatePartiallyMessage(Message message, Task task)
+			throws AppException;
 
 	/*
 	 * ******************** Delete related methods **********************
 	 */
 
-
 	@PreAuthorize("hasPermission(#message, 'delete') or hasRole('ROLE_MODERATOR')")
 	public void deleteMessage(Message message);
-	
-	/** removes all posts
-	 * DO NOT USE, IMPROPERLY UPDATES ACL_OBJECT table
-	 * Functional but does not destroy old acl's which doesnt hurt anything
-	 * but they will take up space if this is commonly used */
+
+	/**
+	 * removes all posts DO NOT USE, IMPROPERLY UPDATES ACL_OBJECT table
+	 * Functional but does not destroy old acl's which doesnt hurt anything but
+	 * they will take up space if this is commonly used
+	 */
 	@PreAuthorize("hasRole('ROLE_ROOT')")
 	public void deleteMessages();
-	
-	
+
 	/*
 	 * ******************** Helper methods **********************
 	 */

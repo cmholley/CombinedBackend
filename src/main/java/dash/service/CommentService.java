@@ -1,9 +1,7 @@
 package dash.service;
 
 import java.util.List;
-
 import org.springframework.security.access.prepost.PreAuthorize;
-
 import dash.errorhandling.AppException;
 import dash.pojo.Comment;
 import dash.pojo.Group;
@@ -12,8 +10,8 @@ import dash.pojo.Post;
 public interface CommentService {
 	/*
 	 * ******************** Create related methods **********************
-	 *
-	 *Create a new comment and set the current user as owner and manager.
+	 * 
+	 * Create a new comment and set the current user as owner and manager.
 	 */
 	@PreAuthorize("hasPermission(#group, 'member') or hasPermission(#group, 'manager') or hasRole('ROLE_MODERATOR')")
 	public Long createComment(Comment comment, Group group) throws AppException;
@@ -38,8 +36,8 @@ public interface CommentService {
 	 * @return list with posts corresponding to search criteria
 	 * @throws AppException
 	 */
-	public List<Comment> getCommentsByPost(int numberOfPosts, Long startIndex, Post post) throws AppException;
-
+	public List<Comment> getCommentsByPost(int numberOfPosts, Long startIndex,
+			Post post) throws AppException;
 
 	/**
 	 * Returns a post given its id
@@ -64,15 +62,15 @@ public interface CommentService {
 	 */
 	@PreAuthorize("hasPermission(#comment, 'delete') or hasRole('ROLE_MODERATOR')")
 	public void deleteComment(Comment comment);
-	
-	/** removes all posts
-	 * DO NOT USE, IMPROPERLY UPDATES ACL_OBJECT table
-	 * Functional but does not destroy old acl's which doesnt hurt anything
-	 * but they will take up space if this is commonly used */
+
+	/**
+	 * removes all posts DO NOT USE, IMPROPERLY UPDATES ACL_OBJECT table
+	 * Functional but does not destroy old acl's which doesnt hurt anything but
+	 * they will take up space if this is commonly used
+	 */
 	@PreAuthorize("hasRole('ROLE_ROOT')")
 	public void deleteComments();
-	
-	
+
 	/*
 	 * ******************** Helper methods **********************
 	 */

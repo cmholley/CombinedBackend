@@ -3,16 +3,13 @@ package dash.service;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.ws.rs.core.Response;
-
 import org.apache.commons.beanutils.BeanUtilsBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.ApplicationObjectSupport;
 import org.springframework.security.acls.model.MutableAclService;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
 import dash.dao.CommentDao;
 import dash.dao.CommentEntity;
 import dash.errorhandling.AppException;
@@ -21,29 +18,24 @@ import dash.helpers.NullAwareBeanUtilsBean;
 import dash.pojo.Comment;
 import dash.pojo.Group;
 import dash.pojo.Post;
-import dash.pojo.User;
 import dash.security.CustomPermission;
 import dash.security.GenericAclController;
 
 @Component
-public class CommentServiceDbAccessImpl extends ApplicationObjectSupport implements
-CommentService {
+public class CommentServiceDbAccessImpl extends ApplicationObjectSupport
+		implements CommentService {
 
 	@Autowired
 	CommentDao commentDao;
 
 	@Autowired
 	private MutableAclService mutableAclService;
-	
+
 	@Autowired
 	private GroupService groupService;
 
 	@Autowired
 	private GenericAclController<Comment> aclController;
-
-	private static final String SORT_ORDER=null;
-	private static final Integer NUM_DAYS_LOOKBACK=null;
-
 
 	/********************* Create related methods implementation ***********************/
 	@Override
@@ -58,21 +50,21 @@ CommentService {
 		return commentId;
 	}
 
-	
-
-	//Inactive
+	// Inactive
 	@Override
 	@Transactional
 	public void createComments(List<Comment> comments) throws AppException {
-		
+
 	}
 
-
-	// ******************** Read related methods implementation **********************
+	// ******************** Read related methods implementation
+	// **********************
 	@Override
-	public List<Comment> getCommentsByPost(int numberOfComments, Long startIndex, Post post) throws AppException {
-		//verify optional parameter numberDaysToLookBack first
-		List<CommentEntity> postComments = commentDao.getComments(numberOfComments, startIndex, post);
+	public List<Comment> getCommentsByPost(int numberOfComments,
+			Long startIndex, Post post) throws AppException {
+		// verify optional parameter numberDaysToLookBack first
+		List<CommentEntity> postComments = commentDao.getComments(
+				numberOfComments, startIndex, post);
 		return getCommentsFromEntities(postComments);
 	}
 
@@ -81,17 +73,17 @@ CommentService {
 		CommentEntity commentById = commentDao.getCommentById(id);
 		if (commentById == null) {
 			throw new AppException(Response.Status.NOT_FOUND.getStatusCode(),
-					404,
-					"The post you requested with id " + id
-					+ " was not found in the database",
+					404, "The post you requested with id " + id
+							+ " was not found in the database",
 					"Verify the existence of the post with the id " + id
-					+ " in the database", AppConstants.DASH_POST_URL);
+							+ " in the database", AppConstants.DASH_POST_URL);
 		}
 
 		return new Comment(commentDao.getCommentById(id));
 	}
 
-	private List<Comment> getCommentsFromEntities(List<CommentEntity> commentEntities) {
+	private List<Comment> getCommentsFromEntities(
+			List<CommentEntity> commentEntities) {
 		List<Comment> response = new ArrayList<Comment>();
 		for (CommentEntity commentEntity : commentEntities) {
 			response.add(new Comment(commentEntity));
@@ -99,17 +91,13 @@ CommentService {
 
 		return response;
 	}
-	
 
-	
-	
-
-//	public List<Post> getRecentPosts(int numberOfDaysToLookBack) {
-//		List<PostEntity> recentPosts = commentDao
-//				.getRecentPosts(numberOfDaysToLookBack);
-//
-//		return getPostsFromEntities(recentPosts);
-//	}
+	// public List<Post> getRecentPosts(int numberOfDaysToLookBack) {
+	// List<PostEntity> recentPosts = commentDao
+	// .getRecentPosts(numberOfDaysToLookBack);
+	//
+	// return getPostsFromEntities(recentPosts);
+	// }
 
 	@Override
 	public int getNumberOfPosts() {
@@ -119,17 +107,14 @@ CommentService {
 
 	}
 
-
-
 	/********************* UPDATE-related methods implementation ***********************/
 	@Override
 	@Transactional
 	public void updateFullyComment(Comment comment) throws AppException {
-		//do a validation to verify FULL update with PUT
+		// do a validation to verify FULL update with PUT
 		if (isFullUpdate(comment)) {
 			throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(),
-					400,
-					"Please specify all properties for Full UPDATE",
+					400, "Please specify all properties for Full UPDATE",
 					"required properties - name, description",
 					AppConstants.DASH_POST_URL);
 		}
@@ -137,12 +122,12 @@ CommentService {
 		Comment verifyPostExistenceById = verifyCommentExistenceById(comment
 				.getId());
 		if (verifyPostExistenceById == null) {
-			throw new AppException(Response.Status.NOT_FOUND.getStatusCode(),
+			throw new AppException(
+					Response.Status.NOT_FOUND.getStatusCode(),
 					404,
 					"The resource you are trying to update does not exist in the database",
 					"Please verify existence of data in the database for the id - "
-							+ comment.getId(),
-							AppConstants.DASH_POST_URL);
+							+ comment.getId(), AppConstants.DASH_POST_URL);
 		}
 
 		commentDao.updateComment(new CommentEntity(comment));
@@ -155,8 +140,7 @@ CommentService {
 	 * @return
 	 */
 	private boolean isFullUpdate(Comment comment) {
-		return comment.getId() == null
-				|| comment.getContent() == null
+		return comment.getId() == null || comment.getContent() == null
 				|| comment.getImage() == null;
 	}
 
@@ -191,10 +175,12 @@ CommentService {
 	@Override
 	@Transactional
 	public void updatePartiallyComment(Comment comment) throws AppException {
-		//do a validation to verify existence of the resource
-		Comment verifyCommentExistenceById = verifyCommentExistenceById(comment.getId());
+		// do a validation to verify existence of the resource
+		Comment verifyCommentExistenceById = verifyCommentExistenceById(comment
+				.getId());
 		if (verifyCommentExistenceById == null) {
-			throw new AppException(Response.Status.NOT_FOUND.getStatusCode(),
+			throw new AppException(
+					Response.Status.NOT_FOUND.getStatusCode(),
 					404,
 					"The resource you are trying to update does not exist in the database",
 					"Please verify existence of data in the database for the id - "
@@ -205,9 +191,10 @@ CommentService {
 
 	}
 
-	private void copyPartialProperties(Comment verifyCommentExistenceById, Comment comment) {
+	private void copyPartialProperties(Comment verifyCommentExistenceById,
+			Comment comment) {
 
-		BeanUtilsBean notNull=new NullAwareBeanUtilsBean();
+		BeanUtilsBean notNull = new NullAwareBeanUtilsBean();
 		try {
 			notNull.copyProperties(verifyCommentExistenceById, comment);
 		} catch (IllegalAccessException e) {
@@ -219,6 +206,5 @@ CommentService {
 		}
 
 	}
-
 
 }

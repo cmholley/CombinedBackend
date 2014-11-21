@@ -3,18 +3,14 @@ package dash.service;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.ws.rs.core.Response;
-
 import org.apache.commons.beanutils.BeanUtilsBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.ApplicationObjectSupport;
 import org.springframework.security.acls.model.MutableAclService;
 import org.springframework.transaction.annotation.Transactional;
-
 import dash.dao.HourDao;
 import dash.dao.HourEntity;
-
 import dash.errorhandling.AppException;
 import dash.filters.AppConstants;
 import dash.helpers.NullAwareBeanUtilsBean;
@@ -60,9 +56,9 @@ public class HourServiceDbAccessImpl extends ApplicationObjectSupport implements
 	@Override
 	@Transactional
 	public void createHours(List<Hour> hours) throws AppException {
-		for (Hour hour : hours) {
-			// createHour(hour);
-		}
+//		for (Hour hour : hours) {
+//			 createHour(hour);
+//		}
 	}
 
 	// ******************** Read related methods implementation
