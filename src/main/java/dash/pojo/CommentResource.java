@@ -1,8 +1,6 @@
 package dash.pojo;
 
 import java.io.IOException;
-import java.lang.annotation.Annotation;
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,22 +13,17 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.DefaultValue;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-import dash.dao.UserEntity;
 import dash.errorhandling.AppException;
 import dash.service.CommentService;
 import dash.service.GroupService;
 import dash.service.PostService;
-import dash.service.UserService;
 
 @Component
 @Path("/comments")
@@ -38,20 +31,20 @@ public class CommentResource {
 
 	@Autowired
 	private PostService postService;
-	
+
 	@Autowired
 	private CommentService commentService;
-	
+
 	@Autowired
 	private GroupService groupService;
-	
+
 	@POST
 	@Consumes({ MediaType.APPLICATION_JSON })
 	@Produces({ MediaType.TEXT_HTML })
 	public Response createComments(Comment comment) throws AppException {
-		Post post= postService.getPostById(comment.getPost_id());
+		Post post = postService.getPostById(comment.getPost_id());
 		Group group = groupService.getGroupById(post.getGroup_id());
-		
+
 		Long createCommentId = commentService.createComment(comment, group);
 		return Response.status(Response.Status.CREATED)
 				// 201
@@ -60,7 +53,7 @@ public class CommentResource {
 						"http://localhost:8080/comments/"
 								+ String.valueOf(createCommentId)).build();
 	}
-	
+
 	@POST
 	@Path("list")
 	@Consumes({ MediaType.APPLICATION_JSON })
@@ -69,22 +62,18 @@ public class CommentResource {
 		return Response.status(Response.Status.CREATED) // 201
 				.entity("List of comments was successfully created").build();
 	}
-	
-	
+
 	/**
-	 *@param numberOfComments
-	 *-optional
-	 *-default is 25
-	 *-the size of the List to be returned
+	 * @param numberOfComments
+	 *            -optional -default is 25 -the size of the List to be returned
 	 *
-	 *@param startIndex
-	 *-optional
-	 *-default is 0
-	 *-the id of the post you would like to start reading from
+	 * @param startIndex
+	 *            -optional -default is 0 -the id of the post you would like to
+	 *            start reading from
 	 *
-	 *@param group_id
-	 *-optional
-	 *-if set will attempt to get the requested number of posts from a group.
+	 * @param group_id
+	 *            -optional -if set will attempt to get the requested number of
+	 *            posts from a group.
 	 * 
 	 */
 	@GET
@@ -92,40 +81,33 @@ public class CommentResource {
 	public List<Comment> getComments(
 			@QueryParam("numberOfComments") @DefaultValue("25") int numberOfComments,
 			@QueryParam("startIndex") @DefaultValue("0") Long startIndex,
-			@QueryParam("post_id") Long post_id)
-			throws IOException,	AppException
-	{
-		if(post_id!=null){
+			@QueryParam("post_id") Long post_id) throws IOException,
+			AppException {
+		if (post_id != null) {
 			Post post = postService.getPostById(post_id);
-			List<Comment> comments = commentService.getCommentsByPost(numberOfComments, startIndex, post);
+			List<Comment> comments = commentService.getCommentsByPost(
+					numberOfComments, startIndex, post);
 			return comments;
 		} else {
 			return new ArrayList<Comment>();
 		}
 	}
 
-	
 	@GET
 	@Path("{id}")
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	public Response getCommentById(@PathParam("id") Long id,
-			@QueryParam("detailed") boolean detailed)
-					throws IOException,	AppException {
+			@QueryParam("detailed") boolean detailed) throws IOException,
+			AppException {
 		Comment commentById = commentService.getCommentById(id);
-		return Response
-				.status(200)
-				.entity(new GenericEntity<Comment>(commentById) {
-				},
-				detailed ? new Annotation[] { PostDetailedView.Factory
-						.get() } : new Annotation[0])
-						.header("Access-Control-Allow-Headers", "X-extra-header")
-						.allow("OPTIONS").build();
+		return Response.status(200).entity(commentById)
+				.header("Access-Control-Allow-Headers", "X-extra-header")
+				.allow("OPTIONS").build();
 	}
-	
+
 	/************************ Update Methods *********************/
-	
-	
-	//Full update in not already existing
+
+	// Full update in not already existing
 	@PUT
 	@Path("{id}")
 	@Consumes({ MediaType.APPLICATION_JSON })
@@ -133,12 +115,12 @@ public class CommentResource {
 	public Response putCommentById(@PathParam("id") Long id, Comment comment)
 			throws AppException {
 		Comment commentById = commentService.getCommentById(id);
-		
+
 		if (commentById == null) {
-			return Response
-					.status(Response.Status.NOT_FOUND)
+			return Response.status(Response.Status.NOT_FOUND)
 					// 404
-					.entity("Comment does not exist with specified id: " + id).build();
+					.entity("Comment does not exist with specified id: " + id)
+					.build();
 		} else {
 			// resource is existent and a full update should occur
 			commentService.updateFullyComment(commentById);
@@ -158,11 +140,10 @@ public class CommentResource {
 	@Consumes({ MediaType.APPLICATION_JSON })
 	@Produces({ MediaType.TEXT_HTML })
 	public Response partialUpdatePost(@PathParam("id") Long id, Comment comment)
-			throws AppException
-	{
+			throws AppException {
 		comment.setId(id);
 		Post post = new Post();
-		if(comment.getPost_id() == null) {
+		if (comment.getPost_id() == null) {
 			return Response
 					.status(Response.Status.BAD_REQUEST)
 					.entity("Must have set post_id")
@@ -181,17 +162,17 @@ public class CommentResource {
 	}
 
 	/*
-	 * *********************************** DELETE ***********************************
+	 * *********************************** DELETE
+	 * ***********************************
 	 */
 	@DELETE
 	@Path("{id}")
 	@Produces({ MediaType.TEXT_HTML })
-	public Response deleteComment(@PathParam("id") Long id)
-			throws AppException {
+	public Response deleteComment(@PathParam("id") Long id) throws AppException {
 		Comment comment = commentService.getCommentById(id);
 		commentService.deleteComment(comment);
 		return Response.status(Response.Status.NO_CONTENT)// 204
 				.entity("Post successfully removed from database").build();
 	}
-	
+
 }

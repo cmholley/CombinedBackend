@@ -1,7 +1,6 @@
 package dash.pojo;
 
 import java.io.IOException;
-import java.lang.annotation.Annotation;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -13,7 +12,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.DefaultValue;
@@ -25,7 +23,6 @@ import dash.errorhandling.AppException;
 import dash.service.MessageService;
 import dash.service.TaskService;
 import dash.service.UserService;
-import dash.pojo.Group;
 
 /*
  * Message Resource
@@ -108,10 +105,7 @@ public class MessageResource {
 		Message messageById = messageService.getMessageById(id);
 		return Response
 				.status(200)
-				.entity(new GenericEntity<Message>(messageById) {
-				},
-				detailed ? new Annotation[] { PostDetailedView.Factory
-						.get() } : new Annotation[0])
+				.entity(messageById)
 						.header("Access-Control-Allow-Headers", "X-extra-header")
 						.allow("OPTIONS").build();
 	}
