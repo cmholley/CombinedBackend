@@ -2,21 +2,15 @@ package dash.dao;
 
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
-import java.sql.Time;
 import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
 import org.apache.commons.beanutils.BeanUtils;
 
 import dash.pojo.Hour;
-
 
 /*
  * Hour entity
@@ -24,11 +18,9 @@ import dash.pojo.Hour;
  * 
  */
 @Entity
-@Table(name="entered_hours")
-public class HourEntity implements Serializable{
+@Table(name = "entered_hours")
+public class HourEntity implements Serializable {
 
-
-	
 	/**
 	 * 
 	 */
@@ -36,48 +28,49 @@ public class HourEntity implements Serializable{
 
 	@Id
 	@GeneratedValue
-	@Column(name="id")
+	@Column(name = "id")
 	private Long id;
-	
-	@Column(name="user_id")
+
+	@Column(name = "user_id")
 	private Long user_id;
 
-	@Column(name="task_id")
+	@Column(name = "task_id")
 	private Long task_id;
-	
-	@Column(name="title")
-	private String title;
-	
-	@Column(name="start_time")
-	private Date start_time;
-	
-	@Column(name="end_time")
-	private Date end_time;
-	
-	@Column(name="duration")
-	private int duration;
-	
-	@Column(name="approved")
-	private boolean approved;
-	
-	@Column(name="pending")
-	private boolean pending;
-	
-	
-	public HourEntity(){}
 
-	public HourEntity(Hour hour){
+	@Column(name = "title")
+	private String title;
+
+	@Column(name = "start_time")
+	private Date start_time;
+
+	@Column(name = "end_time")
+	private Date end_time;
+
+	@Column(name = "duration")
+	private int duration;
+
+	@Column(name = "approved")
+	private boolean approved;
+
+	@Column(name = "pending")
+	private boolean pending;
+
+	public HourEntity() {
+	}
+
+	public HourEntity(Hour hour) {
 		try {
 			BeanUtils.copyProperties(this, hour);
-		} catch ( IllegalAccessException e) {
+		} catch (IllegalAccessException e) {
 			e.printStackTrace();
-		} catch ( InvocationTargetException e) {
+		} catch (InvocationTargetException e) {
 			e.printStackTrace();
 		}
 	}
 
 	public HourEntity(Long id, Long user_id, Long task_id, String title,
-			Date start_time, Date end_time, int duration, boolean approved, boolean pending) {
+			Date start_time, Date end_time, int duration, boolean approved,
+			boolean pending) {
 		super();
 		this.id = id;
 		this.user_id = user_id;
@@ -87,7 +80,7 @@ public class HourEntity implements Serializable{
 		this.end_time = end_time;
 		this.duration = duration;
 		this.approved = approved;
-		this.pending= pending;
+		this.pending = pending;
 	}
 
 	public Long getId() {
@@ -153,7 +146,6 @@ public class HourEntity implements Serializable{
 	public void setApproved(boolean approved) {
 		this.approved = approved;
 	}
-	
 
 	public boolean isPending() {
 		return pending;
@@ -166,7 +158,5 @@ public class HourEntity implements Serializable{
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
-	
-	
 
 }

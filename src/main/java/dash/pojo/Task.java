@@ -1,66 +1,51 @@
 package dash.pojo;
 
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-
 import org.apache.commons.beanutils.BeanUtils;
-
 import dash.dao.TaskEntity;
 import dash.security.IAclObject;
-
-
-
-
 import java.lang.reflect.InvocationTargetException;
-import java.sql.Time;
 import java.util.Date;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Task implements  IAclObject{
+public class Task implements IAclObject {
 
-	
-
-
-	
-	@XmlElement(name="id")
+	@XmlElement(name = "id")
 	private Long id;
-	
-	@XmlElement(name="group_id")
+
+	@XmlElement(name = "group_id")
 	private Long group_id;
-	
-	@XmlElement(name="name")
+
+	@XmlElement(name = "name")
 	private String name;
-	
-	@XmlElement(name="description")
+
+	@XmlElement(name = "description")
 	private String description;
-	
-	@XmlElement(name="time")
+
+	@XmlElement(name = "time")
 	private Date time;
-	
-	@XmlElement(name="duration")
+
+	@XmlElement(name = "duration")
 	private int duration;
-	
-	@XmlElement(name="location")
+
+	@XmlElement(name = "location")
 	private String location;
-	
-	@XmlElement(name="creation_timestamp")
+
+	@XmlElement(name = "creation_timestamp")
 	private Date creation_timestamp;
-	
-	@XmlElement(name="finished")
+
+	@XmlElement(name = "finished")
 	private int finished;
-	
-	@XmlElement(name="badge_id")
+
+	@XmlElement(name = "badge_id")
 	private Long badge_id;
-	
-	
-	
-	
-	public Task(Long id, Long group_id, String name, String description, Date time,
-			int duration, String location, Date creation_timestamp,
+
+	public Task(Long id, Long group_id, String name, String description,
+			Date time, int duration, String location, Date creation_timestamp,
 			int finished, Long badge_id) {
 		super();
 		this.id = id;
@@ -77,18 +62,17 @@ public class Task implements  IAclObject{
 	public Task(TaskEntity taskEntity) {
 		try {
 			BeanUtils.copyProperties(this, taskEntity);
-		} catch ( IllegalAccessException e) {
+		} catch (IllegalAccessException e) {
 
 			e.printStackTrace();
-		} catch ( InvocationTargetException e) {
+		} catch (InvocationTargetException e) {
 
 			e.printStackTrace();
 		}
 	}
-	
-	public Task(){}
 
-	
+	public Task() {
+	}
 
 	@Override
 	public String toString() {
@@ -111,7 +95,6 @@ public class Task implements  IAclObject{
 	public Long getId() {
 		return id;
 	}
-	
 
 	public void setId(Long id) {
 		this.id = id;
@@ -124,7 +107,6 @@ public class Task implements  IAclObject{
 	public void setGroup_id(Long group_id) {
 		this.group_id = group_id;
 	}
-
 
 	public String getName() {
 		return name;
@@ -189,11 +171,5 @@ public class Task implements  IAclObject{
 	public void setBadge_id(Long badge_id) {
 		this.badge_id = badge_id;
 	}
-
-
-
-	
-
-	
 
 }

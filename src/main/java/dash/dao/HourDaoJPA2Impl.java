@@ -1,15 +1,11 @@
 package dash.dao;
 
-import java.util.Date;
 import java.util.List;
-
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-
-import dash.pojo.Group;
 import dash.pojo.Hour;
 import dash.pojo.Task;
 
