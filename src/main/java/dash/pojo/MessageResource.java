@@ -38,16 +38,15 @@ public class MessageResource {
 
 	@Autowired
 	private TaskService taskService;
-	
+
 	@Autowired
 	private UserService userService;
-	
-	
+
 	@POST
 	@Consumes({ MediaType.APPLICATION_JSON })
 	@Produces({ MediaType.TEXT_HTML })
 	public Response createMessage(Message message) throws AppException {
-		Task task= new Task();
+		Task task = new Task();
 		task.setId(message.getTask_id());
 		Long createMessageId = messageService.createMessage(message, task);
 		return Response.status(Response.Status.CREATED)
@@ -57,7 +56,7 @@ public class MessageResource {
 						"http://localhost:8080/messages/"
 								+ String.valueOf(createMessageId)).build();
 	}
-	
+
 	@POST
 	@Path("list")
 	@Consumes({ MediaType.APPLICATION_JSON })
@@ -66,22 +65,18 @@ public class MessageResource {
 		return Response.status(Response.Status.CREATED) // 201
 				.entity("List of messages was successfully created").build();
 	}
-	
-	
+
 	/**
-	 *@param numberOfPosts
-	 *-optional
-	 *-default is 25
-	 *-the size of the List to be returned
+	 * @param numberOfPosts
+	 *            -optional -default is 25 -the size of the List to be returned
 	 *
-	 *@param startIndex
-	 *-optional
-	 *-default is 0
-	 *-the id of the post you would like to start reading from
+	 * @param startIndex
+	 *            -optional -default is 0 -the id of the post you would like to
+	 *            start reading from
 	 *
-	 *@param group_id
-	 *-optional
-	 *-if set will attempt to get the requested number of posts from a group.
+	 * @param group_id
+	 *            -optional -if set will attempt to get the requested number of
+	 *            posts from a group.
 	 * 
 	 */
 	@GET
@@ -89,31 +84,29 @@ public class MessageResource {
 	public List<Message> getMessages(
 			@QueryParam("numberOfMessages") @DefaultValue("25") int numberOfMessages,
 			@QueryParam("startIndex") @DefaultValue("0") Long startIndex,
-			@QueryParam("task_id") Long task_id)
-			throws IOException,	AppException {
-			Task task = taskService.getTaskById(task_id);
-			List<Message> messages = messageService.getMessagesByTask(numberOfMessages, startIndex, task);
-			return messages;
-	}	
-	
+			@QueryParam("task_id") Long task_id) throws IOException,
+			AppException {
+		Task task = taskService.getTaskById(task_id);
+		List<Message> messages = messageService.getMessagesByTask(
+				numberOfMessages, startIndex, task);
+		return messages;
+	}
+
 	@GET
 	@Path("{id}")
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	public Response getPostById(@PathParam("id") Long id,
-			@QueryParam("detailed") boolean detailed)
-					throws IOException,	AppException {
+			@QueryParam("detailed") boolean detailed) throws IOException,
+			AppException {
 		Message messageById = messageService.getMessageById(id);
-		return Response
-				.status(200)
-				.entity(messageById)
-						.header("Access-Control-Allow-Headers", "X-extra-header")
-						.allow("OPTIONS").build();
+		return Response.status(200).entity(messageById)
+				.header("Access-Control-Allow-Headers", "X-extra-header")
+				.allow("OPTIONS").build();
 	}
-	
+
 	/************************ Update Methods *********************/
-	
-	
-	//Full update or creation in not already existing
+
+	// Full update or creation in not already existing
 	@PUT
 	@Path("{id}")
 	@Consumes({ MediaType.APPLICATION_JSON })
@@ -123,7 +116,7 @@ public class MessageResource {
 
 		Task task = new Task();
 		Message messageById = messageService.verifyMessageExistenceById(id);
-		
+
 		if (messageById == null) {
 			// resource not existent yet, and should be created under the
 			// specified URI
@@ -156,17 +149,15 @@ public class MessageResource {
 	public Response partialUpdatePost(@PathParam("id") Long id, Message message)
 			throws AppException {
 		message.setId(id);
-		Task task= new Task();
-		if(message.getTask_id() == null)
-		{
+		Task task = new Task();
+		if (message.getTask_id() == null) {
 			return Response
 					.status(Response.Status.BAD_REQUEST)
 					.entity("Must have set task_id")
 					.header("Location",
 							"http://localhost:8080/services/posts/"
 									+ String.valueOf(message)).build();
-		}else
-		{
+		} else {
 			task.setId(message.getTask_id());
 		}
 		messageService.updatePartiallyMessage(message, task);
@@ -178,28 +169,26 @@ public class MessageResource {
 	}
 
 	/*
-	 * *********************************** DELETE ***********************************
+	 * *********************************** DELETE
+	 * ***********************************
 	 */
 	@DELETE
 	@Path("{id}")
 	@Produces({ MediaType.TEXT_HTML })
-	public Response deletePost(@PathParam("id") Long id)
-			throws AppException {
+	public Response deletePost(@PathParam("id") Long id) throws AppException {
 		Task task = new Task();
 		Message message = messageService.verifyMessageExistenceById(id);
-		if(message.getTask_id() == null)
-		{
+		if (message.getTask_id() == null) {
 			return Response
 					.status(Response.Status.BAD_REQUEST)
 					.entity("Post Id not found")
 					.header("Location",
 							"http://localhost:8080/services/messages/"
 									+ String.valueOf(message)).build();
-		}else
-		{
+		} else {
 			task.setId(message.getTask_id());
 		}
-		
+
 		messageService.deleteMessage(message);
 		return Response.status(Response.Status.NO_CONTENT)// 204
 				.entity("Post successfully removed from database").build();
@@ -213,5 +202,5 @@ public class MessageResource {
 		return Response.status(Response.Status.NO_CONTENT)// 204
 				.entity("All posts have been successfully removed").build();
 	}
-	
+
 }
