@@ -22,7 +22,7 @@ import dash.errorhandling.AppException;
 import dash.service.GroupService;
 import dash.service.UserService;
 
-@Component
+@Component("groupResource")
 @Path("/groups")
 public class GroupResource {
 

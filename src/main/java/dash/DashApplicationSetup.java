@@ -52,8 +52,5 @@ public class DashApplicationSetup extends ResourceConfig {
 		register(JacksonFeature.class);
 		register(MultiPartFeature.class);
 		register(EntityFilteringFeature.class);
-
-		// property(EntityFilteringFeature.ENTITY_FILTERING_SCOPE,
-		// new Annotation[] { UserDetailedView.Factory.get() });
 	}
 }

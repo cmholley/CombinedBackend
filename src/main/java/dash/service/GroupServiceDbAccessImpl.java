@@ -3,13 +3,17 @@ package dash.service;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.ws.rs.core.Response;
+
 import org.apache.commons.beanutils.BeanUtilsBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.ApplicationObjectSupport;
 import org.springframework.security.acls.domain.PrincipalSid;
 import org.springframework.security.acls.model.MutableAclService;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
 import dash.dao.GroupDao;
 import dash.dao.GroupEntity;
 import dash.errorhandling.AppException;
@@ -21,6 +25,7 @@ import dash.pojo.User;
 import dash.security.CustomPermission;
 import dash.security.GenericAclController;
 
+@Component("groupService")
 public class GroupServiceDbAccessImpl extends ApplicationObjectSupport
 		implements GroupService {
 

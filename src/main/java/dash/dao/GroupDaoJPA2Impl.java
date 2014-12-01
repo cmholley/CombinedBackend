@@ -13,8 +13,11 @@ import javax.persistence.Query;
 import javax.persistence.TemporalType;
 import javax.persistence.TypedQuery;
 
+import org.springframework.stereotype.Component;
+
 import dash.pojo.Group;
 
+@Component("groupDao")
 public class GroupDaoJPA2Impl implements GroupDao {
 	@PersistenceContext(unitName = "dashPersistence")
 	private EntityManager entityManager;

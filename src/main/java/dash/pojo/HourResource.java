@@ -27,7 +27,7 @@ import dash.service.TaskService;
 import dash.service.UserService;
 import dash.pojo.Group;
 
-@Component
+@Component("hourResource")
 @Path("/hours")
 public class HourResource {
 

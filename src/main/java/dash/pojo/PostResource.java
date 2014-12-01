@@ -25,7 +25,7 @@ import dash.service.PostService;
 import dash.service.UserService;
 import dash.pojo.Group;
 
-@Component
+@Component("postResource")
 @Path("/posts")
 public class PostResource {
 

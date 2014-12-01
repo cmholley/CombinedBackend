@@ -129,12 +129,12 @@
 			<version>3.0.1</version>
 		</dependency>
 
-		<!-- MySQL JDBC connector -->
+		<!-- MySQL JDBC connector
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 			<version>${mysql-connector-java.version}</version>
-		</dependency>
+		</dependency> -->
 
 		<!-- tomcat jdbc -->
 		<dependency>

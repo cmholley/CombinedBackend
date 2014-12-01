@@ -62,22 +62,22 @@ public interface HourService {
 	/*
 	 * ******************** Update related methods **********************
 	 */
-	@PreAuthorize("hasPermission(#hour, 'write') or hasPermission(#group, 'manager') or hasRole('ROLE_MODERATOR')")
+	@PreAuthorize("hasPermission(#hour, 'write') or hasPermission(#group, 'manager') or hasRole('ROLE_ADMIN_APPROVER')")
 	public void updateFullyHour(Hour hour, Group group) throws AppException;
 
-	@PreAuthorize("hasPermission(#hour, 'write') or hasRole('ROLE_MODERATOR')")
+	@PreAuthorize("hasPermission(#hour, 'write') or hasRole('ROLE_ADMIN_APPROVER')")
 	public void updateFullyHour(Hour hour) throws AppException;
 
-	@PreAuthorize("hasPermission(#hour, 'write') or hasPermission(#group, 'manager') or hasRole('ROLE_MODERATOR')")
+	@PreAuthorize("hasPermission(#hour, 'write') or hasPermission(#group, 'manager') or hasRole('ROLE_ADMIN_APPROVER')")
 	public void updatePartiallyHour(Hour hour, Group group) throws AppException;
 
-	@PreAuthorize("hasPermission(#hour, 'write') or hasRole('ROLE_MODERATOR')")
+	@PreAuthorize("hasPermission(#hour, 'write') or hasRole('ROLE_ADMIN_APPROVER')")
 	public void updatePartiallyHour(Hour hour) throws AppException;
 
-	@PreAuthorize("hasRole('ROLE_MODERATOR')")
+	@PreAuthorize("hasRole('ROLE_ADMIN_APPROVER')")
 	public void approveHour(Hour hour, boolean approved) throws AppException;
 
-	@PreAuthorize("hasPermission(#group, 'manager') or hasRole('ROLE_MODERATOR')")
+	@PreAuthorize("hasPermission(#group, 'manager') or hasRole('ROLE_ADMIN_APPROVER')")
 	public void approveHour(Hour hour, Group group, boolean approved)
 			throws AppException;
 
@@ -85,7 +85,7 @@ public interface HourService {
 	 * ******************** Delete related methods **********************
 	 */
 
-	@PreAuthorize("hasPermission(#hour, 'delete') or hasRole('ROLE_MODERATOR')")
+	@PreAuthorize("hasPermission(#hour, 'delete') or hasRole('ROLE_ADMIN_APPROVER')")
 	public void deleteHour(Hour hour);
 
 	/**

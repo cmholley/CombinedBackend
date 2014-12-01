@@ -21,7 +21,7 @@ import dash.pojo.Post;
 import dash.security.CustomPermission;
 import dash.security.GenericAclController;
 
-@Component
+@Component("commentService")
 public class CommentServiceDbAccessImpl extends ApplicationObjectSupport
 		implements CommentService {
 

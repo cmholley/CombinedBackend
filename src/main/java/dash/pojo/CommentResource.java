@@ -25,7 +25,7 @@ import dash.service.CommentService;
 import dash.service.GroupService;
 import dash.service.PostService;
 
-@Component
+@Component("commentResource")
 @Path("/comments")
 public class CommentResource {
 

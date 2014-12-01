@@ -1,75 +1,41 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:tx="http://www.springframework.org/schema/tx"	
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
 	xsi:schemaLocation="
 		http://www.springframework.org/schema/beans	
 		http://www.springframework.org/schema/beans/spring-beans.xsd
-	 
 		http://www.springframework.org/schema/tx 
 		http://www.springframework.org/schema/tx/spring-tx.xsd
-		 
 		http://www.springframework.org/schema/context
 		http://www.springframework.org/schema/context/spring-context.xsd">
-		
-		<import resource="webSecurityConfig.xml" />
- 
+
+	<import resource="webSecurityConfig.xml" />
+
 	<context:component-scan base-package="dash.*" />
- 
+
 	<!-- ************ JPA configuration *********** -->
-	<tx:annotation-driven transaction-manager="transactionManager" />  
-    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
-        <property name="entityManagerFactory" ref="entityManagerFactory" />
-    </bean>
-       
-    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
-        <property name="persistenceXmlLocation" value="classpath:config/persistence-dash.xml" />
-        <property name="persistenceUnitName" value="dashPersistence" />        
-        <property name="dataSource" ref="dashDS" />
-        <property name="packagesToScan" value="dash.*" />
-        <property name="jpaVendorAdapter">
-            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
-                <property name="showSql" value="false" />
-                <property name="databasePlatform" value="org.hibernate.dialect.MySQLDialect" />
-            </bean>
-        </property>
-    </bean>    
-    
-    
-         	
-	<bean id="userDao" class="dash.dao.UserDaoJPA2Impl"/>	
-    <bean id="userService" class="dash.service.UserServiceDbAccessImpl" />	
-    <bean id="userResource" class="dash.pojo.UsersResource" />
-    
-    <bean id="groupDao" class="dash.dao.GroupDaoJPA2Impl"/>	
-    <bean id="groupService" class="dash.service.GroupServiceDbAccessImpl" />	
-    <bean id="groupResource" class="dash.pojo.GroupResource" />
-    
-    <bean id="taskDao" class="dash.dao.TaskDaoJPA2Impl"/>	
-    <bean id="taskService" class="dash.service.TaskServiceDbAccessImpl" />	
-    <bean id="taskResource" class="dash.pojo.TaskResource" />
-    
-    <bean id="postDao" class="dash.dao.PostDaoJPA2Impl"/>	
-    <bean id="postService" class="dash.service.PostServiceDbAccessImpl" />	
-    <bean id="postResource" class="dash.pojo.PostResource" />
-    
-    <bean id="commentDao" class="dash.dao.CommentDaoJPA2Impl"/>	
-    <bean id="commentService" class="dash.service.CommentServiceDbAccessImpl" />	
-    <bean id="commentResource" class="dash.pojo.CommentResource" />
-     
-    <bean id="messageDao" class="dash.dao.MessageDaoJPA2Impl"/>	
-    <bean id="messageService" class="dash.service.MessageServiceDbAccessImpl" />	
-    <bean id="messageResource" class="dash.pojo.MessageResource" />
-    
-    <bean id="hourDao" class="dash.dao.HourDaoJPA2Impl"/>	
-    <bean id="hourService" class="dash.service.HourServiceDbAccessImpl" />	
-    <bean id="hourResource" class="dash.pojo.HourResource" />
-    
-    <bean id="aclController" class="dash.security.GenericAclController"/>
-    
-	<bean id="dashDS" class="org.springframework.jndi.JndiObjectFactoryBean" scope="singleton">
-	    <property name="jndiName" value="java:comp/env/jdbc/dashDB" />
-	    <property name="resourceRef" value="true" />        
+	<tx:annotation-driven transaction-manager="transactionManager" />
+	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
 	</bean>
-	
+
+	<bean id="entityManagerFactory"
+		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="persistenceXmlLocation" value="classpath:config/persistence-dash.xml" />
+		<property name="persistenceUnitName" value="dashPersistence" />
+		<property name="dataSource" ref="dashDS" />
+		<property name="packagesToScan" value="dash.*" />
+		<property name="jpaVendorAdapter">
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+				<property name="showSql" value="false" />
+				<property name="databasePlatform" value="org.hibernate.dialect.MySQLDialect" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="dashDS" class="org.springframework.jndi.JndiObjectFactoryBean"
+		scope="singleton">
+		<property name="jndiName" value="java:comp/env/jdbc/dashDB" />
+		<property name="resourceRef" value="true" />
+	</bean>
 </beans>

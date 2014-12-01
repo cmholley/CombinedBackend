@@ -9,6 +9,8 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
+import org.springframework.stereotype.Component;
+
 import dash.pojo.Message;
 import dash.pojo.Task;
 
@@ -16,6 +18,7 @@ import dash.pojo.Task;
  * Message MessageDAO JPA2 Impl
  * @author CarlSteven
  */
+@Component("messageDao")
 public class MessageDaoJPA2Impl implements MessageDao {
 	@PersistenceContext(unitName = "dashPersistence")
 	private EntityManager entityManager;

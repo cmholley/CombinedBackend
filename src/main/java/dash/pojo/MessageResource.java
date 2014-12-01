@@ -29,7 +29,7 @@ import dash.service.UserService;
  * @Author CarlSteven
  */
 
-@Component
+@Component("messageResource")
 @Path("/messages")
 public class MessageResource {
 
