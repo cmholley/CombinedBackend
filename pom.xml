@@ -61,12 +61,12 @@
 			<groupId>org.glassfish.jersey.media</groupId>
 			<artifactId>jersey-media-multipart</artifactId>
 			<version>${jersey.version}</version>
-		</dependency>	
+		</dependency>
 		<dependency>
 			<groupId>org.glassfish.jersey.ext</groupId>
 			<artifactId>jersey-entity-filtering</artifactId>
 			<version>${jersey.version}</version>
-		</dependency>				
+		</dependency>
 
 		<!-- Spring 3 dependencies -->
 		<dependency>
@@ -80,11 +80,11 @@
 			<artifactId>spring-context</artifactId>
 			<version>${spring.version}</version>
 			<exclusions>
-			   <exclusion>
-			      <groupId>commons-logging</groupId>
-			      <artifactId>commons-logging</artifactId>
-			   </exclusion>
-			</exclusions>			
+				<exclusion>
+					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<dependency>
@@ -144,13 +144,13 @@
 		</dependency>
 
 		<!-- Spring ACL (c3p0 may be temporary) -->
-	    <dependency>
-	    	<groupId>net.sf.ehcache</groupId>
-	    	<artifactId>ehcache-core</artifactId>
-	    	<version>2.3.1</version>
-	    	<type>jar</type>
-	    	<scope>compile</scope>
-	    </dependency>
+		<dependency>
+			<groupId>net.sf.ehcache</groupId>
+			<artifactId>ehcache-core</artifactId>
+			<version>2.3.1</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
 
 		<!-- ******* JPA/Hibernate ******** -->
 		<dependency>
@@ -160,12 +160,12 @@
 		</dependency>
 
 		<!-- testing -->
-	    <!-- Jersey-client -->
+		<!-- Jersey-client -->
 		<dependency>
 			<groupId>org.glassfish.jersey.core</groupId>
 			<artifactId>jersey-client</artifactId>
 			<version>${jersey.version}</version>
-		</dependency>			
+		</dependency>
 		<dependency>
 			<groupId>commons-dbcp</groupId>
 			<artifactId>commons-dbcp</artifactId>
@@ -176,44 +176,44 @@
 			<groupId>commons-beanutils</groupId>
 			<artifactId>commons-beanutils</artifactId>
 			<version>${commons-beanutils.version}</version>
-		</dependency>		
+		</dependency>
 
-		<!-- LogBack dependencies --> 
+		<!-- LogBack dependencies -->
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
 			<version>${logback.version}</version>
 		</dependency>
-		<dependency>                                    
-			<groupId>org.slf4j</groupId>                
-			<artifactId>jcl-over-slf4j</artifactId>     
-			<version>${jcloverslf4j.version}</version>  
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+			<version>${jcloverslf4j.version}</version>
 		</dependency>
 		<dependency>
-	    	<groupId>org.slf4j</groupId>
-	    	<artifactId>slf4j-api</artifactId>
-	    	<version>${jcloverslf4j.version}</version>
-	    	<type>jar</type>
-	    	<scope>compile</scope>
-	    </dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${jcloverslf4j.version}</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
 		<dependency>
-	    	<groupId>org.slf4j</groupId>
-	    	<artifactId>slf4j-log4j12</artifactId>
-	    	<version>${jcloverslf4j.version}</version>
-	    	<type>jar</type>
-	    	<scope>compile</scope>
-	    </dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>${jcloverslf4j.version}</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
 
 		<dependency>
 			<groupId>org.codehaus.jackson</groupId>
 			<artifactId>jackson-core-asl</artifactId>
 			<version>${jackson.version}</version>
-		</dependency>		
+		</dependency>
 		<dependency>
 			<groupId>org.codehaus.jackson</groupId>
 			<artifactId>jackson-mapper-asl</artifactId>
 			<version>${jackson.version}</version>
-		</dependency>		
+		</dependency>
 		<dependency>
 			<groupId>org.codehaus.jackson</groupId>
 			<artifactId>jackson-jaxrs</artifactId>
@@ -225,49 +225,46 @@
 			<version>${org.springframework.security.version}</version>
 		</dependency>
 		<dependency>
-		   <groupId>org.springframework</groupId>
-		   <artifactId>spring-context-support</artifactId>
-		   <version>${spring.version}</version>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+			<version>${spring.version}</version>
 		</dependency>
 	</dependencies>
 
 	<build>
 		<plugins>
 			<plugin>
-        		<groupId>org.apache.maven.plugins</groupId>
-        		<artifactId>maven-compiler-plugin</artifactId>
-        		<version>${maven-compiler-plugin.version}</version>
-        		<configuration>
-          			<source>1.7</source>
-          			<target>1.7</target>
-        		</configuration>
-        		<executions>
-                <execution>
-                    <id>default-testCompile</id>
-                    <phase>test-compile</phase>
-                    <goals>
-                        <goal>testCompile</goal>
-                    </goals>
-                    <configuration>
-                        <skip>true</skip>
-                    </configuration>
-                </execution>
-            </executions>
-      		</plugin>     		
-      		
-      		
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.17</version>
-        <configuration>
-          <skipTests>true</skipTests>
-        </configuration>
-      </plugin>
-    		
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven-compiler-plugin.version}</version>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+				</configuration>
+				<executions>
+					<execution>
+						<id>default-testCompile</id>
+						<phase>test-compile</phase>
+						<goals>
+							<goal>testCompile</goal>
+						</goals>
+						<configuration>
+							<skip>true</skip>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.17</version>
+				<configuration>
+					<skipTests>true</skipTests>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
-	
+
 	<version>1</version>
 	<description>VolunteerApp Backend</description>
 </project>  

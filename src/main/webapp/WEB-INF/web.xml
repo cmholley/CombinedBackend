@@ -52,7 +52,7 @@
 		<param-value>classpath:spring/applicationContext.xml</param-value>
 	</context-param>
 	<servlet>
-		<servlet-name>jersey-serlvet</servlet-name>
+		<servlet-name>jersey-servlet</servlet-name>
 		<servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
 		<init-param>
 			<param-name>javax.ws.rs.Application</param-name>
@@ -61,7 +61,7 @@
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>jersey-serlvet</servlet-name>
+		<servlet-name>jersey-servlet</servlet-name>
 		<url-pattern>/*</url-pattern>
 	</servlet-mapping>
 	<resource-ref>
@@ -73,5 +73,4 @@
 	<listener>
 		<listener-class>dash.ContextFinalizer</listener-class>
 	</listener>
-
 </web-app>
