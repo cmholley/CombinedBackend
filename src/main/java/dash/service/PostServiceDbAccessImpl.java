@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import dash.dao.PostDao;
-import dash.dao.PostEntity;
 import dash.errorhandling.AppException;
 import dash.filters.AppConstants;
 import dash.helpers.NullAwareBeanUtilsBean;
@@ -47,7 +46,7 @@ public class PostServiceDbAccessImpl extends ApplicationObjectSupport implements
 	@Transactional
 	public Long createPost(Post post, Group group) throws AppException {
 
-		long postId = postDao.createPost(new PostEntity(post));
+		long postId = postDao.createPost(new Post(post));
 		post.setId(postId);
 		aclController.createACL(post);
 		aclController.createAce(post, CustomPermission.READ);
@@ -71,7 +70,7 @@ public class PostServiceDbAccessImpl extends ApplicationObjectSupport implements
 	public List<Post> getPosts(int numberOfPosts, Long startIndex)
 			throws AppException {
 
-		List<PostEntity> posts = postDao.getPosts(numberOfPosts, startIndex);
+		List<Post> posts = postDao.getPosts(numberOfPosts, startIndex);
 		return getPostsFromEntities(posts);
 	}
 
@@ -81,7 +80,7 @@ public class PostServiceDbAccessImpl extends ApplicationObjectSupport implements
 
 		// verify optional parameter numberDaysToLookBack first
 
-		List<PostEntity> groupPosts = postDao.getPosts(numberOfPosts,
+		List<Post> groupPosts = postDao.getPosts(numberOfPosts,
 				startIndex, group);
 		return getPostsFromEntities(groupPosts);
 
@@ -108,7 +107,7 @@ public class PostServiceDbAccessImpl extends ApplicationObjectSupport implements
 
 	@Override
 	public Post getPostById(Long id) throws AppException {
-		PostEntity postById = postDao.getPostById(id);
+		Post postById = postDao.getPostById(id);
 		if (postById == null) {
 			throw new AppException(Response.Status.NOT_FOUND.getStatusCode(),
 					404, "The post you requested with id " + id
@@ -120,9 +119,9 @@ public class PostServiceDbAccessImpl extends ApplicationObjectSupport implements
 		return new Post(postDao.getPostById(id));
 	}
 
-	private List<Post> getPostsFromEntities(List<PostEntity> postEntities) {
+	private List<Post> getPostsFromEntities(List<Post> postEntities) {
 		List<Post> response = new ArrayList<Post>();
-		for (PostEntity postEntity : postEntities) {
+		for (Post postEntity : postEntities) {
 			response.add(new Post(postEntity));
 		}
 
@@ -161,7 +160,7 @@ public class PostServiceDbAccessImpl extends ApplicationObjectSupport implements
 		}
 		copyAllProperties(verifyPostExistenceById, post);
 
-		postDao.updatePost(new PostEntity(verifyPostExistenceById));
+		postDao.updatePost(new Post(verifyPostExistenceById));
 
 	}
 
@@ -207,7 +206,7 @@ public class PostServiceDbAccessImpl extends ApplicationObjectSupport implements
 
 	@Override
 	public Post verifyPostExistenceById(Long id) {
-		PostEntity postById = postDao.getPostById(id);
+		Post postById = postDao.getPostById(id);
 		if (postById == null) {
 			return null;
 		} else {
@@ -229,7 +228,7 @@ public class PostServiceDbAccessImpl extends ApplicationObjectSupport implements
 							+ post.getId(), AppConstants.DASH_POST_URL);
 		}
 		copyPartialProperties(verifyPostExistenceById, post);
-		postDao.updatePost(new PostEntity(verifyPostExistenceById));
+		postDao.updatePost(new Post(verifyPostExistenceById));
 
 	}
 

@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import dash.dao.HourDao;
-import dash.dao.HourEntity;
 import dash.errorhandling.AppException;
 import dash.filters.AppConstants;
 import dash.helpers.NullAwareBeanUtilsBean;
@@ -48,7 +47,7 @@ public class HourServiceDbAccessImpl extends ApplicationObjectSupport implements
 	@Transactional
 	public Long createHour(Hour hour) throws AppException {
 		hour.setPending(true);
-		long hourId = hourDao.createHour(new HourEntity(hour));
+		long hourId = hourDao.createHour(new Hour(hour));
 		hour.setId(hourId);
 		aclController.createACL(hour);
 		aclController.createAce(hour, CustomPermission.READ);
@@ -71,7 +70,7 @@ public class HourServiceDbAccessImpl extends ApplicationObjectSupport implements
 	@Override
 	public List<Hour> getHours(int numberOfHours, Long startIndex,
 			boolean onlyPending) throws AppException {
-		List<HourEntity> hours = hourDao.getHours(numberOfHours, startIndex,
+		List<Hour> hours = hourDao.getHours(numberOfHours, startIndex,
 				onlyPending, "ASC");
 		return getHoursFromEntities(hours);
 	}
@@ -82,7 +81,7 @@ public class HourServiceDbAccessImpl extends ApplicationObjectSupport implements
 
 		// verify optional parameter numberDaysToLookBack first
 		List<Task> tasksByGroup = taskService.getTasksByGroup(group);
-		List<HourEntity> groupHours = new ArrayList<HourEntity>();
+		List<Hour> groupHours = new ArrayList<Hour>();
 		for (Task task : tasksByGroup) {
 			groupHours.addAll(hourDao.getHours(numberOfHours, startIndex, task,
 					onlyPending));
@@ -95,7 +94,7 @@ public class HourServiceDbAccessImpl extends ApplicationObjectSupport implements
 	public List<Hour> getHoursByMyUser(int numberOfHours, Long startIndex,
 			boolean onlyPending) throws AppException {
 
-		List<HourEntity> hours = hourDao.getHours(numberOfHours, startIndex,
+		List<Hour> hours = hourDao.getHours(numberOfHours, startIndex,
 				onlyPending, "DESC");
 		return getHoursFromEntities(hours);
 
@@ -103,7 +102,7 @@ public class HourServiceDbAccessImpl extends ApplicationObjectSupport implements
 
 	@Override
 	public Hour getHourById(Long id) throws AppException {
-		HourEntity hourById = hourDao.getHourById(id);
+		Hour hourById = hourDao.getHourById(id);
 		if (hourById == null) {
 			throw new AppException(Response.Status.NOT_FOUND.getStatusCode(),
 					404, "The hour you requested with id " + id
@@ -115,9 +114,9 @@ public class HourServiceDbAccessImpl extends ApplicationObjectSupport implements
 		return new Hour(hourDao.getHourById(id));
 	}
 
-	private List<Hour> getHoursFromEntities(List<HourEntity> hourEntities) {
+	private List<Hour> getHoursFromEntities(List<Hour> hourEntities) {
 		List<Hour> response = new ArrayList<Hour>();
-		for (HourEntity hourEntity : hourEntities) {
+		for (Hour hourEntity : hourEntities) {
 			response.add(new Hour(hourEntity));
 		}
 
@@ -156,7 +155,7 @@ public class HourServiceDbAccessImpl extends ApplicationObjectSupport implements
 		verifyHourExistenceById.setPending(true);
 		verifyHourExistenceById.setApproved(false);
 
-		hourDao.updateHour(new HourEntity(verifyHourExistenceById));
+		hourDao.updateHour(new Hour(verifyHourExistenceById));
 	}
 
 	@Override
@@ -207,7 +206,7 @@ public class HourServiceDbAccessImpl extends ApplicationObjectSupport implements
 
 	@Override
 	public Hour verifyHourExistenceById(Long id) {
-		HourEntity hourById = hourDao.getHourById(id);
+		Hour hourById = hourDao.getHourById(id);
 		if (hourById == null) {
 			return null;
 		} else {
@@ -231,7 +230,7 @@ public class HourServiceDbAccessImpl extends ApplicationObjectSupport implements
 		copyPartialProperties(verifyHourExistenceById, hour);
 		verifyHourExistenceById.setApproved(false);
 		verifyHourExistenceById.setPending(true);
-		hourDao.updateHour(new HourEntity(verifyHourExistenceById));
+		hourDao.updateHour(new Hour(verifyHourExistenceById));
 
 	}
 
@@ -260,7 +259,7 @@ public class HourServiceDbAccessImpl extends ApplicationObjectSupport implements
 
 		hour.setApproved(approved);
 		hour.setPending(false);
-		hourDao.updateHour(new HourEntity(hour));
+		hourDao.updateHour(new Hour(hour));
 
 	}
 

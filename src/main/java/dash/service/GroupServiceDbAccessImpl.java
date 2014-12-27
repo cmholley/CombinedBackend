@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import dash.dao.GroupDao;
-import dash.dao.GroupEntity;
 import dash.errorhandling.AppException;
 import dash.filters.AppConstants;
 import dash.helpers.NullAwareBeanUtilsBean;
@@ -52,7 +51,7 @@ public class GroupServiceDbAccessImpl extends ApplicationObjectSupport
 		validateInputForCreation(group);
 
 		// verify existence of resource in the db (feed must be unique)
-		GroupEntity groupByName = groupDao.getGroupByName(group.getName());
+		Group groupByName = groupDao.getGroupByName(group.getName());
 		if (groupByName != null) {
 			throw new AppException(
 					Response.Status.CONFLICT.getStatusCode(),
@@ -63,7 +62,7 @@ public class GroupServiceDbAccessImpl extends ApplicationObjectSupport
 					AppConstants.DASH_POST_URL);
 		}
 
-		long groupId = groupDao.createGroup(new GroupEntity(group));
+		long groupId = groupDao.createGroup(new Group(group));
 		group.setId(groupId);
 		aclController.createACL(group);
 		aclController.createAce(group, CustomPermission.MANAGER);
@@ -100,7 +99,7 @@ public class GroupServiceDbAccessImpl extends ApplicationObjectSupport
 
 		// verify optional parameter numberDaysToLookBack first
 		if (numberDaysToLookBack != null) {
-			List<GroupEntity> recentGroups = groupDao
+			List<Group> recentGroups = groupDao
 					.getRecentGroups(numberDaysToLookBack);
 			return getGroupsFromEntities(recentGroups);
 		}
@@ -112,7 +111,7 @@ public class GroupServiceDbAccessImpl extends ApplicationObjectSupport
 					"Please set either ASC or DESC for the orderByInsertionDate parameter",
 					null, AppConstants.DASH_POST_URL);
 		}
-		List<GroupEntity> groups = groupDao.getGroups(orderByInsertionDate);
+		List<Group> groups = groupDao.getGroups(orderByInsertionDate);
 
 		return getGroupsFromEntities(groups);
 	}
@@ -140,7 +139,7 @@ public class GroupServiceDbAccessImpl extends ApplicationObjectSupport
 
 	@Override
 	public Group getGroupById(Long id) throws AppException {
-		GroupEntity groupById = groupDao.getGroupById(id);
+		Group groupById = groupDao.getGroupById(id);
 		if (groupById == null) {
 			throw new AppException(Response.Status.NOT_FOUND.getStatusCode(),
 					404, "The group you requested with id " + id
@@ -152,9 +151,9 @@ public class GroupServiceDbAccessImpl extends ApplicationObjectSupport
 		return new Group(groupDao.getGroupById(id));
 	}
 
-	private List<Group> getGroupsFromEntities(List<GroupEntity> groupEntities) {
+	private List<Group> getGroupsFromEntities(List<Group> groupEntities) {
 		List<Group> response = new ArrayList<Group>();
-		for (GroupEntity groupEntity : groupEntities) {
+		for (Group groupEntity : groupEntities) {
 			response.add(new Group(groupEntity));
 		}
 
@@ -162,7 +161,7 @@ public class GroupServiceDbAccessImpl extends ApplicationObjectSupport
 	}
 
 	public List<Group> getRecentGroups(int numberOfDaysToLookBack) {
-		List<GroupEntity> recentGroups = groupDao
+		List<Group> recentGroups = groupDao
 				.getRecentGroups(numberOfDaysToLookBack);
 
 		return getGroupsFromEntities(recentGroups);
@@ -191,7 +190,7 @@ public class GroupServiceDbAccessImpl extends ApplicationObjectSupport
 							+ group.getId(), AppConstants.DASH_POST_URL);
 		}
 		copyAllProperties(verifyGroupExistenceById, group);
-		groupDao.updateGroup(new GroupEntity(group));
+		groupDao.updateGroup(new Group(group));
 	}
 
 	private void copyAllProperties(Group verifyGroupExistenceById, Group group) {
@@ -235,7 +234,7 @@ public class GroupServiceDbAccessImpl extends ApplicationObjectSupport
 	// TODO: This doesnt need to exist. It is the exact same thing as
 	// getGroupById(Long)
 	public Group verifyGroupExistenceById(Long id) {
-		GroupEntity groupById = groupDao.getGroupById(id);
+		Group groupById = groupDao.getGroupById(id);
 		if (groupById == null) {
 			return null;
 		} else {
@@ -257,7 +256,7 @@ public class GroupServiceDbAccessImpl extends ApplicationObjectSupport
 							+ group.getId(), AppConstants.DASH_POST_URL);
 		}
 		copyPartialProperties(verifyGroupExistenceById, group);
-		groupDao.updateGroup(new GroupEntity(verifyGroupExistenceById));
+		groupDao.updateGroup(new Group(verifyGroupExistenceById));
 
 	}
 

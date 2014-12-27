@@ -1,7 +1,6 @@
 package dash.dao;
 
 import java.util.List;
-
 import dash.pojo.Group;
 
 
@@ -9,9 +8,9 @@ import dash.pojo.Group;
  * @Author tswensen
  */
 public interface GroupDao {
-	public List<GroupEntity> getGroups(String orderByInsertionDate);
+	public List<Group> getGroups(String orderByInsertionDate);
 
-	public List<GroupEntity> getRecentGroups(int numberOfDaysToLookBack);
+	public List<Group> getRecentGroups(int numberOfDaysToLookBack);
 
 	public int getNumberOfGroups();
 
@@ -21,7 +20,7 @@ public interface GroupDao {
 	 * @param id
 	 * @return
 	 */
-	public GroupEntity getGroupById(Long id);
+	public Group getGroupById(Long id);
 
 	/**
 	 * Find group by name
@@ -29,14 +28,14 @@ public interface GroupDao {
 	 * @param group
 	 * @return the group with the name specified or null if not existent
 	 */
-	public GroupEntity getGroupByName(String name);
+	public Group getGroupByName(String name);
 
 
 	public void deleteGroupById(Group group);
 
-	public Long createGroup(GroupEntity group);
+	public Long createGroup(Group group);
 
-	public void updateGroup(GroupEntity group);
+	public void updateGroup(Group group);
 
 	/** removes all groups */
 	public void deleteGroups();

@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import dash.dao.MessageDao;
-import dash.dao.MessageEntity;
 import dash.errorhandling.AppException;
 import dash.filters.AppConstants;
 import dash.helpers.NullAwareBeanUtilsBean;
@@ -47,7 +46,7 @@ public class MessageServiceDbAccessImpl extends ApplicationObjectSupport
 	@Override
 	@Transactional
 	public Long createMessage(Message message, Task task) throws AppException {
-		long messageId = messageDao.createMessage(new MessageEntity(message));
+		long messageId = messageDao.createMessage(new Message(message));
 		message.setId(messageId);
 		aclController.createACL(message);
 		aclController.createAce(message, CustomPermission.READ);
@@ -68,14 +67,14 @@ public class MessageServiceDbAccessImpl extends ApplicationObjectSupport
 	@Override
 	public List<Message> getMessagesByTask(int numberOfPosts, Long startIndex,
 			Task task) throws AppException {
-		List<MessageEntity> messages = messageDao.getMessages(numberOfPosts,
+		List<Message> messages = messageDao.getMessages(numberOfPosts,
 				startIndex, task);
 		return getMessagesFromEntities(messages);
 	}
 
 	@Override
 	public Message getMessageById(Long id) throws AppException {
-		MessageEntity messageById = messageDao.getMessageById(id);
+		Message messageById = messageDao.getMessageById(id);
 		if (messageById == null) {
 			throw new AppException(Response.Status.NOT_FOUND.getStatusCode(),
 					404, "The post you requested with id " + id
@@ -87,9 +86,9 @@ public class MessageServiceDbAccessImpl extends ApplicationObjectSupport
 		return new Message(messageDao.getMessageById(id));
 	}
 
-	private List<Message> getMessagesFromEntities(List<MessageEntity> groupPosts) {
+	private List<Message> getMessagesFromEntities(List<Message> groupPosts) {
 		List<Message> response = new ArrayList<Message>();
-		for (MessageEntity postEntity : groupPosts) {
+		for (Message postEntity : groupPosts) {
 			response.add(new Message(postEntity));
 		}
 
@@ -134,7 +133,7 @@ public class MessageServiceDbAccessImpl extends ApplicationObjectSupport
 							+ message.getId(), AppConstants.DASH_POST_URL);
 		}
 
-		messageDao.updateMessage(new MessageEntity(message));
+		messageDao.updateMessage(new Message(message));
 	}
 
 	/**
@@ -168,7 +167,7 @@ public class MessageServiceDbAccessImpl extends ApplicationObjectSupport
 
 	@Override
 	public Message verifyMessageExistenceById(Long id) {
-		MessageEntity messageById = messageDao.getMessageById(id);
+		Message messageById = messageDao.getMessageById(id);
 		if (messageById == null) {
 			return null;
 		} else {
@@ -197,7 +196,7 @@ public class MessageServiceDbAccessImpl extends ApplicationObjectSupport
 							+ message.getId(), AppConstants.DASH_POST_URL);
 		}
 		copyPartialProperties(verifyMessageExistenceById, message);
-		messageDao.updateMessage(new MessageEntity(verifyMessageExistenceById));
+		messageDao.updateMessage(new Message(verifyMessageExistenceById));
 	}
 
 	private void copyPartialProperties(Message verifyPostExistenceById,

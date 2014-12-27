@@ -34,7 +34,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import dash.dao.UserDao;
-import dash.dao.UserEntity;
 import dash.errorhandling.AppException;
 import dash.filters.AppConstants;
 import dash.helpers.NullAwareBeanUtilsBean;
@@ -71,7 +70,7 @@ public class UserServiceDbAccessImpl extends ApplicationObjectSupport implements
 		validateInputForCreation(user);
 
 		// verify existence of resource in the db (feed must be unique)
-		UserEntity userByName = userDao.getUserByName(user.getUsername());
+		User userByName = userDao.getUserByName(user.getUsername());
 		if (userByName != null) {
 			throw new AppException(
 					Response.Status.CONFLICT.getStatusCode(),
@@ -82,7 +81,7 @@ public class UserServiceDbAccessImpl extends ApplicationObjectSupport implements
 					AppConstants.DASH_POST_URL);
 		}
 
-		long userId = userDao.createUser(new UserEntity(user));
+		long userId = userDao.createUser(new User(user));
 		user.setId(userId);
 		authoritiesController.create(user, userRole);
 		createUserACL(user, new PrincipalSid(user.getUsername()));
@@ -126,7 +125,7 @@ public class UserServiceDbAccessImpl extends ApplicationObjectSupport implements
 
 		// verify optional parameter numberDaysToLookBack first
 		if (numberDaysToLookBack != null) {
-			List<UserEntity> recentUsers = userDao
+			List<User> recentUsers = userDao
 					.getRecentUsers(numberDaysToLookBack);
 			return getUsersFromEntities(recentUsers);
 		}
@@ -138,7 +137,7 @@ public class UserServiceDbAccessImpl extends ApplicationObjectSupport implements
 					"Please set either ASC or DESC for the orderByInsertionDate parameter",
 					null, AppConstants.DASH_POST_URL);
 		}
-		List<UserEntity> users = userDao.getUsers(orderByInsertionDate);
+		List<User> users = userDao.getUsers(orderByInsertionDate);
 
 		return getUsersFromEntities(users);
 	}
@@ -159,7 +158,7 @@ public class UserServiceDbAccessImpl extends ApplicationObjectSupport implements
 
 	@Override
 	public User getUserById(Long id) throws AppException {
-		UserEntity userById = userDao.getUserById(id);
+		User userById = userDao.getUserById(id);
 		if (userById == null) {
 			throw new AppException(Response.Status.NOT_FOUND.getStatusCode(),
 					404, "The user you requested with id " + id
@@ -171,17 +170,17 @@ public class UserServiceDbAccessImpl extends ApplicationObjectSupport implements
 		return new User(userDao.getUserById(id));
 	}
 
-	private List<User> getUsersFromEntities(List<UserEntity> userEntities) {
+	private List<User> getUsersFromEntities(List<User> userEntities) {
 		List<User> response = new ArrayList<User>();
-		for (UserEntity userEntity : userEntities) {
-			response.add(new User(userEntity));
+		for (User User : userEntities) {
+			response.add(new User(User));
 		}
 
 		return response;
 	}
 
 	public List<User> getRecentUsers(int numberOfDaysToLookBack) {
-		List<UserEntity> recentUsers = userDao
+		List<User> recentUsers = userDao
 				.getRecentUsers(numberOfDaysToLookBack);
 
 		return getUsersFromEntities(recentUsers);
@@ -230,7 +229,7 @@ public class UserServiceDbAccessImpl extends ApplicationObjectSupport implements
 		}
 
 		copyAllProperties(verifyUserExistenceById, user);
-		userDao.updateUser(new UserEntity(verifyUserExistenceById));
+		userDao.updateUser(new User(verifyUserExistenceById));
 	}
 
 	/**
@@ -294,7 +293,7 @@ public class UserServiceDbAccessImpl extends ApplicationObjectSupport implements
 
 	@Override
 	public User verifyUserExistenceById(Long id) {
-		UserEntity userById = userDao.getUserById(id);
+		User userById = userDao.getUserById(id);
 		if (userById == null) {
 			return null;
 		} else {
@@ -316,7 +315,7 @@ public class UserServiceDbAccessImpl extends ApplicationObjectSupport implements
 							+ user.getId(), AppConstants.DASH_POST_URL);
 		}
 		copyPartialProperties(verifyUserExistenceById, user);
-		userDao.updateUser(new UserEntity(verifyUserExistenceById));
+		userDao.updateUser(new User(verifyUserExistenceById));
 
 	}
 

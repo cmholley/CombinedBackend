@@ -1,55 +1,61 @@
 package dash.pojo;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+
 import org.apache.commons.beanutils.BeanUtils;
-import dash.dao.CommentEntity;
+
 import dash.security.IAclObject;
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 
+@Entity
+@Table(name = "comment")
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Comment implements IAclObject {
 
+	@Id
+	@GeneratedValue
+	@Column(name = "id")
 	@XmlElement(name = "id")
 	private Long id;
 
+	@Column(name = "post_id")
 	@XmlElement(name = "post_id")
 	private Long post_id;
 
+	@Column(name = "user_id")
 	@XmlElement(name = "user_id")
 	private Long user_id;
 
+	@Column(name = "content")
 	@XmlElement(name = "content")
 	private String content;
 
+	@Column(name = "image")
 	@XmlElement(name = "image")
 	private String image;
 
+	@GeneratedValue
+	@Column(name = "creation_timestamp")
 	@XmlElement(name = "creation_timestamp")
 	private Date creation_timestamp;
 
+	@GeneratedValue
+	@Column(name = "latest_activity_timestamp")
 	@XmlElement(name = "latest_activity_timestamp")
 	private Date latest_activity_timestamp;
 
-	public Comment(Long id, Long group_id, Long user_id, String content,
-			String image, Date creation_timestamp,
-			Date latest_activity_timestamp, int like_count, Long task_link_id,
-			Long post_id) {
-		super();
-		this.id = id;
-		this.post_id = post_id;
-		this.user_id = user_id;
-		this.content = content;
-		this.image = image;
-		this.creation_timestamp = creation_timestamp;
-		this.latest_activity_timestamp = latest_activity_timestamp;
-	}
-
-	public Comment(CommentEntity groupEntity) {
+	public Comment(Comment groupEntity) {
 		try {
 			BeanUtils.copyProperties(this, groupEntity);
 		} catch (IllegalAccessException e) {
@@ -62,6 +68,7 @@ public class Comment implements IAclObject {
 	}
 
 	public Comment() {
+
 	}
 
 	public Long getId() {

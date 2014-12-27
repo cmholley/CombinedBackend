@@ -1,65 +1,72 @@
 package dash.pojo;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+
 import org.apache.commons.beanutils.BeanUtils;
-import dash.dao.TaskEntity;
+
 import dash.security.IAclObject;
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 
+@Entity
+@Table(name = "tasks")
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Task implements IAclObject {
 
+	@Id
+	@GeneratedValue
+	@Column(name = "id")
 	@XmlElement(name = "id")
 	private Long id;
 
+	@Column(name = "group_id")
 	@XmlElement(name = "group_id")
 	private Long group_id;
 
+	@Column(name = "name")
 	@XmlElement(name = "name")
 	private String name;
 
+	@Column(name = "description")
 	@XmlElement(name = "description")
 	private String description;
 
+	@Column(name = "time")
 	@XmlElement(name = "time")
 	private Date time;
 
+	@Column(name = "duration")
 	@XmlElement(name = "duration")
 	private int duration;
 
+	@Column(name = "location")
 	@XmlElement(name = "location")
 	private String location;
 
+	@GeneratedValue
+	@Column(name = "creation_timestamp")
 	@XmlElement(name = "creation_timestamp")
 	private Date creation_timestamp;
 
+	@Column(name = "finished")
 	@XmlElement(name = "finished")
 	private int finished;
 
+	@Column(name = "badge_id")
 	@XmlElement(name = "badge_id")
 	private Long badge_id;
 
-	public Task(Long id, Long group_id, String name, String description,
-			Date time, int duration, String location, Date creation_timestamp,
-			int finished, Long badge_id) {
-		super();
-		this.id = id;
-		this.name = name;
-		this.description = description;
-		this.time = time;
-		this.duration = duration;
-		this.location = location;
-		this.creation_timestamp = creation_timestamp;
-		this.finished = finished;
-		this.badge_id = badge_id;
-	}
-
-	public Task(TaskEntity taskEntity) {
+	public Task(Task taskEntity) {
 		try {
 			BeanUtils.copyProperties(this, taskEntity);
 		} catch (IllegalAccessException e) {
@@ -72,24 +79,7 @@ public class Task implements IAclObject {
 	}
 
 	public Task() {
-	}
 
-	@Override
-	public String toString() {
-		return "Task ["
-				+ (id != null ? "id=" + id + ", " : "")
-				+ (group_id != null ? "group_id=" + group_id + ", " : "")
-				+ (name != null ? "name=" + name + ", " : "")
-				+ (description != null ? "description=" + description + ", "
-						: "")
-				+ (time != null ? "time=" + time + ", " : "")
-				+ "duration="
-				+ duration
-				+ ", "
-				+ (location != null ? "location=" + location + ", " : "")
-				+ (creation_timestamp != null ? "creation_timestamp="
-						+ creation_timestamp + ", " : "") + "finished="
-				+ finished + ", badge_id=" + badge_id + "]";
 	}
 
 	public Long getId() {

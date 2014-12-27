@@ -3,15 +3,17 @@ package dash.service;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.ws.rs.core.Response;
+
 import org.apache.commons.beanutils.BeanUtilsBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.ApplicationObjectSupport;
 import org.springframework.security.acls.model.MutableAclService;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
 import dash.dao.CommentDao;
-import dash.dao.CommentEntity;
 import dash.errorhandling.AppException;
 import dash.filters.AppConstants;
 import dash.helpers.NullAwareBeanUtilsBean;
@@ -41,7 +43,7 @@ public class CommentServiceDbAccessImpl extends ApplicationObjectSupport
 	@Override
 	@Transactional
 	public Long createComment(Comment comment, Group group) throws AppException {
-		long commentId = commentDao.createComment(new CommentEntity(comment));
+		long commentId = commentDao.createComment(new Comment(comment));
 		comment.setId(commentId);
 		aclController.createACL(comment);
 		aclController.createAce(comment, CustomPermission.READ);
@@ -63,14 +65,14 @@ public class CommentServiceDbAccessImpl extends ApplicationObjectSupport
 	public List<Comment> getCommentsByPost(int numberOfComments,
 			Long startIndex, Post post) throws AppException {
 		// verify optional parameter numberDaysToLookBack first
-		List<CommentEntity> postComments = commentDao.getComments(
+		List<Comment> postComments = commentDao.getComments(
 				numberOfComments, startIndex, post);
 		return getCommentsFromEntities(postComments);
 	}
 
 	@Override
 	public Comment getCommentById(Long id) throws AppException {
-		CommentEntity commentById = commentDao.getCommentById(id);
+		Comment commentById = commentDao.getCommentById(id);
 		if (commentById == null) {
 			throw new AppException(Response.Status.NOT_FOUND.getStatusCode(),
 					404, "The post you requested with id " + id
@@ -83,9 +85,9 @@ public class CommentServiceDbAccessImpl extends ApplicationObjectSupport
 	}
 
 	private List<Comment> getCommentsFromEntities(
-			List<CommentEntity> commentEntities) {
+			List<Comment> commentEntities) {
 		List<Comment> response = new ArrayList<Comment>();
-		for (CommentEntity commentEntity : commentEntities) {
+		for (Comment commentEntity : commentEntities) {
 			response.add(new Comment(commentEntity));
 		}
 
@@ -130,7 +132,7 @@ public class CommentServiceDbAccessImpl extends ApplicationObjectSupport
 							+ comment.getId(), AppConstants.DASH_POST_URL);
 		}
 
-		commentDao.updateComment(new CommentEntity(comment));
+		commentDao.updateComment(new Comment(comment));
 	}
 
 	/**
@@ -164,7 +166,7 @@ public class CommentServiceDbAccessImpl extends ApplicationObjectSupport
 
 	@Override
 	public Comment verifyCommentExistenceById(Long id) {
-		CommentEntity commentById = commentDao.getCommentById(id);
+		Comment commentById = commentDao.getCommentById(id);
 		if (commentById == null) {
 			return null;
 		} else {
@@ -187,7 +189,7 @@ public class CommentServiceDbAccessImpl extends ApplicationObjectSupport
 							+ comment.getId(), AppConstants.DASH_POST_URL);
 		}
 		copyPartialProperties(verifyCommentExistenceById, comment);
-		commentDao.updateComment(new CommentEntity(verifyCommentExistenceById));
+		commentDao.updateComment(new Comment(verifyCommentExistenceById));
 
 	}
 

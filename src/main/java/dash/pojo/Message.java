@@ -5,6 +5,11 @@ package dash.pojo;
  * @author CarlSteven
  */
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -12,55 +17,53 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.commons.beanutils.BeanUtils;
 
-import dash.dao.MessageEntity;
 import dash.security.IAclObject;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 
+@Entity
+@Table(name = "message")
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Message implements IAclObject{
+public class Message implements IAclObject {
 
-	
-	
-	@XmlElement(name="id")
+	@Id
+	@GeneratedValue
+	@Column(name = "id")
+	@XmlElement(name = "id")
 	private Long id;
-	
-	@XmlElement(name="sender_id")
+
+	@Column(name = "sender_uid")
+	@XmlElement(name = "sender_id")
 	private Long sender_id;
-	
-	@XmlElement(name="task_id")
+
+	@Column(name = "task_id")
+	@XmlElement(name = "task_id")
 	private Long task_id;
-	
-	@XmlElement(name="time")
-	private Date creation_timestamp;
-	
-	@XmlElement(name="content")
+
+	@XmlElement(name = "content")
+	@Column(name = "content")
 	private String content;
 
-	public Message(Long id, Long sender_id, Long task_id, String content, Date time) {
-		super();
-		this.id = id;
-		this.sender_id = sender_id;
-		this.task_id = task_id;
-		this.content = content;
-		this.creation_timestamp = time;
-	}
+	@GeneratedValue
+	@Column(name = "time")
+	@XmlElement(name = "time")
+	private Date creation_timestamp;
 
-	public Message(MessageEntity messageEntity) {
+	public Message(Message messageEntity) {
 		try {
 			BeanUtils.copyProperties(this, messageEntity);
-		} catch ( IllegalAccessException e) {
-
+		} catch (IllegalAccessException e) {
 			e.printStackTrace();
-		} catch ( InvocationTargetException e) {
-
+		} catch (InvocationTargetException e) {
 			e.printStackTrace();
 		}
 	}
-	
-	public Message(){}
+
+	public Message() {
+
+	}
 
 	@Override
 	public Long getId() {
@@ -102,5 +105,4 @@ public class Message implements IAclObject{
 	public void setId(Long id) {
 		this.id = id;
 	}
-
 }

@@ -1,7 +1,6 @@
 package dash.dao;
 
 import java.util.List;
-
 import dash.pojo.Group;
 import dash.pojo.Task;
 
@@ -10,9 +9,9 @@ import dash.pojo.Task;
  * @Author tswensen
  */
 public interface TaskDao {
-	public List<TaskEntity> getTasks(String orderByInsertionDate);
+	public List<Task> getTasks(String orderByInsertionDate);
 
-	public List<TaskEntity> getRecentTasks(int numberOfDaysToLookBack);
+	public List<Task> getRecentTasks(int numberOfDaysToLookBack);
 
 	public int getNumberOfTasks();
 
@@ -22,7 +21,7 @@ public interface TaskDao {
 	 * @param id
 	 * @return
 	 */
-	public TaskEntity getTaskById(Long id);
+	public Task getTaskById(Long id);
 
 	/**
 	 * Find task by name
@@ -30,7 +29,7 @@ public interface TaskDao {
 	 * @param task
 	 * @return the task with the name specified or null if not existent
 	 */
-	public TaskEntity getTaskByName(String name);
+	public Task getTaskByName(String name);
 	
 	/**
 	 * Returns all of the taskes owned by a given group
@@ -39,13 +38,13 @@ public interface TaskDao {
 	 * @return the list of tasks
 	 * 
 	 */
-	public List<TaskEntity> getTasksByGroup(Group group);
+	public List<Task> getTasksByGroup(Group group);
 
 	public void deleteTaskById(Task task);
 
-	public Long createTask(TaskEntity task);
+	public Long createTask(Task task);
 
-	public void updateTask(TaskEntity task);
+	public void updateTask(Task task);
 
 	/** removes all tasks */
 	public void deleteTasks();

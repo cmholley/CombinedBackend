@@ -127,6 +127,7 @@
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
 			<version>3.0.1</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<!-- MySQL JDBC connector -->
@@ -134,6 +135,7 @@
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 			<version>${mysql-connector-java.version}</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<!-- tomcat jdbc -->
@@ -141,6 +143,7 @@
 			<groupId>org.apache.tomcat</groupId>
 			<artifactId>tomcat-jdbc</artifactId>
 			<version>${tomcat-jdbc.version}</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<!-- Spring ACL (c3p0 may be temporary) -->
@@ -149,7 +152,6 @@
 			<artifactId>ehcache-core</artifactId>
 			<version>2.3.1</version>
 			<type>jar</type>
-			<scope>compile</scope>
 		</dependency>
 
 		<!-- ******* JPA/Hibernate ******** -->
@@ -194,14 +196,12 @@
 			<artifactId>slf4j-api</artifactId>
 			<version>${jcloverslf4j.version}</version>
 			<type>jar</type>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
 			<version>${jcloverslf4j.version}</version>
 			<type>jar</type>
-			<scope>compile</scope>
 		</dependency>
 
 		<dependency>

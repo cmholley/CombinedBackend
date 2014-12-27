@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.core.Response;
-
 import org.apache.commons.beanutils.BeanUtilsBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.ApplicationObjectSupport;
@@ -13,9 +12,7 @@ import org.springframework.security.acls.domain.PrincipalSid;
 import org.springframework.security.acls.model.MutableAclService;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
 import dash.dao.TaskDao;
-import dash.dao.TaskEntity;
 import dash.errorhandling.AppException;
 import dash.filters.AppConstants;
 import dash.helpers.NullAwareBeanUtilsBean;
@@ -49,7 +46,7 @@ public class TaskServiceDbAccessImpl extends ApplicationObjectSupport implements
 		validateInputForCreation(task);
 
 		// verify existence of resource in the db (feed must be unique)
-		TaskEntity taskByName = taskDao.getTaskByName(task.getName());
+		Task taskByName = taskDao.getTaskByName(task.getName());
 		if (taskByName != null) {
 			throw new AppException(
 					Response.Status.CONFLICT.getStatusCode(),
@@ -60,7 +57,7 @@ public class TaskServiceDbAccessImpl extends ApplicationObjectSupport implements
 					AppConstants.DASH_POST_URL);
 		}
 
-		long taskId = taskDao.createTask(new TaskEntity(task));
+		long taskId = taskDao.createTask(new Task(task));
 		task.setId(taskId);
 		aclController.createACL(task);
 		aclController.createAce(task, CustomPermission.MANAGER);
@@ -84,9 +81,9 @@ public class TaskServiceDbAccessImpl extends ApplicationObjectSupport implements
 	@Override
 	@Transactional
 	public void createTasks(List<Task> tasks) throws AppException {
-//		for (Task task : tasks) {
-//			// createTask(task);
-//		}
+		// for (Task task : tasks) {
+		// // createTask(task);
+		// }
 	}
 
 	// ******************** Read related methods implementation
@@ -97,7 +94,7 @@ public class TaskServiceDbAccessImpl extends ApplicationObjectSupport implements
 
 		// verify optional parameter numberDaysToLookBack first
 		if (numberDaysToLookBack != null) {
-			List<TaskEntity> recentTasks = taskDao
+			List<Task> recentTasks = taskDao
 					.getRecentTasks(numberDaysToLookBack);
 			return getTasksFromEntities(recentTasks);
 		}
@@ -109,7 +106,7 @@ public class TaskServiceDbAccessImpl extends ApplicationObjectSupport implements
 					"Please set either ASC or DESC for the orderByInsertionDate parameter",
 					null, AppConstants.DASH_POST_URL);
 		}
-		List<TaskEntity> tasks = taskDao.getTasks(orderByInsertionDate);
+		List<Task> tasks = taskDao.getTasks(orderByInsertionDate);
 
 		return getTasksFromEntities(tasks);
 	}
@@ -117,7 +114,7 @@ public class TaskServiceDbAccessImpl extends ApplicationObjectSupport implements
 	@Override
 	public List<Task> getTasksByGroup(Group group) {
 
-		List<TaskEntity> tasks = taskDao.getTasksByGroup(group);
+		List<Task> tasks = taskDao.getTasksByGroup(group);
 		return getTasksFromEntities(tasks);
 
 	}
@@ -145,7 +142,7 @@ public class TaskServiceDbAccessImpl extends ApplicationObjectSupport implements
 
 	@Override
 	public Task verifyTaskExistenceById(Long id) {
-		TaskEntity taskById = taskDao.getTaskById(id);
+		Task taskById = taskDao.getTaskById(id);
 		if (taskById == null) {
 			return null;
 		} else {
@@ -155,7 +152,7 @@ public class TaskServiceDbAccessImpl extends ApplicationObjectSupport implements
 
 	@Override
 	public Task getTaskById(Long id) throws AppException {
-		TaskEntity taskById = taskDao.getTaskById(id);
+		Task taskById = taskDao.getTaskById(id);
 		if (taskById == null) {
 			throw new AppException(Response.Status.NOT_FOUND.getStatusCode(),
 					404, "The task you requested with id " + id
@@ -167,9 +164,9 @@ public class TaskServiceDbAccessImpl extends ApplicationObjectSupport implements
 		return new Task(taskDao.getTaskById(id));
 	}
 
-	private List<Task> getTasksFromEntities(List<TaskEntity> taskEntities) {
+	private List<Task> getTasksFromEntities(List<Task> taskEntities) {
 		List<Task> response = new ArrayList<Task>();
-		for (TaskEntity taskEntity : taskEntities) {
+		for (Task taskEntity : taskEntities) {
 			response.add(new Task(taskEntity));
 		}
 
@@ -177,8 +174,7 @@ public class TaskServiceDbAccessImpl extends ApplicationObjectSupport implements
 	}
 
 	public List<Task> getRecentTasks(int numberOfDaysToLookBack) {
-		List<TaskEntity> recentTasks = taskDao
-				.getRecentTasks(numberOfDaysToLookBack);
+		List<Task> recentTasks = taskDao.getRecentTasks(numberOfDaysToLookBack);
 
 		return getTasksFromEntities(recentTasks);
 	}
@@ -207,7 +203,7 @@ public class TaskServiceDbAccessImpl extends ApplicationObjectSupport implements
 							+ task.getId(), AppConstants.DASH_POST_URL);
 		}
 		copyAllProperties(verifyTaskExistenceById, task);
-		taskDao.updateTask(new TaskEntity(verifyTaskExistenceById));
+		taskDao.updateTask(new Task(verifyTaskExistenceById));
 
 	}
 
@@ -272,7 +268,7 @@ public class TaskServiceDbAccessImpl extends ApplicationObjectSupport implements
 							+ task.getId(), AppConstants.DASH_POST_URL);
 		}
 		copyPartialProperties(verifyTaskExistenceById, task);
-		taskDao.updateTask(new TaskEntity(verifyTaskExistenceById));
+		taskDao.updateTask(new Task(verifyTaskExistenceById));
 
 	}
 

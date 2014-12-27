@@ -1,46 +1,48 @@
 package dash.pojo;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+
 import org.apache.commons.beanutils.BeanUtils;
-import dash.dao.GroupEntity;
+
 import dash.security.IAclObject;
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 
+@Entity
+@Table(name = "group_data")
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Group implements IAclObject {
 
+	@Id
+	@GeneratedValue
+	@Column(name = "id")
 	@XmlElement(name = "id")
 	private Long id;
 
+	@Column(name = "name")
 	@XmlElement(name = "name")
 	private String name;
 
+	@Column(name = "description")
 	@XmlElement(name = "description")
 	private String description;
 
+	@GeneratedValue
+	@Column(name = "creation_timestamp")
 	@XmlElement(name = "creation_timestamp")
 	private Date creation_timestamp;
 
-	@Override
-	public Long getId() {
-		return id;
-	}
-
-	public Group(Long id, String name, String description,
-			Date creation_timestamp) {
-		super();
-		this.id = id;
-		this.name = name;
-		this.description = description;
-		this.creation_timestamp = creation_timestamp;
-	}
-
-	public Group(GroupEntity groupEntity) {
+	public Group(Group groupEntity) {
 		try {
 			BeanUtils.copyProperties(this, groupEntity);
 		} catch (IllegalAccessException e) {
@@ -53,17 +55,12 @@ public class Group implements IAclObject {
 	}
 
 	public Group() {
+
 	}
 
 	@Override
-	public String toString() {
-		return "Group ["
-				+ (id != null ? "id=" + id + ", " : "")
-				+ (name != null ? "name=" + name + ", " : "")
-				+ (description != null ? "description=" + description + ", "
-						: "")
-				+ (creation_timestamp != null ? "creation_timestamp="
-						+ creation_timestamp : "") + "]";
+	public Long getId() {
+		return id;
 	}
 
 	public void setId(Long id) {
@@ -93,5 +90,4 @@ public class Group implements IAclObject {
 	public void setCreation_timestamp(Date creation_timestamp) {
 		this.creation_timestamp = creation_timestamp;
 	}
-
 }

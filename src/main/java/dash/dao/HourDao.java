@@ -1,6 +1,7 @@
 package dash.dao;
 
 import java.util.List;
+
 import dash.pojo.Hour;
 import dash.pojo.Task;
 
@@ -9,10 +10,10 @@ import dash.pojo.Task;
  */
 public interface HourDao {
 
-	public List<HourEntity> getHours(int numberOfHours, Long startIndex,
+	public List<Hour> getHours(int numberOfHours, Long startIndex,
 			boolean onlyPending, String orderBy);
 
-	public List<HourEntity> getHours(int numberOfHours, Long startIndex,
+	public List<Hour> getHours(int numberOfHours, Long startIndex,
 			Task task, boolean onlyPending);
 
 	public int getNumberOfHours();
@@ -23,13 +24,13 @@ public interface HourDao {
 	 * @param id
 	 * @return
 	 */
-	public HourEntity getHourById(Long id);
+	public Hour getHourById(Long id);
 
 	public void deleteHourById(Hour hour);
 
-	public Long createHour(HourEntity hour);
+	public Long createHour(Hour hour);
 
-	public void updateHour(HourEntity hour);
+	public void updateHour(Hour hour);
 
 	/** removes all hours */
 	public void deleteHours();

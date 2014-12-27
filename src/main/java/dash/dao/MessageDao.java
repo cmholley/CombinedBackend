@@ -1,7 +1,6 @@
 package dash.dao;
 
 import java.util.List;
-
 import dash.pojo.Message;
 import dash.pojo.Task;
 
@@ -12,9 +11,9 @@ import dash.pojo.Task;
  */
 public interface MessageDao {
 	
-	public List<MessageEntity> getMessages(int numberOfMessages, Long startIndex);
+	public List<Message> getMessages(int numberOfMessages, Long startIndex);
 	
-	public List<MessageEntity> getMessages(int numberOfMessages, Long startIndex, Task task);
+	public List<Message> getMessages(int numberOfMessages, Long startIndex, Task task);
 
 	public int getNumberOfMessages();
 
@@ -24,13 +23,13 @@ public interface MessageDao {
 	 * @param id
 	 * @return
 	 */
-	public MessageEntity getMessageById(Long id);
+	public Message getMessageById(Long id);
 	
 	public void deleteMessageById(Message message);
 
-	public Long createMessage(MessageEntity message);
+	public Long createMessage(Message message);
 
-	public void updateMessage(MessageEntity message);
+	public void updateMessage(Message message);
 
 	/** removes all posts */
 	public void deleteMessages();

@@ -2,15 +2,12 @@ package dash.dao;
 
 import java.util.Date;
 import java.util.List;
-
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-
 import org.springframework.stereotype.Component;
-
 import dash.pojo.Group;
 import dash.pojo.Post;
 
@@ -20,13 +17,13 @@ public class PostDaoJPA2Impl implements PostDao {
 	private EntityManager entityManager;
 
 	@Override
-	public List<PostEntity> getPosts(int numberOfPosts, Long startIndex) {
+	public List<Post> getPosts(int numberOfPosts, Long startIndex) {
 		String sqlString = null;
 
-		sqlString = "SELECT u FROM PostEntity u WHERE u.id < ?1 ORDER BY u.creation_timestamp DESC";
+		sqlString = "SELECT u FROM Post u WHERE u.id < ?1 ORDER BY u.creation_timestamp DESC";
 
-		TypedQuery<PostEntity> query = entityManager.createQuery(sqlString,
-				PostEntity.class);
+		TypedQuery<Post> query = entityManager.createQuery(sqlString,
+				Post.class);
 		if (startIndex == 0)
 			startIndex = Long.MAX_VALUE;
 		query.setParameter(1, startIndex);
@@ -36,13 +33,13 @@ public class PostDaoJPA2Impl implements PostDao {
 	}
 
 	@Override
-	public List<PostEntity> getPosts(int numberOfPosts, Long startIndex,
+	public List<Post> getPosts(int numberOfPosts, Long startIndex,
 			Group group) {
 
-		String qlString = "SELECT u FROM PostEntity u WHERE u.group_id = ?1 AND u.id < ?2 ORDER BY u.creation_timestamp DESC";
+		String qlString = "SELECT u FROM Post u WHERE u.group_id = ?1 AND u.id < ?2 ORDER BY u.creation_timestamp DESC";
 
-		TypedQuery<PostEntity> query = entityManager.createQuery(qlString,
-				PostEntity.class);
+		TypedQuery<Post> query = entityManager.createQuery(qlString,
+				Post.class);
 		if (startIndex == 0)
 			startIndex = Long.MAX_VALUE;
 		query.setParameter(1, group.getId());
@@ -53,12 +50,12 @@ public class PostDaoJPA2Impl implements PostDao {
 	}
 
 	@Override
-	public PostEntity getPostById(Long id) {
+	public Post getPostById(Long id) {
 
 		try {
-			String qlString = "SELECT u FROM PostEntity u WHERE u.id = ?1";
-			TypedQuery<PostEntity> query = entityManager.createQuery(qlString,
-					PostEntity.class);
+			String qlString = "SELECT u FROM Post u WHERE u.id = ?1";
+			TypedQuery<Post> query = entityManager.createQuery(qlString,
+					Post.class);
 			query.setParameter(1, id);
 
 			return query.getSingleResult();
@@ -70,14 +67,14 @@ public class PostDaoJPA2Impl implements PostDao {
 	@Override
 	public void deletePostById(Post postPojo) {
 
-		PostEntity post = entityManager
-				.find(PostEntity.class, postPojo.getId());
+		Post post = entityManager
+				.find(Post.class, postPojo.getId());
 		entityManager.remove(post);
 
 	}
 
 	@Override
-	public Long createPost(PostEntity post) {
+	public Long createPost(Post post) {
 
 		post.setCreation_timestamp(new Date());
 		post.setLatest_activity_timestamp(new Date());
@@ -90,7 +87,7 @@ public class PostDaoJPA2Impl implements PostDao {
 	}
 
 	@Override
-	public void updatePost(PostEntity post) {
+	public void updatePost(Post post) {
 		// TODO think about partial update and full update
 		post.setLatest_activity_timestamp(new Date());
 		entityManager.merge(post);
@@ -106,8 +103,8 @@ public class PostDaoJPA2Impl implements PostDao {
 	public int getNumberOfPosts() {
 		try {
 			String qlString = "SELECT COUNT(*) FROM post";
-			TypedQuery<PostEntity> query = entityManager.createQuery(qlString,
-					PostEntity.class);
+			TypedQuery<Post> query = entityManager.createQuery(qlString,
+					Post.class);
 
 			return query.getFirstResult();
 		} catch (NoResultException e) {
