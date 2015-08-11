@@ -10,6 +10,7 @@ import org.apache.commons.beanutils.BeanUtilsBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.ApplicationObjectSupport;
 import org.springframework.security.acls.model.MutableAclService;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import dash.dao.MessageDao;
@@ -25,15 +26,16 @@ import dash.security.GenericAclController;
  * Message Service DB Access Impl
  * @Author CarlSteven
  */
-public class MessageServiceDbAccessImpl extends ApplicationObjectSupport implements
-MessageService {
+@Component("messageService")
+public class MessageServiceDbAccessImpl extends ApplicationObjectSupport
+		implements MessageService {
 
 	@Autowired
 	MessageDao messageDao;
 
 	@Autowired
 	private MutableAclService mutableAclService;
-	
+
 	@Autowired
 	private TaskService taskService;
 
@@ -53,17 +55,15 @@ MessageService {
 		return messageId;
 	}
 
-	
-
-	//Inactive
+	// Inactive
 	@Override
 	@Transactional
 	public void createMessages(List<Message> messages) throws AppException {
-		
+
 	}
 
-
-	// ******************** Read related methods implementation **********************
+	// ******************** Read related methods implementation
+	// **********************
 	@Override
 	public List<Message> getMessagesByTask(int numberOfPosts, Long startIndex, Task task) throws AppException {
 
@@ -71,21 +71,17 @@ MessageService {
 		
 		List<Message> messages = messageDao.getMessages(numberOfPosts, startIndex, task);
 		return getMessagesFromEntities(messages);
-
-		
-		
 	}
-	
+
 	@Override
 	public Message getMessageById(Long id) throws AppException {
 		Message messageById = messageDao.getMessageById(id);
 		if (messageById == null) {
 			throw new AppException(Response.Status.NOT_FOUND.getStatusCode(),
-					404,
-					"The post you requested with id " + id
-					+ " was not found in the database",
+					404, "The post you requested with id " + id
+							+ " was not found in the database",
 					"Verify the existence of the post with the id " + id
-					+ " in the database", AppConstants.DASH_POST_URL);
+							+ " in the database", AppConstants.DASH_POST_URL);
 		}
 
 		return messageDao.getMessageById(id);
@@ -100,13 +96,6 @@ MessageService {
 		return response;
 	}
 	
-//	public List<Post> getRecentPosts(int numberOfDaysToLookBack) {
-//		List<Post> recentPosts = postDao
-//				.getRecentPosts(numberOfDaysToLookBack);
-//
-//		return getPostsFromEntities(recentPosts);
-//	}
-
 	@Override
 	public int getNumberOfMessages() {
 		int totalNumber = messageDao.getNumberOfMessages();
@@ -115,17 +104,14 @@ MessageService {
 
 	}
 
-
-
 	/********************* UPDATE-related methods implementation ***********************/
 	@Override
 	@Transactional
 	public void updateFullyMessage(Message message) throws AppException {
-		//do a validation to verify FULL update with PUT
+		// do a validation to verify FULL update with PUT
 		if (isFullUpdate(message)) {
 			throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(),
-					400,
-					"Please specify all properties for Full UPDATE",
+					400, "Please specify all properties for Full UPDATE",
 					"required properties - name, description",
 					AppConstants.DASH_POST_URL);
 		}
@@ -142,8 +128,7 @@ MessageService {
 	 * @return
 	 */
 	private boolean isFullUpdate(Message post) {
-		return post.getId() == null
-				|| post.getContent() == null;
+		return post.getId() == null || post.getContent() == null;
 	}
 
 	/********************* DELETE-related methods implementation ***********************/
@@ -164,18 +149,19 @@ MessageService {
 		Message verifyMessageExistenceById = getMessageById(message.getId());
 		
 		if(verifyMessageExistenceById.getSender_id() != message.getSender_id()) {
+
 			throw new AppException(Response.Status.FORBIDDEN.getStatusCode(),
-					404,
-					"Not allowed to change sender_id in the database.",
-					"" + message.getId(), AppConstants.DASH_POST_URL);
+					404, "Not allowed to change sender_id in the database.", ""
+							+ message.getId(), AppConstants.DASH_POST_URL);
 		}
 		copyPartialProperties(verifyMessageExistenceById, message);
 		messageDao.updateMessage(verifyMessageExistenceById);
 	}
 
-	private void copyPartialProperties(Message verifyPostExistenceById, Message post) {
+	private void copyPartialProperties(Message verifyPostExistenceById,
+			Message post) {
 
-		BeanUtilsBean notNull=new NullAwareBeanUtilsBean();
+		BeanUtilsBean notNull = new NullAwareBeanUtilsBean();
 		try {
 			notNull.copyProperties(verifyPostExistenceById, post);
 		} catch (IllegalAccessException e) {
@@ -185,6 +171,5 @@ MessageService {
 		}
 
 	}
-
 
 }

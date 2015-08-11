@@ -34,7 +34,7 @@ import dash.service.HourService;
 import dash.service.TaskService;
 import dash.service.UserService;
 
-@Component
+@Component("hourResource")
 @Path("/hours")
 public class HourResource {
 
@@ -50,7 +50,10 @@ public class HourResource {
 	@Autowired
 	private TaskService taskService;
 
-	private static final String hourPicturePath = AppConstants.APPLICATION_UPLOAD_LOCATION_FOLDER
+	private static final String hourPicturePathCHW = AppConstants.APPLICATION_UPLOAD_LOCATION_FOLDER_CHW
+			+ "/hours";
+	
+	private static final String hourPicturePathVMA = AppConstants.APPLICATION_UPLOAD_LOCATION_FOLDER_CHW
 			+ "/hours";
 
 	@POST
@@ -124,6 +127,7 @@ public class HourResource {
 		Hour hourById = hourService.getHourById(id);
 		return Response.status(200).entity(new GenericEntity<Hour>(hourById) {
 		}).header("Access-Control-Allow-Headers", "X-extra-header")
+
 				.allow("OPTIONS").build();
 	}
 
@@ -149,7 +153,6 @@ public class HourResource {
 			} catch (AppException e) {
 				hourService.updateFullyHour(hour);
 			}
-
 		} catch (AppException ex) {
 			if (ex.getStatus() == 404) {
 				// resource not existent yet, and should be created
@@ -177,7 +180,6 @@ public class HourResource {
 	public Response partialUpdateHour(@PathParam("id") Long id, Hour hour)
 			throws AppException {
 		hour.setId(id);
-
 		// verify whether hour entry exists
 		hourService.getHourById(id);
 
@@ -272,7 +274,8 @@ public class HourResource {
 				deleteUpload(hour.getId(), file);
 			}
 		}
-		String uploadedFileLocation = hourPicturePath + "/"
+		//TODO: Switch statement for datasources to select proper path
+		String uploadedFileLocation = hourPicturePathCHW + "/"
 				+ hour.getPicturePath() + "/"
 				+ fileDetail.getFileName().replaceAll("%20", "_").toLowerCase();
 		;
@@ -327,7 +330,8 @@ public class HourResource {
 
 		Hour hour = hourService.getHourById(id);
 
-		String uploadedFileLocation = hourPicturePath + "/"
+		//TODO: Switch statement for datasources to select proper path
+		String uploadedFileLocation = hourPicturePathCHW + "/"
 				+ hour.getPicturePath() + "/" + fileName;
 		// save it
 		hourService.deleteUploadFile(uploadedFileLocation, hour);

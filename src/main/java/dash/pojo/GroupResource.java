@@ -23,58 +23,59 @@ import dash.errorhandling.AppException;
 import dash.service.GroupService;
 import dash.service.UserService;
 
-@Component
+@Component("groupResource")
 @Path("/groups")
 public class GroupResource {
 
 	@Autowired
 	private GroupService groupService;
-	
-	@Autowired 
+
+	@Autowired
 	private UserService userService;
-	
+
 	@POST
 	@Consumes({ MediaType.APPLICATION_JSON })
 	@Produces({ MediaType.TEXT_HTML })
 	public Response createGroup(Group group) throws AppException {
 		Long createGroupId = groupService.createGroup(group);
-		return Response.status(Response.Status.CREATED)
+		return Response
+				.status(Response.Status.CREATED)
 				// 201
-				.entity("A new group has been created")
+				.entity(String.valueOf(createGroupId))
 				.header("Location", String.valueOf(createGroupId))
-		         .header("ObjectId", String.valueOf(createGroupId)).build();
+				.header("ObjectId", String.valueOf(createGroupId)).build();
 	}
-	
+
 	@GET
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	public List<Group> getGroups(
 			@QueryParam("orderByInsertionDate") String orderByInsertionDate,
 			@QueryParam("numberDaysToLookBack") Integer numberDaysToLookBack)
-					throws IOException,	AppException {
-		List<Group> groups = groupService.getGroups(
-				orderByInsertionDate, numberDaysToLookBack);
+			throws IOException, AppException {
+		List<Group> groups = groupService.getGroups(orderByInsertionDate,
+				numberDaysToLookBack);
 		return groups;
 	}
-	
+
 	@GET
 	@Path("byMembership")
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	public List<Group> getGroupsByMembership(
 			@QueryParam("orderByInsertionDate") String orderByInsertionDate,
 			@QueryParam("numberDaysToLookBack") Integer numberDaysToLookBack)
-					throws IOException,	AppException {
+			throws IOException, AppException {
 		List<Group> groups = groupService.getGroupsByMembership(
 				orderByInsertionDate, numberDaysToLookBack);
 		return groups;
 	}
-	
+
 	@GET
 	@Path("byManager")
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	public List<Group> getGroupsByManager(
 			@QueryParam("orderByInsertionDate") String orderByInsertionDate,
 			@QueryParam("numberDaysToLookBack") Integer numberDaysToLookBack)
-					throws IOException,	AppException {
+			throws IOException, AppException {
 		List<Group> groups = groupService.getGroupsByManager(
 				orderByInsertionDate, numberDaysToLookBack);
 		return groups;
@@ -92,8 +93,9 @@ public class GroupResource {
 				})
 						.header("Access-Control-Allow-Headers", "X-extra-header")
 						.allow("OPTIONS").build();
+
 	}
-	
+
 	@PUT
 	@Path("{id}")
 	@Consumes({ MediaType.APPLICATION_JSON })
@@ -143,78 +145,97 @@ public class GroupResource {
 	}
 
 	/*
-	 * *********************************** DELETE ***********************************
+	 * *********************************** DELETE
+	 * ***********************************
 	 */
 	@DELETE
 	@Path("{id}")
 	@Produces({ MediaType.TEXT_HTML })
-	public Response deleteGroup(@PathParam("id") Long id)
-			throws AppException {
-		Group group= new Group();
+	public Response deleteGroup(@PathParam("id") Long id) throws AppException {
+		Group group = new Group();
 		group.setId(id);
 		groupService.deleteGroup(group);
 		return Response.status(Response.Status.NO_CONTENT)// 204
 				.entity("Group successfully removed from database").build();
 	}
-	
+
 	@PUT
 	@Path("{id}/MANAGER/{user}")
-	@Produces({MediaType.TEXT_HTML})
-	public Response resetManager(@PathParam("user") Long userId, @PathParam("id") Long id) throws AppException{
-		User user= userService.getUserById(userId);
-		Group group= new Group();
+	@Produces({ MediaType.TEXT_HTML })
+	public Response resetManager(@PathParam("user") Long userId,
+			@PathParam("id") Long id) throws AppException {
+		User user = userService.getUserById(userId);
+		Group group = new Group();
 		group.setId(id);
 		groupService.resetManager(user, group);
-		return Response.status(Response.Status.OK).entity("MANAGER RESET: User "+user.getUsername()
-				+" set as sole MANAGER for group "+group.getId()).build();
+		return Response
+				.status(Response.Status.OK)
+				.entity("MANAGER RESET: User " + user.getUsername()
+						+ " set as sole MANAGER for group " + group.getId())
+				.build();
 	}
-	
+
 	@POST
 	@Path("{id}/MANAGER/{user}")
-	@Produces({MediaType.TEXT_HTML})
-	public Response addManager(@PathParam("user") Long userId, @PathParam("id") Long id) throws AppException{
-		User user= userService.getUserById(userId);
-		Group group= new Group();
+	@Produces({ MediaType.TEXT_HTML })
+	public Response addManager(@PathParam("user") Long userId,
+			@PathParam("id") Long id) throws AppException {
+		User user = userService.getUserById(userId);
+		Group group = new Group();
 		group.setId(id);
 		groupService.addManager(user, group);
-		return Response.status(Response.Status.OK).entity("MANAGER ADDED: User "+user.getUsername()
-				+" added as a MANAGER for group "+group.getId()).build();
+		return Response
+				.status(Response.Status.OK)
+				.entity("MANAGER ADDED: User " + user.getUsername()
+						+ " added as a MANAGER for group " + group.getId())
+				.build();
 	}
-	
+
 	@DELETE
 	@Path("{id}/MANAGER/{user}")
-	@Produces({MediaType.TEXT_HTML})
-	public Response deleteManager(@PathParam("user") Long userId, @PathParam("id") Long id) throws AppException{
-		User user= userService.getUserById(userId);
-		Group group= new Group();
+	@Produces({ MediaType.TEXT_HTML })
+	public Response deleteManager(@PathParam("user") Long userId,
+			@PathParam("id") Long id) throws AppException {
+		User user = userService.getUserById(userId);
+		Group group = new Group();
 		group.setId(id);
 		groupService.deleteManager(user, group);
-		return Response.status(Response.Status.OK).entity("MANAGER DELETED: User "+user.getUsername()
-				+" removed as MANAGER for group "+group.getId()).build();
+		return Response
+				.status(Response.Status.OK)
+				.entity("MANAGER DELETED: User " + user.getUsername()
+						+ " removed as MANAGER for group " + group.getId())
+				.build();
 	}
 
 	@POST
 	@Path("{id}/MEMBER/{user}")
-	@Produces({MediaType.TEXT_HTML})
-	public Response addMember(@PathParam("user") Long userId, @PathParam("id") Long id) throws AppException{
-		User user= userService.getUserById(userId);
-		Group group= new Group();
+	@Produces({ MediaType.TEXT_HTML })
+	public Response addMember(@PathParam("user") Long userId,
+			@PathParam("id") Long id) throws AppException {
+		User user = userService.getUserById(userId);
+		Group group = new Group();
 		group.setId(id);
 		groupService.addMember(user, group);
-		return Response.status(Response.Status.OK).entity("MEMBER ADDED: User "+user.getUsername()
-				+" set as MEMBER for group "+group.getId()).build();
+		return Response
+				.status(Response.Status.OK)
+				.entity("MEMBER ADDED: User " + user.getUsername()
+						+ " set as MEMBER for group " + group.getId()).build();
 	}
-	
+
 	@DELETE
 	@Path("{id}/MEMBER/{user}")
-	@Produces({MediaType.TEXT_HTML})
-	public Response deleteMember(@PathParam("user") Long userId, @PathParam("id") Long id) throws AppException{
-		User user= userService.getUserById(userId);
-		Group group= new Group();
+	@Produces({ MediaType.TEXT_HTML })
+	public Response deleteMember(@PathParam("user") Long userId,
+			@PathParam("id") Long id) throws AppException {
+		User user = userService.getUserById(userId);
+		Group group = new Group();
 		group.setId(id);
 		groupService.deleteMember(user, group);
-		return Response.status(Response.Status.OK).entity("MEMBER DELETED: User "+user.getUsername()
-				+" removed as MEMBER from group "+group.getId()).build();
+		return Response
+				.status(Response.Status.OK)
+				.entity("MEMBER DELETED: User " + user.getUsername()
+						+ " removed as MEMBER from group " + group.getId())
+				.build();
 	}
-	
+
 }

@@ -10,6 +10,7 @@ import org.apache.commons.beanutils.BeanUtilsBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.ApplicationObjectSupport;
 import org.springframework.security.acls.model.MutableAclService;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import dash.dao.PostDao;
@@ -115,13 +116,6 @@ public class PostServiceDbAccessImpl extends ApplicationObjectSupport implements
 		return response;
 	}
 
-	// public List<Post> getRecentPosts(int numberOfDaysToLookBack) {
-	// List<Post> recentPosts = postDao
-	// .getRecentPosts(numberOfDaysToLookBack);
-	//
-	// return getPostsFromEntities(recentPosts);
-	// }
-
 	@Override
 	public int getNumberOfPosts() {
 		int totalNumber = postDao.getNumberOfPosts();
@@ -135,7 +129,6 @@ public class PostServiceDbAccessImpl extends ApplicationObjectSupport implements
 	@Override
 	@Transactional
 	public void updateFullyPost(Post post) throws AppException {
-
 		try {
 			//verify whether post exists
 			Post verifyPostExistenceById = getPostById(post.getId());
@@ -188,14 +181,6 @@ public class PostServiceDbAccessImpl extends ApplicationObjectSupport implements
 	@Transactional
 	public void updatePartiallyPost(Post post) throws AppException {
 
-		try {
-			// do a validation to verify existence of the resource
-			Post verifyPostExistenceById = getPostById(post.getId());
-			copyPartialProperties(verifyPostExistenceById, post);
-			postDao.updatePost(verifyPostExistenceById);
-
-		} catch (AppException ex) {
-
 			throw new AppException(
 					Response.Status.NOT_FOUND.getStatusCode(),
 					404,
@@ -203,8 +188,6 @@ public class PostServiceDbAccessImpl extends ApplicationObjectSupport implements
 					"Please verify existence of data in the database for the id - "
 							+ post.getId(), AppConstants.DASH_POST_URL);
 		}
-
-	}
 
 	private void copyPartialProperties(Post verifyPostExistenceById, Post post) {
 

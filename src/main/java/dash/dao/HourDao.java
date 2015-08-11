@@ -9,10 +9,11 @@ import dash.pojo.Task;
  * @Author tswensen
  */
 public interface HourDao {
-	
+
 	public List<Hour> getHours(int numberOfHours, Long startIndex, boolean onlyPending, String orderBy);
 	
 	public List<Hour> getHours(int numberOfHours, Long startIndex, Task task, boolean onlyPending);
+
 
 	public int getNumberOfHours();
 

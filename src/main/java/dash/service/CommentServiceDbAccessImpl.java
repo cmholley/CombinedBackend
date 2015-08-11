@@ -23,16 +23,16 @@ import dash.pojo.Post;
 import dash.security.CustomPermission;
 import dash.security.GenericAclController;
 
-@Component
-public class CommentServiceDbAccessImpl extends ApplicationObjectSupport implements
-CommentService {
+@Component("commentService")
+public class CommentServiceDbAccessImpl extends ApplicationObjectSupport
+		implements CommentService {
 
 	@Autowired
 	CommentDao commentDao;
 
 	@Autowired
 	private MutableAclService mutableAclService;
-	
+
 	@Autowired
 	private GroupService groupService;
 
@@ -51,13 +51,6 @@ CommentService {
 		aclController.createAce(comment, CustomPermission.DELETE);
 		return commentId;
 	}
-	
-	//TODO: Inactive
-	@Override
-	@Transactional
-	public void createComments(List<Comment> comments) throws AppException {
-		
-	}
 
 	// ******************** Read related methods implementation **********************
 	@Override
@@ -72,11 +65,10 @@ CommentService {
 		Comment commentById = commentDao.getCommentById(id);
 		if (commentById == null) {
 			throw new AppException(Response.Status.NOT_FOUND.getStatusCode(),
-					404,
-					"The post you requested with id " + id
-					+ " was not found in the database",
+					404, "The post you requested with id " + id
+							+ " was not found in the database",
 					"Verify the existence of the post with the id " + id
-					+ " in the database", AppConstants.DASH_POST_URL);
+							+ " in the database", AppConstants.DASH_POST_URL);
 		}
 
 		return commentDao.getCommentById(id);
@@ -86,11 +78,11 @@ CommentService {
 		List<Comment> response = new ArrayList<Comment>();
 		for (Comment comment : commentEntities) {
 			response.add(comment);
+
 		}
 
 		return response;
 	}
-
 	@Override
 	public int getNumberOfPosts() {
 		int totalNumber = commentDao.getNumberOfComments();
@@ -117,9 +109,10 @@ CommentService {
 		}
 	}
 
-	private void copyPartialProperties(Comment verifyCommentExistenceById, Comment comment) {
+	private void copyPartialProperties(Comment verifyCommentExistenceById,
+			Comment comment) {
 
-		BeanUtilsBean notNull=new NullAwareBeanUtilsBean();
+		BeanUtilsBean notNull = new NullAwareBeanUtilsBean();
 		try {
 			notNull.copyProperties(verifyCommentExistenceById, comment);
 		} catch (IllegalAccessException e) {

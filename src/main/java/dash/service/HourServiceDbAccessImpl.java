@@ -20,6 +20,7 @@ import org.apache.commons.beanutils.BeanUtilsBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.ApplicationObjectSupport;
 import org.springframework.security.acls.model.MutableAclService;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import dash.dao.HourDao;
@@ -32,27 +33,24 @@ import dash.pojo.Task;
 import dash.security.CustomPermission;
 import dash.security.GenericAclController;
 
-
+@Component("hourService")
 public class HourServiceDbAccessImpl extends ApplicationObjectSupport implements
-HourService {
+		HourService {
 
 	@Autowired
 	HourDao hourDao;
 
 	@Autowired
 	private MutableAclService mutableAclService;
-	
+
 	@Autowired
 	private GroupService groupService;
-	
+
 	@Autowired
 	private TaskService taskService;
 
 	@Autowired
 	private GenericAclController<Hour> aclController;
-
-	
-
 
 	/********************* Create related methods implementation ***********************/
 	@Override
@@ -73,43 +71,42 @@ HourService {
 	public List<Hour> getHours(int numberOfHours, Long startIndex, boolean onlyPending) throws AppException{
 		
 		List<Hour> hours = hourDao.getHours(numberOfHours, startIndex, onlyPending, "ASC");
+
 		return getHoursFromEntities(hours);
 	}
-	
-	@Override
-	public List<Hour> getHoursByGroup(int numberOfHours, Long startIndex, Group group, boolean onlyPending) throws AppException {
 
-		//verify optional parameter numberDaysToLookBack first
+	@Override
+	public List<Hour> getHoursByGroup(int numberOfHours, Long startIndex,
+			Group group, boolean onlyPending) throws AppException {
+
+		// verify optional parameter numberDaysToLookBack first
 		List<Task> tasksByGroup = taskService.getTasksByGroup(group);
 		List<Hour> groupHours= new ArrayList<Hour>();
 		for(Task task: tasksByGroup){
 			groupHours.addAll( hourDao.getHours(numberOfHours, startIndex, task, onlyPending));
 		}
-		
 
 		return getHoursFromEntities(groupHours);
 	}
-	
+
 	@Override
 	public List<Hour> getHoursByMyUser(int numberOfHours, Long startIndex, boolean onlyPending) throws AppException {
 		
 		
 		List<Hour> hours = hourDao.getHours(numberOfHours, startIndex, onlyPending, "DESC");
 		return getHoursFromEntities(hours);
-		
+
 	}
-	
 
 	@Override
 	public Hour getHourById(Long id) throws AppException {
 		Hour hourById = hourDao.getHourById(id);
 		if (hourById == null) {
 			throw new AppException(Response.Status.NOT_FOUND.getStatusCode(),
-					404,
-					"The hour you requested with id " + id
-					+ " was not found in the database",
+					404, "The hour you requested with id " + id
+							+ " was not found in the database",
 					"Verify the existence of the hour with the id " + id
-					+ " in the database", AppConstants.DASH_POST_URL);
+							+ " in the database", AppConstants.DASH_POST_URL);
 		}
 
 		return hourDao.getHourById(id);
@@ -123,17 +120,8 @@ HourService {
 
 		return response;
 	}
-	
 
-	
-	
 
-//	public List<Hour> getRecentHours(int numberOfDaysToLookBack) {
-//		List<Hour> recentHours = hourDao
-//				.getRecentHours(numberOfDaysToLookBack);
-//
-//		return getHoursFromEntities(recentHours);
-//	}
 
 	@Override
 	public int getNumberOfHours() {
@@ -142,8 +130,6 @@ HourService {
 		return totalNumber;
 
 	}
-
-
 
 	/********************* UPDATE-related methods implementation ***********************/
 	@Override
@@ -155,25 +141,28 @@ HourService {
 		copyAllProperties(verifyHourExistenceById, hour);
 		verifyHourExistenceById.setPending(true);
 		verifyHourExistenceById.setApproved(false);
-
 		hourDao.updateHour(verifyHourExistenceById);
 	}
-	
+
 	@Override
 	@Transactional
 	public void updateFullyHour(Hour hour, Group group) throws AppException {
-		updateFullyHour(hour);		
+		updateFullyHour(hour);
 	}
 
 	private void copyAllProperties(Hour verifyHourExistenceById, Hour hour) {
 
-		BeanUtilsBean withNull=new BeanUtilsBean();
+		BeanUtilsBean withNull = new BeanUtilsBean();
 		try {
-			withNull.copyProperty(verifyHourExistenceById, "title", hour.getTitle());
-			withNull.copyProperty(verifyHourExistenceById, "start_time", hour.getStart_time());
-			withNull.copyProperty(verifyHourExistenceById, "end_time", hour.getEnd_time());
-			withNull.copyProperty(verifyHourExistenceById, "duration", hour.getDuration());
-			
+			withNull.copyProperty(verifyHourExistenceById, "title",
+					hour.getTitle());
+			withNull.copyProperty(verifyHourExistenceById, "start_time",
+					hour.getStart_time());
+			withNull.copyProperty(verifyHourExistenceById, "end_time",
+					hour.getEnd_time());
+			withNull.copyProperty(verifyHourExistenceById, "duration",
+					hour.getDuration());
+
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 		} catch (InvocationTargetException e) {
@@ -181,7 +170,6 @@ HourService {
 		}
 
 	}
-
 
 	/********************* DELETE-related methods implementation ***********************/
 
@@ -205,17 +193,18 @@ HourService {
 		verifyHourExistenceById.setPending(true);
 		hourDao.updateHour(verifyHourExistenceById);
 
+
 	}
+
 	@Override
 	@Transactional
 	public void updatePartiallyHour(Hour hour, Group group) throws AppException {
 		updatePartiallyHour(hour);
 	}
-	
 
 	private void copyPartialProperties(Hour verifyHourExistenceById, Hour hour) {
 
-		BeanUtilsBean notNull=new NullAwareBeanUtilsBean();
+		BeanUtilsBean notNull = new NullAwareBeanUtilsBean();
 		try {
 			notNull.copyProperties(verifyHourExistenceById, hour);
 		} catch (IllegalAccessException e) {
@@ -226,22 +215,21 @@ HourService {
 
 	}
 
-
-
 	@Override
 	@Transactional
 	public void approveHour(Hour hour, boolean approved) throws AppException {
-		
+
 		hour.setApproved(approved);
 		hour.setPending(false);
 		hourDao.updateHour(hour);
 		
 		
 	}
-	
+
 	@Override
 	@Transactional
-	public void approveHour(Hour hour, Group group, boolean approved) throws AppException {
+	public void approveHour(Hour hour, Group group, boolean approved)
+			throws AppException {
 		approveHour(hour, approved);
 	}
 	
@@ -314,8 +302,9 @@ HourService {
 	@Override
 	public List<String> getFileNames(Hour hour) {
 		List<String> results = new ArrayList<String>();
-
-		File[] files = new File(AppConstants.APPLICATION_UPLOAD_LOCATION_FOLDER
+		
+		//TODO:Switch statement for datasources
+		File[] files = new File(AppConstants.APPLICATION_UPLOAD_LOCATION_FOLDER_CHW
 				+ "/" + hour.getPicturePath()).listFiles();
 		// If this pathname does not denote a directory, then listFiles()
 		// returns null.
@@ -329,6 +318,5 @@ HourService {
 		}
 		return results;
 	}
-
 
 }

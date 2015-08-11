@@ -15,11 +15,18 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import dash.security.IAclObject;
 
+import org.apache.commons.beanutils.BeanUtils;
+
+import dash.security.IAclObject;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.Date;
+
 @Entity
-@Table(name="comment")
+@Table(name = "comment")
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Comment implements  IAclObject{
+public class Comment implements IAclObject {
 
 	@Id
 	@GeneratedValue
@@ -51,22 +58,9 @@ public class Comment implements  IAclObject{
     @Column(name="latest_activity_timestamp")
 	private Date latest_activity_timestamp;
 
-	public Comment(Long id, Long group_id, Long user_id, String content,
-			String image, Date creation_timestamp,
-			Date latest_activity_timestamp, int like_count, Long task_link_id, Long post_id) {
-		super();
-		this.id = id;
-		this.post_id = post_id;
-		this.user_id = user_id;
-		this.content = content;
-		this.image = image;
-		this.creation_timestamp = creation_timestamp;
-		this.latest_activity_timestamp = latest_activity_timestamp;
-	}
-
-
 	
 	public Comment(){}
+
 
 	public Long getId() {
 		return id;

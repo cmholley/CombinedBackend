@@ -2,7 +2,6 @@ package dash.pojo;
 
 
 import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -19,7 +18,7 @@ import dash.security.IAclObject;
 @Table(name="entered_hours")
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Hour implements  IAclObject{
+public class Hour implements IAclObject {
 
 	
 	@Id
@@ -73,19 +72,6 @@ public class Hour implements  IAclObject{
 	
 	public Hour(){}
 
-	public Hour(Long id, Long user_id, Long task_id, String title,
-			Date start_time, Date end_time, int duration, boolean approved, boolean pending) {
-		super();
-		this.id = id;
-		this.user_id = user_id;
-		this.task_id = task_id;
-		this.title = title;
-		this.start_time = start_time;
-		this.end_time = end_time;
-		this.duration = duration;
-		this.approved = approved;
-		this.pending = pending;
-	}
 
 	public Long getId() {
 		return id;
@@ -174,7 +160,5 @@ public class Hour implements  IAclObject{
 	public void setProfile_picture_filename(String profile_picture_filename) {
 		this.profile_picture_filename = profile_picture_filename;
 	}
-
-	
 
 }

@@ -56,7 +56,5 @@ public class DashApplicationSetup extends ResourceConfig {
 		register(JacksonFeature.class);
 		register(MultiPartFeature.class);
 		register(EntityFilteringFeature.class);
-
 	}
 }
-

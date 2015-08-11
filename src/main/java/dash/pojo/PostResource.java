@@ -25,7 +25,7 @@ import dash.service.GroupService;
 import dash.service.PostService;
 import dash.service.UserService;
 
-@Component
+@Component("postResource")
 @Path("/posts")
 public class PostResource {
 
@@ -109,6 +109,7 @@ public class PostResource {
 		return Response.status(200).entity(new GenericEntity<Post>(postById) {
 		}).header("Access-Control-Allow-Headers", "X-extra-header")
 				.allow("OPTIONS").build();
+
 	}
 
 	/************************ Update Methods *********************/
