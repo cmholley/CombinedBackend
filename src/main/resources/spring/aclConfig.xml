@@ -31,11 +31,11 @@
 		<constructor-arg ref="aclService" />
 		<property name="permissionFactory" ref="permissionFactory" />
 	</bean>
-
+	<!-- TODO: Multiple ACL services -->
 	<!-- Declare an acl service -->
 	<bean id="aclService"
 		class="org.springframework.security.acls.jdbc.JdbcMutableAclService">
-		<constructor-arg ref="dashDS" />
+		<constructor-arg ref="dashDS_CHW" />
 		<constructor-arg ref="lookupStrategy" />
 		<constructor-arg ref="aclCache" />
 		<property name="classIdentityQuery" value="SELECT @@IDENTITY" />
@@ -45,7 +45,7 @@
 	<!-- Declare a lookup strategy -->
 	<bean id="lookupStrategy"
 		class="org.springframework.security.acls.jdbc.BasicLookupStrategy">
-		<constructor-arg ref="dashDS" />
+		<constructor-arg ref="dashDS_CHW" />
 		<constructor-arg ref="aclCache" />
 		<constructor-arg ref="aclAuthorizationStrategy" />
 		<constructor-arg ref="auditLogger" />
@@ -86,6 +86,12 @@
 		</constructor-arg>
 	</bean>
 
+  <bean id="permissionFactory" class="dash.security.CustomPermissionFactory"/>
+
+	<!-- Declare a permissionGrantingStrategy -->
+	<bean id="auditLogger"
+		class="org.springframework.security.acls.domain.ConsoleAuditLogger" />
+
 	<!-- http://static.springsource.org/spring-security/site/docs/3.0.x/apidocs/org/springframework/security/access/hierarchicalroles/RoleHierarchyImpl.html -->
 	<bean id="roleHierarchy"
 		class="org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl">
@@ -98,61 +104,5 @@
 			</value>
 		</property>
 	</bean>
-  
- <!-- Declare a lookup strategy-->
- <bean id="lookupStrategy" class="org.springframework.security.acls.jdbc.BasicLookupStrategy">
-        <constructor-arg ref="dashDS"/>
-        <constructor-arg ref="aclCache"/>
-        <constructor-arg ref="aclAuthorizationStrategy"/>
-        <constructor-arg ref="auditLogger"/>
-        <property name="permissionFactory" ref="permissionFactory"/>
-    </bean>
- 
-    <!-- Declare an acl cache-->  
-   <bean id="aclCache" class="org.springframework.security.acls.domain.EhCacheBasedAclCache">
-        <constructor-arg>
-            <bean class="org.springframework.cache.ehcache.EhCacheFactoryBean">
-                <property name="cacheManager">
-                    <bean class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean"/>
-                </property>
-                <property name="cacheName" value="aclCache"/>
-            </bean>
-        </constructor-arg>
-    </bean>
- 
- <!-- Declare an acl authorization strategy-->
-    <bean id="aclAuthorizationStrategy" class="dash.security.CustomAuthorizationImpl">
-        <constructor-arg ref="roleHierarchy"/>
-        <constructor-arg>
-            <list>
-                <bean class="org.springframework.security.core.authority.GrantedAuthorityImpl">
-                    <constructor-arg value="ROLE_USER"/>
-                </bean>
-                <bean class="org.springframework.security.core.authority.GrantedAuthorityImpl">
-                    <constructor-arg value="ROLE_ADMIN"/>
-                </bean>
-                <bean class="org.springframework.security.core.authority.GrantedAuthorityImpl">
-                    <constructor-arg value="ROLE_USER"/>
-                </bean>
-            </list>
-        </constructor-arg>
-		
-    </bean>
-  
-  <bean id="permissionFactory" class="dash.security.CustomPermissionFactory"/>
-  
-  <!-- Declare a permissionGrantingStrategy-->
-    <bean id="auditLogger" class="org.springframework.security.acls.domain.ConsoleAuditLogger"/>
-     
-  <!-- http://static.springsource.org/spring-security/site/docs/3.0.x/apidocs/org/springframework/security/access/hierarchicalroles/RoleHierarchyImpl.html -->
- <bean id="roleHierarchy"  class="org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl">
-     <property name="hierarchy">
-         <value>
-         	ROLE_ROOT > ROLE_ADMIN
-             ROLE_ADMIN > ROLE_MODERATOR
-             ROLE_MODERATOR > ROLE_USER
-             ROLE_USER > ROLE_VISITOR
-         </value>
-     </property>
- </bean>
+
 </beans>

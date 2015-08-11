@@ -18,7 +18,7 @@
 	<bean id="transactionManagerCHW" class="org.springframework.orm.jpa.JpaTransactionManager">
 		<property name="entityManagerFactory" ref="entityManagerFactoryCHW" />
 	</bean>
-	
+
 	<bean id="transactionManagerVMA" class="org.springframework.orm.jpa.JpaTransactionManager">
 		<property name="entityManagerFactory" ref="entityManagerFactoryVMA" />
 	</bean>
@@ -26,7 +26,7 @@
 	<bean id="entityManagerFactoryCHW"
 		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
 		<property name="persistenceXmlLocation" value="classpath:config/persistence-dash.xml" />
-		<property name="persistenceUnitName" value="dashPersistence_CHW" />
+		<property name="persistenceUnitName" value="dashPersistenceCHW" />
 		<property name="dataSource" ref="dashDS_CHW" />
 		<property name="packagesToScan" value="dash.*" />
 		<property name="jpaVendorAdapter">
@@ -35,12 +35,18 @@
 				<property name="databasePlatform" value="org.hibernate.dialect.MySQLDialect" />
 			</bean>
 		</property>
+		<property name="jpaProperties">
+			<props>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+			</props>
+		</property>
+
 	</bean>
-	
-		<bean id="entityManagerFactoryVMA"
+
+	<bean id="entityManagerFactoryVMA"
 		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
 		<property name="persistenceXmlLocation" value="classpath:config/persistence-dash.xml" />
-		<property name="persistenceUnitName" value="dashPersistence_VMA" />
+		<property name="persistenceUnitName" value="dashPersistenceVMA" />
 		<property name="dataSource" ref="dashDS_VMA" />
 		<property name="packagesToScan" value="dash.*" />
 		<property name="jpaVendorAdapter">
@@ -49,6 +55,12 @@
 				<property name="databasePlatform" value="org.hibernate.dialect.MySQLDialect" />
 			</bean>
 		</property>
+		<property name="jpaProperties">
+			<props>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+			</props>
+		</property>
+
 	</bean>
 
 	<bean id="dashDS_CHW" class="org.springframework.jndi.JndiObjectFactoryBean"
@@ -56,7 +68,7 @@
 		<property name="jndiName" value="java:comp/env/jdbc/dashDB_CHW" />
 		<property name="resourceRef" value="true" />
 	</bean>
-	
+
 	<bean id="dashDS_VMA" class="org.springframework.jndi.JndiObjectFactoryBean"
 		scope="singleton">
 		<property name="jndiName" value="java:comp/env/jdbc/dashDB_VMA" />
@@ -101,12 +113,6 @@
 
 
 	<bean id="aclController" class="dash.security.GenericAclController" />
-
-	<bean id="dashDS" class="org.springframework.jndi.JndiObjectFactoryBean"
-		scope="singleton">
-		<property name="jndiName" value="java:comp/env/jdbc/dashDB" />
-		<property name="resourceRef" value="true" />
-	</bean>
 
 	<!-- ************ Email Beans *********** -->
 

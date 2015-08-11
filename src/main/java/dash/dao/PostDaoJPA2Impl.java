@@ -14,7 +14,7 @@ import dash.pojo.Post;
 
 @Component("postDao")
 public class PostDaoJPA2Impl implements PostDao {
-	@PersistenceContext(unitName = "dashPersistence")
+	@PersistenceContext(unitName = "dashPersistenceCHW")
 	private EntityManager entityManager;
 
 	@Override

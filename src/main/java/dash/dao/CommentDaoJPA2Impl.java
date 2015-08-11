@@ -13,7 +13,7 @@ import dash.pojo.Post;
 
 @Component("commentDao")
 public class CommentDaoJPA2Impl implements CommentDao {
-	@PersistenceContext(unitName = "dashPersistence")
+	@PersistenceContext(unitName = "dashPersistenceCHW")
 	private EntityManager entityManager;
 
 	@Override

@@ -13,7 +13,7 @@ import dash.pojo.Hour;
 import dash.pojo.Task;
 
 public class HourDaoJPA2Impl implements HourDao {
-	@PersistenceContext(unitName = "dashPersistence")
+	@PersistenceContext(unitName = "dashPersistenceCHW")
 	private EntityManager entityManager;
 
 	@Override

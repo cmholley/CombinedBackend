@@ -23,7 +23,7 @@
 	<security:authentication-manager alias="authenticationManager">
 		<security:authentication-provider>
 			<security:jdbc-user-service
-				data-source-ref="dashDS"
+				data-source-ref="dashDS_CHW"
 
 				users-by-username-query="
             select username, password, enabled from login where username = ?"
@@ -38,7 +38,7 @@
 	</bean>
 
 	<bean id="authoritiesController" class="dash.security.UserLoginController">
-		<property name="dataSource" ref="dashDS" />
+		<property name="dataSource" ref="dashDS_CHW" />
 	</bean>
 
 </beans>

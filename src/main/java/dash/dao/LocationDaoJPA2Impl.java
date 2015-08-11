@@ -21,7 +21,7 @@ import dash.pojo.Location;
  * 
  */
 public class LocationDaoJPA2Impl implements LocationDao {
-	@PersistenceContext(unitName = "dashPersistence")
+	@PersistenceContext(unitName = "dashPersistenceCHW")
 	private EntityManager entityManager;
 
 	@Override

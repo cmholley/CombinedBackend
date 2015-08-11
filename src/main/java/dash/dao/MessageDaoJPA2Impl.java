@@ -20,7 +20,7 @@ import dash.pojo.Task;
  */
 @Component("messageDao")
 public class MessageDaoJPA2Impl implements MessageDao {
-	@PersistenceContext(unitName = "dashPersistence")
+	@PersistenceContext(unitName = "dashPersistenceCHW")
 	private EntityManager entityManager;
 
 	@Override
