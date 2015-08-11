@@ -1,7 +1,6 @@
 package dash.dao;
 
 import java.util.List;
-
 import dash.pojo.Group;
 import dash.pojo.Post;
 

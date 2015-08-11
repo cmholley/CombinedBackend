@@ -8,6 +8,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
+
 import dash.pojo.Hour;
 import dash.pojo.Task;
 
@@ -15,17 +16,18 @@ public class HourDaoJPA2Impl implements HourDao {
 	@PersistenceContext(unitName = "dashPersistence")
 	private EntityManager entityManager;
 
-
 	@Override
 	public List<Hour> getHours(int numberOfHours, Long startIndex, boolean onlyPending, String orderBy) {
+
 		String sqlString = null;
-		String qPending= new String();
-		if(onlyPending){
-			qPending="where u.pending = 1";
+		String qPending = new String();
+		if (onlyPending) {
+			qPending = "where u.pending = 1";
 		}
 		sqlString = "SELECT u FROM Hour u " +qPending
 				+ " ORDER BY u.end_time "+orderBy;
 	
+
 		TypedQuery<Hour> query = entityManager.createQuery(sqlString,
 				Hour.class);
 		query.setFirstResult(startIndex.intValue());
@@ -41,12 +43,13 @@ public class HourDaoJPA2Impl implements HourDao {
 		}
 		String qlString = "SELECT u FROM Hour u where u.task_id = ?1 " +qPending
 				+ " ORDER BY u.end_time ";
+
 		TypedQuery<Hour> query = entityManager.createQuery(qlString,
 				Hour.class);
 		query.setFirstResult(startIndex.intValue());
 		query.setMaxResults(numberOfHours);
-		query.setParameter(1, task.getId() );
-		
+		query.setParameter(1, task.getId());
+
 		return query.getResultList();
 	}
 
@@ -65,7 +68,6 @@ public class HourDaoJPA2Impl implements HourDao {
 		}
 	}
 
-
 	@Override
 	public void deleteHourById(Hour hourPojo) {
 
@@ -74,7 +76,6 @@ public class HourDaoJPA2Impl implements HourDao {
 		entityManager.remove(hour);
 
 	}
-	
 
 	@Override
 	public Long createHour(Hour hour) {
@@ -82,14 +83,11 @@ public class HourDaoJPA2Impl implements HourDao {
 		entityManager.persist(hour);
 		entityManager.flush();// force insert to receive the id of the hour
 
-		
-
 		return hour.getId();
 	}
 
 	@Override
 	public void updateHour(Hour hour) {
-		
 		entityManager.merge(hour);
 	}
 

@@ -23,7 +23,7 @@ import dash.security.IAclObject;
 @Table(name="message")
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Message implements IAclObject{
+public class Message implements IAclObject {
 
 	@Id
 	@GeneratedValue
@@ -45,17 +45,8 @@ public class Message implements IAclObject{
 	
 	@XmlElement(name="content")
     @Column(name="content")
+
 	private String content;
-
-	public Message(Long id, Long sender_id, Long task_id, String content, Date time) {
-		super();
-		this.id = id;
-		this.sender_id = sender_id;
-		this.task_id = task_id;
-		this.content = content;
-		this.creation_timestamp = time;
-	}
-
 
 	
 	public Message(){}
@@ -100,5 +91,4 @@ public class Message implements IAclObject{
 	public void setId(Long id) {
 		this.id = id;
 	}
-
 }

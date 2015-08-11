@@ -2,7 +2,6 @@ package dash.pojo;
 
 
 import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -19,7 +18,7 @@ import dash.security.IAclObject;
 @Table(name="post")
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Post implements  IAclObject{
+public class Post implements IAclObject {
 
 	@Id
 	@GeneratedValue	
@@ -60,21 +59,6 @@ public class Post implements  IAclObject{
     @Column(name="task_link_id")
 	private Long task_link_id;
 
-	public Post(Long id, Long group_id, Long user_id, String content,
-			String image, Date creation_timestamp,
-			Date latest_activity_timestamp, int like_count, Long task_link_id) {
-		super();
-		this.id = id;
-		this.group_id = group_id;
-		this.user_id = user_id;
-		this.content = content;
-		this.image = image;
-		this.creation_timestamp = creation_timestamp;
-		this.latest_activity_timestamp = latest_activity_timestamp;
-		this.like_count = like_count;
-		this.task_link_id = task_link_id;
-	}
-
 
 	public Post(){}
 
@@ -85,7 +69,7 @@ public class Post implements  IAclObject{
 	public void setId(Long id) {
 		this.id = id;
 	}
-	
+
 	public Long getGroup_id() {
 		return group_id;
 	}
@@ -133,7 +117,7 @@ public class Post implements  IAclObject{
 	public void setLatest_activity_timestamp(Date latest_activity_timestamp) {
 		this.latest_activity_timestamp = latest_activity_timestamp;
 	}
-	
+
 	public int getLike_count() {
 		return like_count;
 	}
@@ -149,7 +133,4 @@ public class Post implements  IAclObject{
 	public void setTask_link_id(Long task_link_id) {
 		this.task_link_id = task_link_id;
 	}
-	
-	
-
 }

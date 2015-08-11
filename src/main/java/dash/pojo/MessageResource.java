@@ -30,7 +30,7 @@ import dash.service.UserService;
  * @Author CarlSteven
  */
 
-@Component
+@Component("messageResource")
 @Path("/messages")
 public class MessageResource {
 
@@ -133,6 +133,7 @@ public class MessageResource {
 								"http://localhost:8080/services/posts/"
 										+ String.valueOf(createPostId)).build();
 			}
+
 		}
 		// message is existent and a full update should occur
 		messageService.updateFullyMessage(post);
@@ -195,4 +196,5 @@ public class MessageResource {
 		return Response.status(Response.Status.NO_CONTENT)// 204
 				.entity("Post successfully removed from database").build();
 	}
+
 }

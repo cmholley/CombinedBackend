@@ -1,7 +1,6 @@
 package dash.pojo;
 
 import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -26,16 +25,17 @@ public class Group implements  IAclObject{
     @Column(name = "id")
 	private Long id;
 
+	@Column(name = "name")
 	@XmlElement(name = "name")
-    @Column(name = "name")
 	private String name;
-	
+
+	@Column(name = "description")
 	@XmlElement(name = "description")
-    @Column(name = "description")
 	private String description;
-	
+
+	@GeneratedValue
+	@Column(name = "creation_timestamp")
 	@XmlElement(name = "creation_timestamp")
-    @Column(name = "creation_timestamp")
 	private Date creation_timestamp;
 	
 	@Override
@@ -44,17 +44,6 @@ public class Group implements  IAclObject{
 	}
 	
 	public Group(){}
-
-	@Override
-	public String toString() {
-		return "Group ["
-				+ (id != null ? "id=" + id + ", " : "")
-				+ (name != null ? "name=" + name + ", " : "")
-				+ (description != null ? "description=" + description + ", "
-						: "")
-				+ (creation_timestamp != null ? "creation_timestamp="
-						+ creation_timestamp : "") + "]";
-	}
 
 	public void setId(Long id) {
 		this.id = id;

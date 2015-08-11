@@ -13,22 +13,15 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.stereotype.Component;
 
 /**
- * The Entry Point will not redirect to any sort of Login - it will return the 401
+ * The Entry Point will not redirect to any sort of Login - it will return the
+ * 401
  */
-@Component
+@Component("restAuthenticationEntryPoint")
 public final class RestAuthenticationEntryPoint extends
-BasicAuthenticationEntryPoint {
+		BasicAuthenticationEntryPoint {
 
 	private static final RequestMatcher requestMatcher = new ELRequestMatcher(
 			"hasHeader('X-Requested-With','XMLHttpRequest')");
-
-	public RestAuthenticationEntryPoint() {
-		super();
-	}
-
-	public RestAuthenticationEntryPoint(final String realmName) {
-		setRealmName(realmName);
-	}
 
 	@Override
 	public void commence(final HttpServletRequest request,
@@ -38,11 +31,9 @@ BasicAuthenticationEntryPoint {
 
 		if (isPreflight(request)) {
 			response.setStatus(HttpServletResponse.SC_OK);
-		} else if (isRestRequest(request)) {
-			response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
-					"Unauthorized");
 		} else {
-			super.commence(request, response, authException);
+			response.getWriter().append("NO");
+			response.sendError(418, "Unauthorized.");
 		}
 	}
 

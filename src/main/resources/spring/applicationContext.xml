@@ -4,10 +4,8 @@
 	xsi:schemaLocation="
 		http://www.springframework.org/schema/beans	
 		http://www.springframework.org/schema/beans/spring-beans.xsd
-	 
 		http://www.springframework.org/schema/tx 
 		http://www.springframework.org/schema/tx/spring-tx.xsd
-		 
 		http://www.springframework.org/schema/context
 		http://www.springframework.org/schema/context/spring-context.xsd">
 
@@ -17,15 +15,19 @@
 
 	<!-- ************ JPA configuration *********** -->
 	<tx:annotation-driven transaction-manager="transactionManager" />
-	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
-		<property name="entityManagerFactory" ref="entityManagerFactory" />
+	<bean id="transactionManagerCHW" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="entityManagerFactoryCHW" />
+	</bean>
+	
+	<bean id="transactionManagerVMA" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="entityManagerFactoryVMA" />
 	</bean>
 
-	<bean id="entityManagerFactory"
+	<bean id="entityManagerFactoryCHW"
 		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
 		<property name="persistenceXmlLocation" value="classpath:config/persistence-dash.xml" />
-		<property name="persistenceUnitName" value="dashPersistence" />
-		<property name="dataSource" ref="dashDS" />
+		<property name="persistenceUnitName" value="dashPersistence_CHW" />
+		<property name="dataSource" ref="dashDS_CHW" />
 		<property name="packagesToScan" value="dash.*" />
 		<property name="jpaVendorAdapter">
 			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
@@ -34,8 +36,32 @@
 			</bean>
 		</property>
 	</bean>
+	
+		<bean id="entityManagerFactoryVMA"
+		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="persistenceXmlLocation" value="classpath:config/persistence-dash.xml" />
+		<property name="persistenceUnitName" value="dashPersistence_VMA" />
+		<property name="dataSource" ref="dashDS_VMA" />
+		<property name="packagesToScan" value="dash.*" />
+		<property name="jpaVendorAdapter">
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+				<property name="showSql" value="false" />
+				<property name="databasePlatform" value="org.hibernate.dialect.MySQLDialect" />
+			</bean>
+		</property>
+	</bean>
 
-
+	<bean id="dashDS_CHW" class="org.springframework.jndi.JndiObjectFactoryBean"
+		scope="singleton">
+		<property name="jndiName" value="java:comp/env/jdbc/dashDB_CHW" />
+		<property name="resourceRef" value="true" />
+	</bean>
+	
+	<bean id="dashDS_VMA" class="org.springframework.jndi.JndiObjectFactoryBean"
+		scope="singleton">
+		<property name="jndiName" value="java:comp/env/jdbc/dashDB_VMA" />
+		<property name="resourceRef" value="true" />
+	</bean>
 
 	<bean id="userDao" class="dash.dao.UserDaoJPA2Impl" />
 	<bean id="userService" class="dash.service.UserServiceDbAccessImpl" />
@@ -116,5 +142,4 @@
 		<property name="from" value="formbuildertest@gmail.com" />
 		<property name="subject" value="Test" />
 	</bean>
-
 </beans>

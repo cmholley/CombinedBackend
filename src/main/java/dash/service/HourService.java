@@ -38,34 +38,40 @@ public interface HourService {
 	 * @return list with hours corresponding to search criteria
 	 * @throws AppException
 	 */
-	
-	public List<Hour> getHours(int numberOfHours, Long startIndex, boolean onlyPending) throws AppException;
-	
-	public List<Hour> getHoursByGroup(int numberOfHours, Long startIndex, Group group, boolean onlyPending) throws AppException;
-	
-	
+
+	public List<Hour> getHours(int numberOfHours, Long startIndex,
+			boolean onlyPending) throws AppException;
+
+	public List<Hour> getHoursByGroup(int numberOfHours, Long startIndex,
+			Group group, boolean onlyPending) throws AppException;
+
 	@PostFilter("hasPermission(filterObject, 'WRITE')")
 	public List<Hour> getHoursByMyUser(int numberOfHours, Long startIndex, boolean onlyPending) throws AppException;
-	
+
+
+	/**
+	 * Returns a hour given its id
+	 *
+	 * @param id
+	 * @return
+	 * @throws AppException
+	 */
 	public Hour getHourById(Long id) throws AppException;
 
 	/*
 	 * ******************** Update related methods **********************
 	 */
-	@PreAuthorize("hasPermission(#hour, 'write') or hasPermission(#group, 'manager') or hasRole('ROLE_MODERATOR')")
+	@PreAuthorize("hasPermission(#hour, 'write') or hasPermission(#group, 'manager') or hasRole('ROLE_ADMIN_APPROVER')")
 	public void updateFullyHour(Hour hour, Group group) throws AppException;
-	
-	@PreAuthorize("hasPermission(#hour, 'write') or hasRole('ROLE_MODERATOR')")
+
+	@PreAuthorize("hasPermission(#hour, 'write') or hasRole('ROLE_ADMIN_APPROVER')")
 	public void updateFullyHour(Hour hour) throws AppException;
 
-	@PreAuthorize("hasPermission(#hour, 'write') or hasPermission(#group, 'manager') or hasRole('ROLE_MODERATOR')")
+	@PreAuthorize("hasPermission(#hour, 'write') or hasPermission(#group, 'manager') or hasRole('ROLE_ADMIN_APPROVER')")
 	public void updatePartiallyHour(Hour hour, Group group) throws AppException;
-	
-	@PreAuthorize("hasPermission(#hour, 'write') or hasRole('ROLE_MODERATOR')")
+
+	@PreAuthorize("hasPermission(#hour, 'write') or hasRole('ROLE_ADMIN_APPROVER')")
 	public void updatePartiallyHour(Hour hour) throws AppException;
-	
-	@PreAuthorize("hasRole('ROLE_MODERATOR')")
-	public void approveHour(Hour hour,  boolean approved) throws AppException;
 
 	@PreAuthorize("hasPermission(#group, 'manager') or hasRole('ROLE_MODERATOR')")
 	public void approveHour(Hour hour, Group group, boolean approved) throws AppException;
@@ -90,7 +96,9 @@ public interface HourService {
 	@PreAuthorize("hasPermission(#hour, 'read') or hasRole('ROLE_ADMIN')")
 	public List<String> getFileNames(Hour hour);
 	
-	
+	@PreAuthorize("hasRole('ROLE_ADMIN_APPROVER')")
+	public void approveHour(Hour hour, boolean approved) throws AppException;
+
 	/*
 	 * ******************** Helper methods **********************
 	 */

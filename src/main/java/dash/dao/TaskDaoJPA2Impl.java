@@ -13,18 +13,21 @@ import javax.persistence.Query;
 import javax.persistence.TemporalType;
 import javax.persistence.TypedQuery;
 
+import org.springframework.stereotype.Component;
+
 import dash.pojo.Group;
 import dash.pojo.Task;
 
+@Component("taskDao")
 public class TaskDaoJPA2Impl implements TaskDao {
 	@PersistenceContext(unitName = "dashPersistence")
 	private EntityManager entityManager;
 
-
 	@Override
 	public List<Task> getTasks(String orderByInsertionDate) {
 		String sqlString = null;
-		if(orderByInsertionDate != null){
+
+		if (orderByInsertionDate != null) {
 			sqlString = "SELECT u FROM Task u"
 					+ " ORDER BY u.creation_timestamp " + orderByInsertionDate;
 		} else {
@@ -42,13 +45,17 @@ public class TaskDaoJPA2Impl implements TaskDao {
 		Calendar calendar = new GregorianCalendar();
 		calendar.setTimeZone(TimeZone.getTimeZone("UTC+6"));
 		calendar.setTime(new Date());
-		calendar.add(Calendar.DATE, -numberOfDaysToLookBack);//substract the number of days to look back
+		calendar.add(Calendar.DATE, -numberOfDaysToLookBack);// substract the
+																// number of
+																// days to look
+																// back
 		Date dateToLookBackAfter = calendar.getTime();
 
 		String qlString = "SELECT u FROM Task u where u.creation_timestamp > :dateToLookBackAfter ORDER BY u.creation_timestamp DESC";
-		TypedQuery<Task> query = entityManager.createQuery(qlString,
-				Task.class);
-		query.setParameter("dateToLookBackAfter", dateToLookBackAfter, TemporalType.DATE);
+		TypedQuery<Task> query = entityManager
+				.createQuery(qlString, Task.class);
+		query.setParameter("dateToLookBackAfter", dateToLookBackAfter,
+				TemporalType.DATE);
 
 		return query.getResultList();
 	}
@@ -70,55 +77,45 @@ public class TaskDaoJPA2Impl implements TaskDao {
 
 	@Override
 	public Task getTaskByName(String name) {
-
 		try {
 			String qlString = "SELECT u FROM Task u WHERE u.name = ?1";
 			TypedQuery<Task> query = entityManager.createQuery(qlString,
 					Task.class);
 			query.setParameter(1, name);
-
 			return query.getSingleResult();
 		} catch (NoResultException e) {
 			return null;
 		}
 	}
-	
+
 	@Override
 	public List<Task> getTasksByGroup(Group group) {
-		
 		String qlString = "SELECT u FROM Task u where u.group_id = ?1";
-		TypedQuery<Task> query = entityManager.createQuery(qlString,
-				Task.class);
-		query.setParameter(1, group.getId() );
-
+		TypedQuery<Task> query = entityManager
+				.createQuery(qlString, Task.class);
+		query.setParameter(1, group.getId());
 		return query.getResultList();
 	}
 
-
 	@Override
 	public void deleteTaskById(Task groupPojo) {
-
-		Task group = entityManager
-				.find(Task.class, groupPojo.getId());
+		Task group = entityManager.find(Task.class, groupPojo.getId());
 		entityManager.remove(group);
-
 	}
 
 	@Override
 	public Long createTask(Task group) {
-
 		group.setCreation_timestamp(new Date());
 		entityManager.persist(group);
 		entityManager.flush();// force insert to receive the id of the group
-
 		// Give admin over new group to the new group
-
 		return group.getId();
 	}
 
 	@Override
 	public void updateTask(Task group) {
-		//TODO think about partial update and full update
+		// TODO think about partial update and full update
+
 		entityManager.merge(group);
 	}
 
@@ -141,5 +138,4 @@ public class TaskDaoJPA2Impl implements TaskDao {
 		}
 	}
 
-	
 }

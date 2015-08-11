@@ -2,16 +2,16 @@ package dash.dao;
 
 import java.util.Date;
 import java.util.List;
-
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-
+import org.springframework.stereotype.Component;
 import dash.pojo.Comment;
 import dash.pojo.Post;
 
+@Component("commentDao")
 public class CommentDaoJPA2Impl implements CommentDao {
 	@PersistenceContext(unitName = "dashPersistence")
 	private EntityManager entityManager;
