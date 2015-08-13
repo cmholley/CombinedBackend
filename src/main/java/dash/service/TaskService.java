@@ -23,7 +23,7 @@ public interface TaskService {
 	 * @throws AppException
 	 */
 	@PreAuthorize("hasPermission(#group, 'member') or hasPermission(#group, 'MANAGER') or hasRole('ROLE_MODERATOR')")
-	public Long createTask(Task task, Group group) throws AppException;
+	public Long createTask(Task task, Group group, int ds) throws AppException;
 
 	/*
 	 * ******************* Read related methods ********************
@@ -66,14 +66,14 @@ public interface TaskService {
 
 	@PreAuthorize("hasPermission(#task, 'MANAGER') or hasPermission(#group, 'manager') "
 			+ "or hasRole('ROLE_MODERATOR')")
-	public void updatePartiallyTask(Task task, Group group) throws AppException;
+	public void updatePartiallyTask(Task task, Group group, int ds) throws AppException;
 
 	/*
 	 * ******************** Delete related methods **********************
 	 */
 	@PreAuthorize("hasPermission(#task, 'MANAGER') or hasPermission(#group, 'manager') "
 			+ "or hasRole('ROLE_MODERATOR')")
-	public void deleteTask(Task task, Group group) throws AppException;
+	public void deleteTask(Task task, Group group, int ds) throws AppException;
 	
 	/**
 	 * *******************  ACL related methods  ****************************

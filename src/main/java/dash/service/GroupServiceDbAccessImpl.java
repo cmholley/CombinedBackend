@@ -44,8 +44,7 @@ public class GroupServiceDbAccessImpl extends ApplicationObjectSupport
 	private TaskService taskService;
 	/********************* Create related methods implementation ***********************/
 	@Override
-	@Transactional
-	public Long createGroup(Group group) throws AppException {
+	public Long createGroup(Group group, int ds) throws AppException {
 
 		validateInputForCreation(group);
 
@@ -61,7 +60,7 @@ public class GroupServiceDbAccessImpl extends ApplicationObjectSupport
 					AppConstants.DASH_POST_URL);
 		}
 
-		long groupId = groupDao.createGroup(group);
+		long groupId = groupDao.createGroup(group, ds);
 		group.setId(groupId);
 		aclController.createACL(group);
 		aclController.createAce(group, CustomPermission.MANAGER);
@@ -172,7 +171,7 @@ public class GroupServiceDbAccessImpl extends ApplicationObjectSupport
 		try {
 			Group verifyGroupExistenceById = getGroupById(group.getId());
 			copyAllProperties(verifyGroupExistenceById, group);
-			groupDao.updateGroup(group);
+			groupDao.updateGroup(group, 0);
 		}
 		catch (AppException ex) {
 			throw new AppException(Response.Status.NOT_FOUND.getStatusCode(),
@@ -201,21 +200,20 @@ public class GroupServiceDbAccessImpl extends ApplicationObjectSupport
 	/********************* DELETE-related methods implementation ***********************/
 
 	@Override
-	@Transactional
-	public void deleteGroup(Group group) {
-		groupDao.deleteGroupById(group);
+	public void deleteGroup(Group group, int ds) {
+		groupDao.deleteGroupById(group, ds);
 		aclController.deleteACL(group);
 
 	}
 
 	@Override
 	@Transactional
-	public void updatePartiallyGroup(Group group) throws AppException {
+	public void updatePartiallyGroup(Group group, int ds) throws AppException {
 		
 		try {
 			Group verifyGroupExistenceById = getGroupById(group.getId());
 			copyPartialProperties(verifyGroupExistenceById, group);
-			groupDao.updateGroup(verifyGroupExistenceById);		}
+			groupDao.updateGroup(verifyGroupExistenceById, ds);		}
 		catch (AppException ex){
 			throw new AppException(Response.Status.NOT_FOUND.getStatusCode(),
 					404,

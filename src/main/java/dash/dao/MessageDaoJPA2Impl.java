@@ -21,14 +21,17 @@ import dash.pojo.Task;
 @Component("messageDao")
 public class MessageDaoJPA2Impl implements MessageDao {
 	@PersistenceContext(unitName = "dashPersistenceCHW")
-	private EntityManager entityManager;
+	private EntityManager entityManagerCHW;
+	
+	@PersistenceContext(unitName = "dashPersistenceVMA")
+	private EntityManager entityManagerVMA;
 
 	@Override
 	public List<Message> getMessages(int numberOfMessages, Long startIndex) {
 		String sqlString = null;		
 		sqlString = "SELECT u FROM Message u"
 				+ " ORDER BY u.creation_timestamp ASC";
-		TypedQuery<Message> query = entityManager.createQuery(sqlString,
+		TypedQuery<Message> query = entityManagerCHW.createQuery(sqlString,
 				Message.class);
 		query.setFirstResult(startIndex.intValue());
 		query.setMaxResults(numberOfMessages);
@@ -41,7 +44,7 @@ public class MessageDaoJPA2Impl implements MessageDao {
 			Long startIndex, Task task) {
 		String qlString = "SELECT u FROM Message u where u.task_id = ?1 "
 				+ "ORDER BY u.creation_timestamp ASC";
-		TypedQuery<Message> query = entityManager.createQuery(qlString,
+		TypedQuery<Message> query = entityManagerCHW.createQuery(qlString,
 				Message.class);
 		query.setFirstResult(startIndex.intValue());
 		query.setMaxResults(numberOfMessages);
@@ -57,7 +60,7 @@ public class MessageDaoJPA2Impl implements MessageDao {
 	public int getNumberOfMessages() {
 		try {
 			String qlString = "SELECT COUNT(*) FROM message";
-			TypedQuery<Message> query = entityManager.createQuery(qlString,
+			TypedQuery<Message> query = entityManagerCHW.createQuery(qlString,
 					Message.class);
 
 
@@ -71,7 +74,7 @@ public class MessageDaoJPA2Impl implements MessageDao {
 	public Message getMessageById(Long id) {
 		try {
 			String qlString = "SELECT u FROM Message u WHERE u.id = ?1";
-			TypedQuery<Message> query = entityManager.createQuery(qlString,
+			TypedQuery<Message> query = entityManagerCHW.createQuery(qlString,
 					Message.class);
 
 			query.setParameter(1, id);
@@ -83,19 +86,33 @@ public class MessageDaoJPA2Impl implements MessageDao {
 	}
 
 	@Override
-	public void deleteMessageById(Message message) {
-		Message entity = entityManager
+	public void deleteMessageById(Message message, int ds) {
+		if(ds == 1){
+			Message entity = entityManagerCHW
 				.find(Message.class, message.getId());
-		entityManager.remove(entity);		
+		entityManagerCHW.remove(entity);
+		}
+		else if(ds == 2){
+			Message entity = entityManagerVMA
+					.find(Message.class, message.getId());
+			entityManagerVMA.remove(entity);
+		}
+				
 
 	}
 
 	@Override
-	public Long createMessage(Message message) {
+	public Long createMessage(Message message, int ds) {
 		message.setCreation_timestamp(new Date());
-
-		entityManager.persist(message);
-		entityManager.flush();// force insert to receive the id of the post
+		if(ds == 1){
+			entityManagerCHW.persist(message);
+		entityManagerCHW.flush();// force insert to receive the id of the post
+		}
+		else if(ds == 2){
+			entityManagerVMA.persist(message);
+			entityManagerVMA.flush();// force insert to receive the id of the post
+		}
+		
 
 		// Give admin over new post to the new post
 
@@ -103,16 +120,21 @@ public class MessageDaoJPA2Impl implements MessageDao {
 	}
 
 	@Override
-	public void updateMessage(Message message) {
+	public void updateMessage(Message message, int ds) {
 		//TODO think about partial update and full update
 //		message.setCreation_timestamp(new Date());
-
-		entityManager.merge(message);
+		if(ds == 1){
+			entityManagerCHW.merge(message);
+		}
+		else if(ds == 2){
+			entityManagerVMA.merge(message);
+		}
+		
 	}
 
 	@Override
 	public void deleteMessages() {
-		Query query = entityManager.createNativeQuery("TRUNCATE TABLE message");
+		Query query = entityManagerCHW.createNativeQuery("TRUNCATE TABLE message");
 		query.executeUpdate();
 	}
 

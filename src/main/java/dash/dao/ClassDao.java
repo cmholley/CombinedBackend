@@ -33,11 +33,11 @@ public interface ClassDao {
 	 */
 	public List<Class> getClassesByLocation(Location location);
 
-	public void deleteClass(Class clas);
+	public void deleteClass(Class clas, int ds);
 
-	public Long createClass(Class classentity);
+	public Long createClass(Class classentity, int ds);
 
-	public void updateClass(Class classentity);
+	public void updateClass(Class classentity, int ds);
 
 	/** removes all classes */
 	public void deleteClasses();

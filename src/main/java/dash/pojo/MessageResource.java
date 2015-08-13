@@ -24,6 +24,7 @@ import dash.errorhandling.AppException;
 import dash.service.MessageService;
 import dash.service.TaskService;
 import dash.service.UserService;
+import dash.tran.MessageSwitch;
 
 /*
  * Message Resource
@@ -42,14 +43,17 @@ public class MessageResource {
 
 	@Autowired
 	private UserService userService;
-
+	
+	@Autowired
+	private MessageSwitch messageTran;
+	
 	@POST
 	@Consumes({ MediaType.APPLICATION_JSON })
 	@Produces({ MediaType.TEXT_HTML })
-	public Response createMessage(Message message) throws AppException {
+	public Response createMessage(Message message, @QueryParam(value = "ds") int ds) throws AppException {
 		Task task = new Task();
 		task.setId(message.getTask_id());
-		Long createMessageId = messageService.createMessage(message, task);
+		Long createMessageId = messageTran.createMessage(message, task, ds);
 		return Response.status(Response.Status.CREATED)
 				// 201
 				.entity("A new message has been created")
@@ -113,7 +117,7 @@ public class MessageResource {
 	@Path("{id}")
 	@Consumes({ MediaType.APPLICATION_JSON })
 	@Produces({ MediaType.TEXT_HTML })
-	public Response putPostById(@PathParam("id") Long id, Message post)
+	public Response putPostById(@PathParam("id") Long id, Message post, @QueryParam(value = "ds") int ds)
 			throws AppException {
 
 		Task task = new Task();
@@ -124,7 +128,7 @@ public class MessageResource {
 
 			if (ex.getStatus() == 404) {
 				// resource not existent yet, and should be created
-				Long createPostId = messageService.createMessage(post, task);
+				Long createPostId = messageService.createMessage(post, task, 0);
 				return Response
 						.status(Response.Status.CREATED)
 						// 201
@@ -136,7 +140,7 @@ public class MessageResource {
 
 		}
 		// message is existent and a full update should occur
-		messageService.updateFullyMessage(post);
+		messageTran.updateFullyMessage(post, ds);
 		return Response.status(Response.Status.OK)
 				// 200
 				.entity("The post with id: " + id + " has been fully updated.")
@@ -149,7 +153,7 @@ public class MessageResource {
 	@Path("{id}")
 	@Consumes({ MediaType.APPLICATION_JSON })
 	@Produces({ MediaType.TEXT_HTML })
-	public Response partialUpdatePost(@PathParam("id") Long id, Message message)
+	public Response partialUpdatePost(@PathParam("id") Long id, Message message, @QueryParam(value = "ds") int ds)
 			throws AppException {
 		message.setId(id);
 		Task task = new Task();
@@ -163,7 +167,7 @@ public class MessageResource {
 		} else {
 			task.setId(message.getTask_id());
 		}
-		messageService.updatePartiallyMessage(message, task);
+		messageTran.updatePartiallyMessage(message, task, ds);
 		return Response
 				.status(Response.Status.OK)
 				// 200
@@ -178,7 +182,7 @@ public class MessageResource {
 	@DELETE
 	@Path("{id}")
 	@Produces({ MediaType.TEXT_HTML })
-	public Response deletePost(@PathParam("id") Long id) throws AppException {
+	public Response deletePost(@PathParam("id") Long id, @QueryParam(value = "ds") int ds) throws AppException {
 		Task task = new Task();
 		Message message = messageService.getMessageById(id);
 		if (message.getTask_id() == null) {
@@ -192,7 +196,7 @@ public class MessageResource {
 			task.setId(message.getTask_id());
 		}
 
-		messageService.deleteMessage(message);
+		messageTran.deleteMessage(message, ds);
 		return Response.status(Response.Status.NO_CONTENT)// 204
 				.entity("Post successfully removed from database").build();
 	}

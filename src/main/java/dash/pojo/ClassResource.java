@@ -22,6 +22,7 @@ import dash.errorhandling.AppException;
 import dash.service.ClassService;
 import dash.service.LocationService;
 import dash.service.UserService;
+import dash.tran.ClassSwitch;
 
 @Component
 @Path("/classes")
@@ -29,7 +30,10 @@ public class ClassResource {
 
 	@Autowired
 	private ClassService classService;
-
+	
+	@Autowired
+	private ClassSwitch classTran;
+	
 	@Autowired
 	private UserService userService;
 
@@ -39,11 +43,11 @@ public class ClassResource {
 	@POST
 	@Consumes({ MediaType.APPLICATION_JSON })
 	@Produces({ MediaType.TEXT_HTML })
-	public Response createClass(Class clas) throws AppException {
+	public Response createClass(Class clas, @QueryParam(value = "ds") int ds) throws AppException {
 		Location verifyLocation = locationService
 				.verifyLocationExistenceById(clas.getLocation_id());
 		if (verifyLocation != null) {
-			Long createClassId = classService.createClass(clas, verifyLocation);
+			Long createClassId = classService.createClass(clas, verifyLocation, ds);
 			return Response
 					.status(Response.Status.CREATED)
 					// 201
@@ -125,7 +129,7 @@ public class ClassResource {
 	@Path("{id}")
 	@Consumes({ MediaType.APPLICATION_JSON })
 	@Produces({ MediaType.TEXT_HTML })
-	public Response partialUpdateTask(@PathParam("id") Long id, Class clas)
+	public Response partialUpdateTask(@PathParam("id") Long id, Class clas, @QueryParam(value = "ds") int ds)
 			throws AppException {
 		clas.setId(id);
 		try {
@@ -141,7 +145,7 @@ public class ClassResource {
 		Location verifyLocation = locationService
 				.verifyLocationExistenceById(clas.getLocation_id());
 		if (verifyLocation != null) {
-			classService.updatePartiallyClass(clas, verifyLocation);
+			classTran.updatePartiallyClass(clas, verifyLocation, ds);
 			return Response
 					.status(Response.Status.OK)
 					// 200
@@ -160,7 +164,7 @@ public class ClassResource {
 	@DELETE
 	@Path("{id}")
 	@Produces({ MediaType.TEXT_HTML })
-	public Response deleteClass(@PathParam("id") Long id) throws AppException {
+	public Response deleteClass(@PathParam("id") Long id, @QueryParam(value = "ds") int ds) throws AppException {
 
 		try {
 			Class clas = classService.getClassById(id);
@@ -168,7 +172,7 @@ public class ClassResource {
 			Location verifyLocation = locationService
 					.verifyLocationExistenceById(clas.getLocation_id());
 			if (verifyLocation != null) {
-				classService.deleteClass(clas, verifyLocation);
+				classTran.deleteClass(clas, verifyLocation, ds);
 				return Response.status(Response.Status.NO_CONTENT)
 						// 204
 						.entity("Class successfully removed from database")

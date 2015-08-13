@@ -36,11 +36,11 @@ public interface UserDao {
 
 	public String getRoleByName(String username);
 	
-	public void deleteUserById(User user);
+	public void deleteUserById(User user, int ds);
 
-	public Long createUser(User user);
+	public Long createUser(User user, int ds);
 
-	public void updateUser(User user);
+	public void updateUser(User user, int ds);
 	
 	public void updateUserRole(String role, String username);
 

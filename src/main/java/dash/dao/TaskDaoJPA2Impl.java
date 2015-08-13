@@ -21,7 +21,10 @@ import dash.pojo.Task;
 @Component("taskDao")
 public class TaskDaoJPA2Impl implements TaskDao {
 	@PersistenceContext(unitName = "dashPersistenceCHW")
-	private EntityManager entityManager;
+	private EntityManager entityManagerCHW;
+	
+	@PersistenceContext(unitName = "dashPersistenceVMA")
+	private EntityManager entityManagerVMA;
 
 	@Override
 	public List<Task> getTasks(String orderByInsertionDate) {
@@ -33,7 +36,7 @@ public class TaskDaoJPA2Impl implements TaskDao {
 		} else {
 			sqlString = "SELECT u FROM Task u";
 		}
-		TypedQuery<Task> query = entityManager.createQuery(sqlString,
+		TypedQuery<Task> query = entityManagerCHW.createQuery(sqlString,
 				Task.class);
 
 		return query.getResultList();
@@ -52,7 +55,7 @@ public class TaskDaoJPA2Impl implements TaskDao {
 		Date dateToLookBackAfter = calendar.getTime();
 
 		String qlString = "SELECT u FROM Task u where u.creation_timestamp > :dateToLookBackAfter ORDER BY u.creation_timestamp DESC";
-		TypedQuery<Task> query = entityManager
+		TypedQuery<Task> query = entityManagerCHW
 				.createQuery(qlString, Task.class);
 		query.setParameter("dateToLookBackAfter", dateToLookBackAfter,
 				TemporalType.DATE);
@@ -65,7 +68,7 @@ public class TaskDaoJPA2Impl implements TaskDao {
 
 		try {
 			String qlString = "SELECT u FROM Task u WHERE u.id = ?1";
-			TypedQuery<Task> query = entityManager.createQuery(qlString,
+			TypedQuery<Task> query = entityManagerCHW.createQuery(qlString,
 					Task.class);
 			query.setParameter(1, id);
 
@@ -79,7 +82,7 @@ public class TaskDaoJPA2Impl implements TaskDao {
 	public Task getTaskByName(String name) {
 		try {
 			String qlString = "SELECT u FROM Task u WHERE u.name = ?1";
-			TypedQuery<Task> query = entityManager.createQuery(qlString,
+			TypedQuery<Task> query = entityManagerCHW.createQuery(qlString,
 					Task.class);
 			query.setParameter(1, name);
 			return query.getSingleResult();
@@ -91,37 +94,58 @@ public class TaskDaoJPA2Impl implements TaskDao {
 	@Override
 	public List<Task> getTasksByGroup(Group group) {
 		String qlString = "SELECT u FROM Task u where u.group_id = ?1";
-		TypedQuery<Task> query = entityManager
+		TypedQuery<Task> query = entityManagerCHW
 				.createQuery(qlString, Task.class);
 		query.setParameter(1, group.getId());
 		return query.getResultList();
 	}
 
 	@Override
-	public void deleteTaskById(Task groupPojo) {
-		Task group = entityManager.find(Task.class, groupPojo.getId());
-		entityManager.remove(group);
+	public void deleteTaskById(Task groupPojo, int ds) {
+		
+		if(ds == 1){
+			Task group = entityManagerCHW.find(Task.class, groupPojo.getId());
+			entityManagerCHW.remove(group);
+		}
+		else if(ds == 2){
+			Task group = entityManagerVMA.find(Task.class, groupPojo.getId());
+			entityManagerVMA.remove(group);
+		}
+		
 	}
 
 	@Override
-	public Long createTask(Task group) {
+	public Long createTask(Task group, int ds) {
 		group.setCreation_timestamp(new Date());
-		entityManager.persist(group);
-		entityManager.flush();// force insert to receive the id of the group
+		if(ds == 1){
+			entityManagerCHW.persist(group);
+		entityManagerCHW.flush();// force insert to receive the id of the group
+		}
+		if(ds == 2){
+			entityManagerVMA.persist(group);
+			entityManagerVMA.flush();// force insert to receive the id of the group
+		}
+		
 		// Give admin over new group to the new group
 		return group.getId();
 	}
 
 	@Override
-	public void updateTask(Task group) {
+	public void updateTask(Task group, int ds) {
 		// TODO think about partial update and full update
+		if(ds == 1){
+			entityManagerCHW.merge(group);
+		}
+		else if(ds == 2){
+			entityManagerVMA.merge(group);
+		}
 
-		entityManager.merge(group);
+		
 	}
 
 	@Override
 	public void deleteTasks() {
-		Query query = entityManager.createNativeQuery("TRUNCATE TABLE group");
+		Query query = entityManagerCHW.createNativeQuery("TRUNCATE TABLE group");
 		query.executeUpdate();
 	}
 
@@ -129,7 +153,7 @@ public class TaskDaoJPA2Impl implements TaskDao {
 	public int getNumberOfTasks() {
 		try {
 			String qlString = "SELECT COUNT(*) FROM group";
-			TypedQuery<Task> query = entityManager.createQuery(qlString,
+			TypedQuery<Task> query = entityManagerCHW.createQuery(qlString,
 					Task.class);
 
 			return query.getFirstResult();

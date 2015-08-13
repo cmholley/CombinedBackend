@@ -19,7 +19,7 @@ public interface MessageService {
 	 * Create a new post and set the current user as owner and manager.
 	 */
 	@PreAuthorize("hasPermission(#task, 'member') or hasPermission(#task, 'manager')")
-	public Long createMessage(Message message, Task task) throws AppException;
+	public Long createMessage(Message message, Task task, int ds) throws AppException;
 
 	/*
 	 * Create multiple posts as ROOT, testing purposes only.
@@ -50,17 +50,17 @@ public interface MessageService {
 	 * ******************** Update related methods **********************
 	 */
 	@PreAuthorize("hasPermission(#message, 'write') or hasRole('ROLE_MODERATOR')")
-	public void updateFullyMessage(Message message) throws AppException;
+	public void updateFullyMessage(Message message, int ds) throws AppException;
 
 	@PreAuthorize("(hasPermission(#message, 'write') or hasRole('ROLE_MODERATOR')) and (hasPermission(#task, 'member') or hasPermission(#task, 'manager'))")
-	public void updatePartiallyMessage(Message message, Task task)
+	public void updatePartiallyMessage(Message message, Task task, int ds)
 			throws AppException;
 
 	/*
 	 * ******************** Delete related methods **********************
 	 */
 	@PreAuthorize("hasPermission(#message, 'delete') or hasRole('ROLE_MODERATOR')")
-	public void deleteMessage(Message message);
+	public void deleteMessage(Message message, int ds);
 	/*
 	 * ******************** Helper methods **********************
 	 */

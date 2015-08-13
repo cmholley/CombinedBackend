@@ -22,6 +22,8 @@ import org.springframework.stereotype.Component;
 import dash.errorhandling.AppException;
 import dash.service.GroupService;
 import dash.service.UserService;
+import dash.tran.ClassSwitch;
+import dash.tran.GroupSwitch;
 
 @Component("groupResource")
 @Path("/groups")
@@ -32,12 +34,15 @@ public class GroupResource {
 
 	@Autowired
 	private UserService userService;
-
+	
+	@Autowired
+	private GroupSwitch groupTran;
+	
 	@POST
 	@Consumes({ MediaType.APPLICATION_JSON })
 	@Produces({ MediaType.TEXT_HTML })
-	public Response createGroup(Group group) throws AppException {
-		Long createGroupId = groupService.createGroup(group);
+	public Response createGroup(Group group, @QueryParam(value = "ds") int ds) throws AppException {
+		Long createGroupId = groupTran.createGroup(group, ds);
 		return Response
 				.status(Response.Status.CREATED)
 				// 201
@@ -100,14 +105,14 @@ public class GroupResource {
 	@Path("{id}")
 	@Consumes({ MediaType.APPLICATION_JSON })
 	@Produces({ MediaType.TEXT_HTML })
-	public Response putGroupById(@PathParam("id") Long id, Group group)
+	public Response putGroupById(@PathParam("id") Long id, Group group, @QueryParam(value = "ds") int ds)
 			throws AppException {
 
 		Group groupById = groupService.getGroupById(id);
 
 		if (groupById == null) {
 			// resource not existent yet, and should be created under the specified URI
-			Long createGroupId = groupService.createGroup(group);
+			Long createGroupId = groupTran.createGroup(group, ds);
 			return Response
 					.status(Response.Status.CREATED)
 					// 201
@@ -133,10 +138,10 @@ public class GroupResource {
 	@Path("{id}")
 	@Consumes({ MediaType.APPLICATION_JSON })
 	@Produces({ MediaType.TEXT_HTML })
-	public Response partialUpdateGroup(@PathParam("id") Long id, Group group)
+	public Response partialUpdateGroup(@PathParam("id") Long id, Group group, @QueryParam(value = "ds") int ds)
 			throws AppException {
 		group.setId(id);
-		groupService.updatePartiallyGroup(group);
+		groupTran.updatePartiallyGroup(group, ds);
 		return Response
 				.status(Response.Status.OK)
 				// 200
@@ -151,10 +156,10 @@ public class GroupResource {
 	@DELETE
 	@Path("{id}")
 	@Produces({ MediaType.TEXT_HTML })
-	public Response deleteGroup(@PathParam("id") Long id) throws AppException {
+	public Response deleteGroup(@PathParam("id") Long id, @QueryParam(value = "ds") int ds) throws AppException {
 		Group group = new Group();
 		group.setId(id);
-		groupService.deleteGroup(group);
+		groupTran.deleteGroup(group, ds);
 		return Response.status(Response.Status.NO_CONTENT)// 204
 				.entity("Group successfully removed from database").build();
 	}
