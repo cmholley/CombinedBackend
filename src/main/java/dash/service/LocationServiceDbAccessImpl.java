@@ -44,8 +44,7 @@ LocationService {
 	
 	/********************* Create related methods implementation ***********************/
 	@Override
-	@Transactional
-	public Long createLocation(Location location, String user_name) throws AppException {
+	public Long createLocation(Location location, String user_name, int ds) throws AppException {
 
 		validateInputForCreation(location);
 
@@ -61,7 +60,7 @@ LocationService {
 							AppConstants.DASH_POST_URL);
 		}
 
-		long locationId = locationDao.createLocation(location);
+		long locationId = locationDao.createLocation(location, ds);
 		location.setId(locationId);
 		aclController.createACL(location);
 		if (user_name != null)
@@ -72,10 +71,9 @@ LocationService {
 	}
 	
 	@Override
-	@Transactional
-	public void createLocations(List<Location> locations, String user_name) throws AppException {
+	public void createLocations(List<Location> locations, String user_name, int ds) throws AppException {
 		for (Location location : locations) {
-			createLocation(location, user_name);
+			createLocation(location, user_name, ds);
 		}
 	}
 

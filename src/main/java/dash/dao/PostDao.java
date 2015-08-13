@@ -24,11 +24,11 @@ public interface PostDao {
 	 */
 	public Post getPostById(Long id);
 	
-	public void deletePostById(Post post);
+	public void deletePostById(Post post, int ds);
 
-	public Long createPost(Post post);
+	public Long createPost(Post post, int ds);
 
-	public void updatePost(Post post);
+	public void updatePost(Post post, int ds);
 
 	/** removes all posts */
 	public void deletePosts();

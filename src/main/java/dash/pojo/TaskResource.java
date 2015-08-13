@@ -22,6 +22,8 @@ import org.springframework.stereotype.Component;
 import dash.errorhandling.AppException;
 import dash.service.TaskService;
 import dash.service.UserService;
+import dash.tran.PostSwitch;
+import dash.tran.TaskSwitch;
 
 @Component
 @Path("/tasks")
@@ -33,13 +35,16 @@ public class TaskResource {
 	@Autowired
 	private UserService userService;
 	
+	@Autowired
+	private TaskSwitch taskTran;
+	
 	@POST
 	@Consumes({ MediaType.APPLICATION_JSON })
 	@Produces({ MediaType.TEXT_HTML })
-	public Response createTask(Task task) throws AppException {
+	public Response createTask(Task task, @QueryParam(value = "ds") int ds) throws AppException {
 		Group group= new Group();
 		group.setId(task.getGroup_id());
-		Long createTaskId = taskService.createTask(task, group);
+		Long createTaskId = taskTran.createTask(task, group, ds);
 		return Response.status(Response.Status.CREATED)
 				// 201
 				.entity("A new task has been created")
@@ -137,7 +142,7 @@ public class TaskResource {
 		if (taskById == null) {
 			// resource not existent yet, and should be created under the
 			// specified URI
-			Long createTaskId = taskService.createTask(task, group);
+			Long createTaskId = taskService.createTask(task, group, 0);
 			return Response
 					.status(Response.Status.CREATED)
 					// 201
@@ -165,7 +170,7 @@ public class TaskResource {
 	@Path("{id}")
 	@Consumes({ MediaType.APPLICATION_JSON })
 	@Produces({ MediaType.TEXT_HTML })
-	public Response partialUpdateTask(@PathParam("id") Long id, Task task)
+	public Response partialUpdateTask(@PathParam("id") Long id, Task task, @QueryParam(value = "ds") int ds)
 			throws AppException {
 		task.setId(id);
 		Group group = new Group();
@@ -173,7 +178,7 @@ public class TaskResource {
 			taskService.getTaskById(id);
 			group.setId(task.getGroup_id());
 			//TODO: needs to be tested, something is not right here
-			taskService.updatePartiallyTask(task, group);
+			taskTran.updatePartiallyTask(task, group, ds);
 			return Response
 					.status(Response.Status.OK)
 					// 200
@@ -193,13 +198,13 @@ public class TaskResource {
 	@DELETE
 	@Path("{id}")
 	@Produces({ MediaType.TEXT_HTML })
-	public Response deleteTask(@PathParam("id") Long id)
+	public Response deleteTask(@PathParam("id") Long id, @QueryParam(value = "ds") int ds)
 			throws AppException {
 		Group group = new Group();
 		try {
 			Task task = taskService.getTaskById(id);
 			group.setId(task.getGroup_id());
-			taskService.deleteTask(task, group);
+			taskTran.deleteTask(task, group, ds);
 		} catch (AppException ex) {
 			return Response
 					.status(Response.Status.BAD_REQUEST)

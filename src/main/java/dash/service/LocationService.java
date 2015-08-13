@@ -19,13 +19,13 @@ public interface LocationService {
 	 *Create a new location. If user is set, it's set this user as owner and manager, otherwise Admin will be the owner.
 	 */
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	public Long createLocation(Location location, String user_name) throws AppException;
+	public Long createLocation(Location location, String user_name, int ds) throws AppException;
 
 	/*
 	 * Create multiple locations as ADMIN.
 	 */
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	public void createLocations(List<Location> locations, String user_name) throws AppException;
+	public void createLocations(List<Location> locations, String user_name, int ds) throws AppException;
 	
 	/*
 	 * ******************* Read related methods ********************

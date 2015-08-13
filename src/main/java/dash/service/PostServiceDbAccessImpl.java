@@ -42,10 +42,9 @@ public class PostServiceDbAccessImpl extends ApplicationObjectSupport implements
 
 	/********************* Create related methods implementation ***********************/
 	@Override
-	@Transactional
-	public Long createPost(Post post, Group group) throws AppException {
+	public Long createPost(Post post, Group group, int ds) throws AppException {
 
-		long postId = postDao.createPost(post);
+		long postId = postDao.createPost(post, ds);
 		post.setId(postId);
 		aclController.createACL(post);
 		aclController.createAce(post, CustomPermission.READ);
@@ -127,14 +126,13 @@ public class PostServiceDbAccessImpl extends ApplicationObjectSupport implements
 	/********************* UPDATE-related methods implementation ***********************/
 
 	@Override
-	@Transactional
-	public void updateFullyPost(Post post) throws AppException {
+	public void updateFullyPost(Post post, int ds) throws AppException {
 		try {
 			//verify whether post exists
 			Post verifyPostExistenceById = getPostById(post.getId());
 
 			copyAllProperties(verifyPostExistenceById, post);
-			postDao.updatePost(verifyPostExistenceById);
+			postDao.updatePost(verifyPostExistenceById, ds);
 		} catch (AppException ex) {
 
 			throw new AppException(
@@ -169,10 +167,9 @@ public class PostServiceDbAccessImpl extends ApplicationObjectSupport implements
 	/********************* DELETE-related methods implementation ***********************/
 
 	@Override
-	@Transactional
-	public void deletePost(Post post) {
+	public void deletePost(Post post, int ds) {
 
-		postDao.deletePostById(post);
+		postDao.deletePostById(post, ds);
 		aclController.deleteACL(post);
 
 	}

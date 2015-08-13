@@ -31,11 +31,11 @@ public interface GroupDao {
 	public Group getGroupByName(String name);
 
 
-	public void deleteGroupById(Group group);
+	public void deleteGroupById(Group group, int ds);
 
-	public Long createGroup(Group group);
+	public Long createGroup(Group group, int ds);
 
-	public void updateGroup(Group group);
+	public void updateGroup(Group group, int ds);
 
 	/** removes all groups */
 	public void deleteGroups();

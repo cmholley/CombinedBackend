@@ -25,7 +25,7 @@ import dash.pojo.Location;
 
 public class ClassDaoJPA2Impl implements ClassDao {
 	@PersistenceContext(unitName = "dashPersistenceCHW")
-	private EntityManager entityManager;
+	private EntityManager entityManagerCHW;
 	
 	@PersistenceContext(unitName = "dashPersistenceVMA")
 	private EntityManager entityManagerVMA;
@@ -40,7 +40,7 @@ public class ClassDaoJPA2Impl implements ClassDao {
 		} else {
 			sqlString = "SELECT u FROM Class u";
 		}
-		TypedQuery<Class> query = entityManager.createQuery(sqlString,
+		TypedQuery<Class> query = entityManagerCHW.createQuery(sqlString,
 				Class.class);
 
 		return query.getResultList();
@@ -56,7 +56,7 @@ public class ClassDaoJPA2Impl implements ClassDao {
 		Date dateToLookBackAfter = calendar.getTime();
 
 		String qlString = "SELECT u FROM Class u where u.creation_timestamp > :dateToLookBackAfter ORDER BY u.creation_timestamp DESC";
-		TypedQuery<Class> query = entityManager.createQuery(qlString,
+		TypedQuery<Class> query = entityManagerCHW.createQuery(qlString,
 				Class.class);
 		query.setParameter("dateToLookBackAfter", dateToLookBackAfter, TemporalType.DATE);
 
@@ -68,7 +68,7 @@ public class ClassDaoJPA2Impl implements ClassDao {
 
 		try {
 			String qlString = "SELECT u FROM Class u WHERE u.id = ?1";
-			TypedQuery<Class> query = entityManager.createQuery(qlString,
+			TypedQuery<Class> query = entityManagerCHW.createQuery(qlString,
 					Class.class);
 			query.setParameter(1, id);
 
@@ -83,7 +83,7 @@ public class ClassDaoJPA2Impl implements ClassDao {
 
 		try {
 			String qlString = "SELECT u FROM Class u WHERE u.name = ?1";
-			TypedQuery<Class> query = entityManager.createQuery(qlString,
+			TypedQuery<Class> query = entityManagerCHW.createQuery(qlString,
 					Class.class);
 			query.setParameter(1, name);
 
@@ -97,7 +97,7 @@ public class ClassDaoJPA2Impl implements ClassDao {
 	public List<Class> getClassesByLocation(Location location) {
 		
 		String qlString = "SELECT u FROM Class u where u.location_id = ?1";
-		TypedQuery<Class> query = entityManager.createQuery(qlString,
+		TypedQuery<Class> query = entityManagerCHW.createQuery(qlString,
 				Class.class);
 		query.setParameter(1, location.getId() );
 
@@ -106,40 +106,53 @@ public class ClassDaoJPA2Impl implements ClassDao {
 
 
 	@Override
-	public void deleteClass(Class classPojo) {
-
-		Class clas = entityManager
-				.find(Class.class, classPojo.getId());
-		entityManager.remove(clas);
-
+	public void deleteClass(Class classPojo, int ds) {
+		
+		
+		if(ds == 1){
+			Class clas = entityManagerCHW
+					.find(Class.class, classPojo.getId());
+			entityManagerCHW.remove(clas);
+			}
+			else if (ds == 2){
+				Class clas = entityManagerVMA
+						.find(Class.class, classPojo.getId());
+				entityManagerVMA.remove(clas);
+			}
+		
 	}
 
 	@Override
-	public Long createClass(Class clas) {
+	public Long createClass(Class clas, int ds) {
 
 		clas.setCreation_timestamp(new Date());
-		entityManager.persist(clas);
-		entityManager.flush();// force insert to receive the id of the group
-
+		if(ds == 1){
+		entityManagerCHW.persist(clas);
+		entityManagerCHW.flush();// force insert to receive the id of the user
+		}
+		else if (ds == 2){
+			entityManagerVMA.persist(clas);
+			entityManagerVMA.flush();
+		}
 		// Give admin over new group to the new group
 		return clas.getId();
 	}
 
 	@Override
-	public void updateClass(Class clas) {
-		entityManager.merge(clas);
+	public void updateClass(Class clas, int ds) {
+		entityManagerCHW.merge(clas);
 	}
 
 	@Override
 	public void deleteClasses() {
-		Query query = entityManager.createNativeQuery("TRUNCATE TABLE classes");
+		Query query = entityManagerCHW.createNativeQuery("TRUNCATE TABLE classes");
 		query.executeUpdate();
 	}
 
 	@Override
 	public List<Class> getTodaysClasses() {
 		String qlString = "SELECT u FROM Class u WHERE u.time BETWEEN :startTime AND :endTime";
-		TypedQuery<Class> query = entityManager.createQuery(qlString, Class.class);
+		TypedQuery<Class> query = entityManagerCHW.createQuery(qlString, Class.class);
 		
 		Calendar cal;
 		Date startTime, endTime;

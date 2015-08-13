@@ -24,9 +24,9 @@ public interface CommentDao {
 	 */
 	public Comment getCommentById(Long id);
 	
-	public void deleteCommentById(Comment comment);
+	public void deleteCommentById(Comment comment, int ds);
 
-	public Long createComment(Comment comment);
+	public Long createComment(Comment comment, int ds);
 
 	public void updateComment(Comment comment);
 
