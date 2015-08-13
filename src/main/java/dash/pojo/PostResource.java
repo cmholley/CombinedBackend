@@ -24,6 +24,8 @@ import dash.errorhandling.AppException;
 import dash.service.GroupService;
 import dash.service.PostService;
 import dash.service.UserService;
+import dash.tran.MessageSwitch;
+import dash.tran.PostSwitch;
 
 @Component("postResource")
 @Path("/posts")
@@ -37,14 +39,17 @@ public class PostResource {
 
 	@Autowired
 	GroupService groupService;
-
+	
+	@Autowired
+	private PostSwitch postTran;
+	
 	@POST
 	@Consumes({ MediaType.APPLICATION_JSON })
 	@Produces({ MediaType.TEXT_HTML })
-	public Response createPost(Post post) throws AppException {
+	public Response createPost(Post post, @QueryParam(value = "ds") int ds) throws AppException {
 		Group group = new Group();
 		group.setId(post.getGroup_id());
-		Long createPostId = postService.createPost(post, group);
+		Long createPostId = postTran.createPost(post, group, ds);
 		return Response
 				.status(Response.Status.CREATED)
 				// 201
@@ -119,7 +124,7 @@ public class PostResource {
 	@Path("{id}")
 	@Consumes({ MediaType.APPLICATION_JSON })
 	@Produces({ MediaType.TEXT_HTML })
-	public Response putPostById(@PathParam("id") Long id, Post post)
+	public Response putPostById(@PathParam("id") Long id, Post post, @QueryParam(value = "ds") int ds)
 			throws AppException {
 
 		Group group = new Group();
@@ -129,7 +134,7 @@ public class PostResource {
 		} catch (AppException ex) {
 			if (ex.getStatus() == 404) {
 				// post not existent yet, will be created
-				Long createPostId = postService.createPost(post, group);
+				Long createPostId = postService.createPost(post, group, 0);
 				return Response
 						.status(Response.Status.CREATED)
 						// 201
@@ -140,7 +145,7 @@ public class PostResource {
 
 		// resource is existent and a full update should occur
 		post.setId(id);
-		postService.updateFullyPost(post);
+		postTran.updateFullyPost(post, ds);
 		return Response.status(Response.Status.OK)
 				// 200
 				.entity("The post with id: " + id + " has been fully updated.")
@@ -175,10 +180,10 @@ public class PostResource {
 	@DELETE
 	@Path("{id}")
 	@Produces({ MediaType.TEXT_HTML })
-	public Response deletePost(@PathParam("id") Long id) throws AppException {
+	public Response deletePost(@PathParam("id") Long id, @QueryParam(value = "ds") int ds) throws AppException {
 		Post post = postService.getPostById(id);
 
-		postService.deletePost(post);
+		postService.deletePost(post, ds);
 		return Response.status(Response.Status.NO_CONTENT)// 204
 				.entity("Post successfully removed from database").build();
 	}

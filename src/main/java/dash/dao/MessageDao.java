@@ -25,11 +25,11 @@ public interface MessageDao {
 	 */
 	public Message getMessageById(Long id);
 	
-	public void deleteMessageById(Message message);
+	public void deleteMessageById(Message message, int ds);
 
-	public Long createMessage(Message message);
+	public Long createMessage(Message message, int ds);
 
-	public void updateMessage(Message message);
+	public void updateMessage(Message message, int ds);
 
 	/** removes all posts */
 	public void deleteMessages();

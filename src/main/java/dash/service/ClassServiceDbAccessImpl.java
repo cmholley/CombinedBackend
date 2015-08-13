@@ -54,11 +54,10 @@ public class ClassServiceDbAccessImpl extends ApplicationObjectSupport
 	
 	/********************* Create related methods implementation ***********************/
 	@Override
-	@Transactional
-	public Long createClass(Class clas, Location loc) throws AppException {
+	public Long createClass(Class clas, Location loc, int ds) throws AppException {
 
 		validateInputForCreation(clas);
-		long classId = classDao.createClass(clas);
+		long classId = classDao.createClass(clas, ds);
 		clas.setId(classId);
 		aclController.createACL(clas);
 		aclController.createAce(clas, CustomPermission.MANAGER);
@@ -70,7 +69,7 @@ public class ClassServiceDbAccessImpl extends ApplicationObjectSupport
 	public void createClasses(List<Class> classes, Location location)
 			throws AppException {
 		for (Class clas : classes) {
-			createClass(clas, location);
+			createClass(clas, location, 1);
 		}
 	}
 
@@ -167,24 +166,22 @@ public class ClassServiceDbAccessImpl extends ApplicationObjectSupport
 
 	/********************* DELETE-related methods implementation ***********************/
 	@Override
-	@Transactional
-	public void deleteClass(Class clas, Location loc) throws AppException {
+	public void deleteClass(Class clas, Location loc, int ds) throws AppException {
 
-		classDao.deleteClass(clas);
+		classDao.deleteClass(clas, ds);
 		aclController.deleteACL(clas);
 
 	}
 
 	/****************** Update Related Methods ***********************/
 	@Override
-	@Transactional
-	public void updatePartiallyClass(Class clas, Location loc)
+	public void updatePartiallyClass(Class clas, Location loc, int ds)
 			throws AppException {
 		try {
 			// do a validation to verify existence of the resource
 			Class verifyClassExistenceById = getClassById(clas.getId());
 			copyPartialProperties(verifyClassExistenceById, clas);
-			classDao.updateClass(verifyClassExistenceById);
+			classDao.updateClass(verifyClassExistenceById, ds);
 		} catch (AppException ex) {
 			throw new AppException(
 					Response.Status.NOT_FOUND.getStatusCode(),

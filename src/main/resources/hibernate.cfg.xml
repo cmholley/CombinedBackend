@@ -12,7 +12,7 @@
 		</property>
 
 		<property name="hibernate.connection.url">
-			jdbc:mysql://localhost:3306/CHWApp?allowMultiQueries=true
+			jdbc:mysql://localhost:3306/CHWBackend?allowMultiQueries=true
 		</property>
 		<property name="hibernate.connection.username">
 			sqluser

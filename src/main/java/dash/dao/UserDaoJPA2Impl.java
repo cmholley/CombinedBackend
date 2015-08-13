@@ -23,8 +23,10 @@ public class UserDaoJPA2Impl implements
 UserDao {
 
 	@PersistenceContext(unitName = "dashPersistenceCHW")
-	private EntityManager entityManager;
-
+	private EntityManager entityManagerCHW;
+	
+	@PersistenceContext(unitName = "dashPersistenceVMA")
+	private EntityManager entityManagerVMA;
 
 	@Override
 	public List<User> getUsers(String orderByInsertionDate) {
@@ -35,7 +37,7 @@ UserDao {
 		} else {
 			sqlString = "SELECT u FROM User u";
 		}
-		TypedQuery<User> query = entityManager.createQuery(sqlString,
+		TypedQuery<User> query = entityManagerCHW.createQuery(sqlString,
 				User.class);
 
 		return query.getResultList();
@@ -51,7 +53,7 @@ UserDao {
 		Date dateToLookBackAfter = calendar.getTime();
 
 		String qlString = "SELECT u FROM User u where u.insertionDate > :dateToLookBackAfter ORDER BY u.insertionDate DESC";
-		TypedQuery<User> query = entityManager.createQuery(qlString,
+		TypedQuery<User> query = entityManagerCHW.createQuery(qlString,
 				User.class);
 		query.setParameter("dateToLookBackAfter", dateToLookBackAfter, TemporalType.DATE);
 
@@ -63,7 +65,7 @@ UserDao {
 
 		try {
 			String qlString = "SELECT u FROM User u WHERE u.id = ?1";
-			TypedQuery<User> query = entityManager.createQuery(qlString,
+			TypedQuery<User> query = entityManagerCHW.createQuery(qlString,
 					User.class);
 			query.setParameter(1, id);
 
@@ -78,7 +80,7 @@ UserDao {
 
 		try {
 			String qlString = "SELECT u FROM User u WHERE u.username = ?1";
-			TypedQuery<User> query = entityManager.createQuery(qlString,
+			TypedQuery<User> query = entityManagerCHW.createQuery(qlString,
 					User.class);
 			query.setParameter(1, name);
 
@@ -93,7 +95,7 @@ UserDao {
 		
 		try{
 			String qlString = "SELECT u.authority FROM AuthorityEntity u  WHERE u.username= ?1";
-			TypedQuery<String> query = entityManager.createQuery(qlString, String.class);
+			TypedQuery<String> query = entityManagerCHW.createQuery(qlString, String.class);
 			query.setParameter(1, username);
 			
 			return query.getSingleResult();
@@ -105,21 +107,35 @@ UserDao {
 	}
 
 	@Override
-	public void deleteUserById(User userPojo) {
-
-		User user = entityManager
+	public void deleteUserById(User userPojo, int ds) {
+		
+		if(ds == 1){
+			User user = entityManagerCHW
 				.find(User.class, userPojo.getId());
-		entityManager.remove(user);
+		entityManagerCHW.remove(user);
+		}
+		else if(ds == 2){
+			User user = entityManagerVMA
+					.find(User.class, userPojo.getId());
+			entityManagerVMA.remove(user);
+		}
+		
 
 	}
 
 	@Override
-	public Long createUser(User user) {
+	public Long createUser(User user, int ds) {
 
 		user.setInsertionDate(new Date());
-		entityManager.persist(user);
-		entityManager.flush();// force insert to receive the id of the user
-
+		
+		if(ds == 1){
+			entityManagerCHW.persist(user);
+		entityManagerCHW.flush();// force insert to receive the id of the user		
+			}
+		else if(ds == 2){
+			entityManagerVMA.persist(user);
+			entityManagerVMA.flush();// force insert to receive the id of the user		
+			}
 		// create hashed folder name for documents
 				String fileName = user.getId().toString();
 				int hashcode = fileName.hashCode();
@@ -133,33 +149,44 @@ UserDao {
 				path.append(File.separator);
 				path.append(fileName);
 				user.setPicture(path.toString());
-				entityManager.merge(user);
+				entityManagerCHW.merge(user);
 		// Give admin over new user to the new user
-
-		return user.getId();
+		 if(ds == 1){
+				entityManagerCHW.merge(user);
+					}
+		else if(ds == 2){
+				entityManagerCHW.merge(user);		
+					}
+	return user.getId();
 	}
 
 	@Override
-	public void updateUser(User user) {
+	public void updateUser(User user, int ds) {
 		//TODO think about partial update and full update
-		entityManager.merge(user);
+		if(ds == 1){
+			entityManagerCHW.merge(user);
+		}
+		else if(ds == 2){
+			entityManagerVMA.merge(user);
+		}
+		
 	}
 	
 	public void updateUserRole(String role, String username){
 		String qlString = "SELECT u FROM Authority u WHERE u.username = ?1";
-		TypedQuery<AuthorityEntity> query = entityManager.createQuery(qlString,
+		TypedQuery<AuthorityEntity> query = entityManagerCHW.createQuery(qlString,
 				AuthorityEntity.class);
 		query.setParameter(1, username);
 
 		AuthorityEntity authority= query.getSingleResult();
 		authority.setAuthority(role);
-		entityManager.merge(authority);
+		entityManagerCHW.merge(authority);
 	}
 	
 
 	@Override
 	public void deleteUsers() {
-		Query query = entityManager.createNativeQuery("TRUNCATE TABLE users");
+		Query query = entityManagerCHW.createNativeQuery("TRUNCATE TABLE users");
 		query.executeUpdate();
 	}
 
@@ -167,7 +194,7 @@ UserDao {
 	public int getNumberOfUsers() {
 		try {
 			String qlString = "SELECT COUNT(*) FROM users";
-			TypedQuery<User> query = entityManager.createQuery(qlString,
+			TypedQuery<User> query = entityManagerCHW.createQuery(qlString,
 					User.class);
 
 			return query.getFirstResult();

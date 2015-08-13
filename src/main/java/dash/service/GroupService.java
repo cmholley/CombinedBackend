@@ -13,7 +13,7 @@ public interface GroupService {
 	 * 
 	 * Create a new group and set the current user as owner and manager.
 	 */
-	public Long createGroup(Group group) throws AppException;
+	public Long createGroup(Group group, int ds) throws AppException;
 
 	/*
 	 * ******************* Read related methods ********************
@@ -50,13 +50,13 @@ public interface GroupService {
 	public void updateFullyGroup(Group group) throws AppException;
 
 	@PreAuthorize("hasPermission(#group, 'MANAGER') or hasRole('ROLE_MODERATOR')")
-	public void updatePartiallyGroup(Group group) throws AppException;
+	public void updatePartiallyGroup(Group group, int ds) throws AppException;
 
 	/*
 	 * ******************** Delete related methods **********************
 	 */
 	@PreAuthorize("hasPermission(#group, 'MANAGER') or hasRole('ROLE_MODERATOR')")
-	public void deleteGroup(Group group);
+	public void deleteGroup(Group group, int ds);
 	/**
 	 * ACL related methods
 	 */

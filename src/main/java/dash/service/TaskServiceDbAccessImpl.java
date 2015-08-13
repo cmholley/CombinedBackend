@@ -39,8 +39,7 @@ public class TaskServiceDbAccessImpl extends ApplicationObjectSupport implements
 
 	/********************* Create related methods implementation ***********************/
 	@Override
-	@Transactional
-	public Long createTask(Task task, Group group) throws AppException {
+	public Long createTask(Task task, Group group, int ds) throws AppException {
 
 		validateInputForCreation(task);
 
@@ -56,7 +55,7 @@ public class TaskServiceDbAccessImpl extends ApplicationObjectSupport implements
 					AppConstants.DASH_POST_URL);
 		}
 
-		long taskId = taskDao.createTask(task);
+		long taskId = taskDao.createTask(task, ds);
 		task.setId(taskId);
 		aclController.createACL(task);
 		aclController.createAce(task, CustomPermission.MANAGER);
@@ -178,7 +177,7 @@ public class TaskServiceDbAccessImpl extends ApplicationObjectSupport implements
 		try {
 			Task verifyTaskExistenceById = getTaskById(task.getId());
 			copyAllProperties(verifyTaskExistenceById, task);
-			taskDao.updateTask(verifyTaskExistenceById);
+			taskDao.updateTask(verifyTaskExistenceById, 0);
 		} catch (AppException ex) {
 			throw new AppException(
 					Response.Status.NOT_FOUND.getStatusCode(),
@@ -216,10 +215,9 @@ public class TaskServiceDbAccessImpl extends ApplicationObjectSupport implements
 	/********************* DELETE-related methods implementation ***********************/
 
 	@Override
-	@Transactional
-	public void deleteTask(Task task, Group group) throws AppException {
+	public void deleteTask(Task task, Group group, int ds) throws AppException {
 
-		taskDao.deleteTaskById(task);
+		taskDao.deleteTaskById(task, ds);
 		aclController.deleteACL(task);
 
 	}
@@ -227,13 +225,12 @@ public class TaskServiceDbAccessImpl extends ApplicationObjectSupport implements
 	/****************** Update Related Methods ***********************/
 
 	@Override
-	@Transactional
-	public void updatePartiallyTask(Task task, Group group) throws AppException {
+	public void updatePartiallyTask(Task task, Group group, int ds) throws AppException {
 
 		try {
 			Task verifyTaskExistenceById = getTaskById(task.getId());
 			copyPartialProperties(verifyTaskExistenceById, task);
-			taskDao.updateTask(verifyTaskExistenceById);
+			taskDao.updateTask(verifyTaskExistenceById, ds);
 		} catch (AppException ex) {
 
 			throw new AppException(

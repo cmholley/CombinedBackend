@@ -71,8 +71,8 @@ public class UsersResource {
 	@POST
 	@Consumes({ MediaType.APPLICATION_JSON })
 	@Produces({ MediaType.TEXT_HTML })
-	public Response createUser(User user) throws AppException {
-		Long createUserId = userService.createUser(user);
+	public Response createUser(User user, @QueryParam(value = "ds") int ds) throws AppException {
+		Long createUserId = userService.createUser(user, ds);
 		return Response
 				.status(Response.Status.CREATED)
 				// 201
@@ -113,7 +113,7 @@ public class UsersResource {
 				homePhone, cellPhone, email, picturePath,
 				profile_picture_filename);
 
-		Long createUserid = userService.createUser(user);
+		Long createUserid = userService.createUser(user, 0);
 
 		return Response
 				.status(Response.Status.CREATED)
@@ -136,8 +136,8 @@ public class UsersResource {
 	@POST
 	@Path("list")
 	@Consumes({ MediaType.APPLICATION_JSON })
-	public Response createUsers(List<User> users) throws AppException {
-		userService.createUsers(users);
+	public Response createUsers(List<User> users, @QueryParam(value = "ds") int ds) throws AppException {
+		userService.createUsers(users, ds);
 		return Response.status(Response.Status.CREATED) // 201
 				.entity("List of users was successfully created").build();
 	}
@@ -235,7 +235,7 @@ public class UsersResource {
 			
 			if (ex.getStatus() == 404) {
 			// user not existent yet
-			Long createUserId = userService.createUser(user);
+			Long createUserId = userService.createUser(user, 0);
 			return Response
 					.status(Response.Status.CREATED)
 					// 201
@@ -246,7 +246,7 @@ public class UsersResource {
 		}
 
 		// resource is existent and a full update should occur
-		userService.updateFullyUser(user);
+		userService.updateFullyUser(user, 0);
 		return Response
 				.status(Response.Status.OK)
 				// 200
@@ -260,10 +260,10 @@ public class UsersResource {
 	@Path("{id}")
 	@Consumes({ MediaType.APPLICATION_JSON })
 	@Produces({ MediaType.TEXT_HTML })
-	public Response partialUpdateUser(@PathParam("id") Long id, User user)
+	public Response partialUpdateUser(@PathParam("id") Long id, User user, @QueryParam(value = "ds") int ds)
 			throws AppException {
 		user.setId(id);
-		userService.updatePartiallyUser(user);
+		userService.updatePartiallyUser(user, ds);
 		return Response.status(Response.Status.OK)
 				// 200
 				.entity("The user you specified has been successfully updated")
@@ -344,10 +344,10 @@ public class UsersResource {
 	@DELETE
 	@Path("{id}")
 	@Produces({ MediaType.TEXT_HTML })
-	public Response deleteUser(@PathParam("id") Long id) throws AppException {
+	public Response deleteUser(@PathParam("id") Long id, @QueryParam(value = "ds") int ds) throws AppException {
 		User user = new User();
 		user.setId(id);
-		userService.deleteUser(user);
+		userService.deleteUser(user, ds);
 		return Response.status(Response.Status.NO_CONTENT)// 204
 				.entity("User successfully removed from database").build();
 	}
@@ -403,7 +403,7 @@ public class UsersResource {
 			path.append(File.separator);
 			path.append(fileName);
 			user.setPicture(path.toString());
-			partialUpdateUser(user.getId(), user);
+			partialUpdateUser(user.getId(), user, 0);
 		}
 
 		if (!userService.getFileNames(user).isEmpty()) {
@@ -423,7 +423,7 @@ public class UsersResource {
 
 		String output = "File uploaded to : " + uploadedFileLocation;
 		user.setProfile_picture_filename(fileDetail.getFileName());
-		userService.updatePartiallyUser(user);
+		userService.updatePartiallyUser(user, 0);
 		return Response.status(200).entity(output).build();
 
 	}
@@ -476,7 +476,7 @@ public class UsersResource {
 
 		String output = "File removed from: " + uploadedFileLocation;
 		user.setProfile_picture_filename("");
-		userService.updatePartiallyUser(user);
+		userService.updatePartiallyUser(user, 0);
 		return Response.status(200).entity(output).build();
 	}
 

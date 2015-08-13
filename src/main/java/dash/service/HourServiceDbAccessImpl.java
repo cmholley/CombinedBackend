@@ -54,10 +54,9 @@ public class HourServiceDbAccessImpl extends ApplicationObjectSupport implements
 
 	/********************* Create related methods implementation ***********************/
 	@Override
-	@Transactional
-	public Long createHour(Hour hour) throws AppException {
+	public Long createHour(Hour hour, int ds) throws AppException {
 		hour.setPending(true);
-		long hourId = hourDao.createHour(hour);
+		long hourId = hourDao.createHour(hour, ds);
 		hour.setId(hourId);
 		aclController.createACL(hour);
 		aclController.createAce(hour, CustomPermission.READ);
@@ -141,7 +140,7 @@ public class HourServiceDbAccessImpl extends ApplicationObjectSupport implements
 		copyAllProperties(verifyHourExistenceById, hour);
 		verifyHourExistenceById.setPending(true);
 		verifyHourExistenceById.setApproved(false);
-		hourDao.updateHour(verifyHourExistenceById);
+		hourDao.updateHour(verifyHourExistenceById, 0);
 	}
 
 	@Override
@@ -174,10 +173,9 @@ public class HourServiceDbAccessImpl extends ApplicationObjectSupport implements
 	/********************* DELETE-related methods implementation ***********************/
 
 	@Override
-	@Transactional
-	public void deleteHour(Hour hour) {
+	public void deleteHour(Hour hour, int ds) {
 
-		hourDao.deleteHourById(hour);
+		hourDao.deleteHourById(hour, ds);
 		aclController.deleteACL(hour);
 
 	}
@@ -191,7 +189,7 @@ public class HourServiceDbAccessImpl extends ApplicationObjectSupport implements
 		copyPartialProperties(verifyHourExistenceById, hour);
 		verifyHourExistenceById.setApproved(false);
 		verifyHourExistenceById.setPending(true);
-		hourDao.updateHour(verifyHourExistenceById);
+		hourDao.updateHour(verifyHourExistenceById, 0);
 
 
 	}
@@ -216,12 +214,11 @@ public class HourServiceDbAccessImpl extends ApplicationObjectSupport implements
 	}
 
 	@Override
-	@Transactional
-	public void approveHour(Hour hour, boolean approved) throws AppException {
+	public void approveHour(Hour hour, boolean approved, int ds) throws AppException {
 
 		hour.setApproved(approved);
 		hour.setPending(false);
-		hourDao.updateHour(hour);
+		hourDao.updateHour(hour, ds);
 		
 		
 	}
@@ -230,7 +227,7 @@ public class HourServiceDbAccessImpl extends ApplicationObjectSupport implements
 	@Transactional
 	public void approveHour(Hour hour, Group group, boolean approved)
 			throws AppException {
-		approveHour(hour, approved);
+		approveHour(hour, approved, 0);
 	}
 	
 	/*----------------------------------------------------------
