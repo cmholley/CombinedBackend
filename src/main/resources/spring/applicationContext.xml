@@ -1,67 +1,66 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:util="http://www.springframework.org/schema/util" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
 	xsi:schemaLocation="
 		http://www.springframework.org/schema/beans	
 		http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/tx 
 		http://www.springframework.org/schema/tx/spring-tx.xsd
 		http://www.springframework.org/schema/context
-		http://www.springframework.org/schema/context/spring-context.xsd">
+		http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/util 
+		http://www.springframework.org/schema/util/spring-util.xsd 
+		http://www.springframework.org/schema/aop 
+		http://www.springframework.org/schema/aop/spring-aop.xsd">
 
 	<import resource="webSecurityConfig.xml" />
-
+	<import resource="aop-context.xml"/>
+	
 	<context:component-scan base-package="dash.*" />
 
-	<!-- ************ JPA configuration *********** -->
-	<tx:annotation-driven transaction-manager="transactionManager" />
-	<bean id="transactionManagerCHW" class="org.springframework.orm.jpa.JpaTransactionManager">
-		<property name="entityManagerFactory" ref="entityManagerFactoryCHW" />
+	<!-- ************ JPA and AOP configuration *********** -->
+	<tx:annotation-driven mode="aspectj"
+		transaction-manager="transactionManager" />
+
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+		<property name="autodetectDataSource" value="false" />
 	</bean>
 
-	<bean id="transactionManagerVMA" class="org.springframework.orm.jpa.JpaTransactionManager">
-		<property name="entityManagerFactory" ref="entityManagerFactoryVMA" />
-	</bean>
-
-	<bean id="entityManagerFactoryCHW"
-		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
-		<property name="persistenceXmlLocation" value="classpath:config/persistence-dash.xml" />
-		<property name="persistenceUnitName" value="dashPersistenceCHW" />
+	<bean id="sessionFactory" class="dash.multitenancy.LocalSessionFactoryBean">
+		<property name="dataSourceMap" ref="datasources" />
 		<property name="dataSource" ref="dashDS_CHW" />
-		<property name="packagesToScan" value="dash.*" />
-		<property name="jpaVendorAdapter">
-			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
-				<property name="showSql" value="true" />
-				<property name="databasePlatform" value="org.hibernate.dialect.MySQLDialect" />
-			</bean>
-		</property>
-		<property name="jpaProperties">
-			<props>
-				<prop key="hibernate.hbm2ddl.auto">update</prop>
-			</props>
+		<property name="hibernateProperties">
+			<map>
+				<entry key="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
+				<entry key="hibernate.show_sql" value="true" />
+				<entry key="hibernate.multiTenancy" value="SCHEMA" />
+				<entry key="hibernate.tenant_identifier_resolver" value-ref="webSessionTenantIdentifierResolver" />
+				<entry key="hibernate.multi_tenant_connection_provider"
+					value-ref="simpleTenantConnectionProvider" />
+			</map>
 		</property>
 
 	</bean>
 
-	<bean id="entityManagerFactoryVMA"
-		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
-		<property name="persistenceXmlLocation" value="classpath:config/persistence-dash.xml" />
-		<property name="persistenceUnitName" value="dashPersistenceVMA" />
-		<property name="dataSource" ref="dashDS_VMA" />
-		<property name="packagesToScan" value="dash.*" />
-		<property name="jpaVendorAdapter">
-			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
-				<property name="showSql" value="false" />
-				<property name="databasePlatform" value="org.hibernate.dialect.MySQLDialect" />
-			</bean>
-		</property>
-		<property name="jpaProperties">
-			<props>
-				<prop key="hibernate.hbm2ddl.auto">update</prop>
-			</props>
-		</property>
-
+	<bean id="webSessionTenantIdentifierResolver"
+		class="dash.multitenancy.WebSessionCurrentTenantIdentifierResolver"
+		scope="request">
+		<aop:scoped-proxy />
 	</bean>
+
+	<bean id="simpleTenantConnectionProvider"
+		class="dash.multitenancy.SimpleMultiTenantConnectionProvider">
+		<property name="dataSourceMap" ref="datasources" />
+	</bean>
+
+	<!-- Map to hold all data sources -->
+	<util:map id="datasources">
+		<entry key="tenantCHW" value-ref="dashDS_CHW" />
+		<entry key="tenantCHW" value-ref="dashDS_VMA" />
+	</util:map>
 
 	<bean id="dashDS_CHW" class="org.springframework.jndi.JndiObjectFactoryBean"
 		scope="singleton">
