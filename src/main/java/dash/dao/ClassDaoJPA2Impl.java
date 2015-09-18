@@ -24,10 +24,10 @@ import dash.pojo.Class;
 import dash.pojo.Location;
 
 public class ClassDaoJPA2Impl implements ClassDao {
-	@PersistenceContext(unitName = "dashPersistenceCHW")
+	
 	private EntityManager entityManager;
 	
-	@PersistenceContext(unitName = "dashPersistenceVMA")
+	
 	private EntityManager entityManagerVMA;
 
 

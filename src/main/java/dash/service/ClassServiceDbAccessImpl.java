@@ -19,6 +19,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.acls.domain.PrincipalSid;
 import org.springframework.security.acls.model.MutableAclService;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import dash.dao.ClassDao;
@@ -31,6 +32,7 @@ import dash.pojo.User;
 import dash.security.CustomPermission;
 import dash.security.GenericAclController;
 
+@Service
 public class ClassServiceDbAccessImpl extends ApplicationObjectSupport
 		implements ClassService {
 
