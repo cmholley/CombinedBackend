@@ -5,10 +5,13 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
-import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
 import dash.pojo.Group;
 import dash.pojo.Post;
 
@@ -16,6 +19,9 @@ import dash.pojo.Post;
 public class PostDaoJPA2Impl implements PostDao {
 	
 	private EntityManager entityManager;
+	
+	@Autowired
+	private SessionFactory sessionFactory;
 
 	@Override
 	public List<Post> getPosts(int numberOfPosts, Long startIndex) {
@@ -53,13 +59,14 @@ public class PostDaoJPA2Impl implements PostDao {
 	@Override
 	public Post getPostById(Long id) {
 
+		
+		
 		try {
 			String qlString = "SELECT u FROM Post u WHERE u.id = ?1";
-			TypedQuery<Post> query = entityManager.createQuery(qlString,
-					Post.class);
+			org.hibernate.Query query = sessionFactory.getCurrentSession().createQuery(qlString);
 			query.setParameter(1, id);
-
-			return query.getSingleResult();
+			
+			return (Post) query.list().get(0);
 		} catch (NoResultException e) {
 			return null;
 		}
@@ -79,8 +86,7 @@ public class PostDaoJPA2Impl implements PostDao {
 
 		post.setCreation_timestamp(new Date());
 		post.setLatest_activity_timestamp(new Date());
-		entityManager.persist(post);
-		entityManager.flush();// force insert to receive the id of the post
+		sessionFactory.getCurrentSession().save(post);
 
 		// Give admin over new post to the new post
 

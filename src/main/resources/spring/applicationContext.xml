@@ -59,7 +59,7 @@
 	<!-- Map to hold all data sources -->
 	<util:map id="datasources">
 		<entry key="tenantCHW" value-ref="dashDS_CHW" />
-		<entry key="tenantCHW" value-ref="dashDS_VMA" />
+		<entry key="tenantVMA" value-ref="dashDS_VMA" />
 	</util:map>
 
 	<bean id="dashDS_CHW" class="org.springframework.jndi.JndiObjectFactoryBean"

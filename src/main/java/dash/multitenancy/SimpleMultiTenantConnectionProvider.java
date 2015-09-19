@@ -5,11 +5,7 @@ import org.hibernate.service.jdbc.connections.spi.AbstractDataSourceBasedMultiTe
 import javax.sql.DataSource;
 import java.util.Map;
 
-/**
- * Created with IntelliJ IDEA.
- * User: vtajzich
- * Date: 8/21/13
- */
+
 public class SimpleMultiTenantConnectionProvider extends AbstractDataSourceBasedMultiTenantConnectionProviderImpl {
 
     private Map<String, DataSource> dataSourceMap;

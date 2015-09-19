@@ -22,6 +22,7 @@ import dash.pojo.Post;
 import dash.security.CustomPermission;
 import dash.security.GenericAclController;
 
+@Transactional
 public class PostServiceDbAccessImpl extends ApplicationObjectSupport implements
 		PostService {
 

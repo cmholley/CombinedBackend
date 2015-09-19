@@ -8,11 +8,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Map;
 
-/**
- * Created with IntelliJ IDEA.
- * User: vtajzich
- * Date: 8/21/13
- */
+
 public class LocalSessionFactoryBean extends org.springframework.orm.hibernate4.LocalSessionFactoryBean {
 
     private Map<String, DataSource> dataSourceMap;
@@ -34,7 +30,7 @@ public class LocalSessionFactoryBean extends org.springframework.orm.hibernate4.
                 export.setDelimiter(";");
 
                 //this must be changed in order to support create, drop, validate etc
-                //export.execute(true, true, false, true);
+                export.execute(true, true, false, true);
 
             } catch (SQLException e) {
                 throw new RuntimeException(e);

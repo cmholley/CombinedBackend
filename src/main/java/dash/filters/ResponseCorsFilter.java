@@ -56,7 +56,7 @@ public class ResponseCorsFilter implements Filter {
 	private String matchOrigin(String origin) {
 		
 		//list of origins to match
-		if (!origin.matches("http://www.housuggest.org|http://housuggest.org|http://localhost:8100"))
+		if (origin == null || !origin.matches("http://www.housuggest.org|http://housuggest.org|http://localhost:8100"))
 			return null;
 		
 	  return origin;

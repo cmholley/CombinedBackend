@@ -8,11 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.servlet.http.HttpServletRequest;
 import java.text.MessageFormat;
 
-/**
- * Created with IntelliJ IDEA.
- * User: vtajzich
- * Date: 8/21/13
- */
+
 public class WebSessionCurrentTenantIdentifierResolver implements CurrentTenantIdentifierResolver {
 
     private static final Logger LOG = LoggerFactory.getLogger(WebSessionCurrentTenantIdentifierResolver.class);
