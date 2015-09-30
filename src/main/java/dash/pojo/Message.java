@@ -45,7 +45,6 @@ public class Message implements IAclObject {
 	
 	@XmlElement(name="content")
     @Column(name="content")
-
 	private String content;
 
 	

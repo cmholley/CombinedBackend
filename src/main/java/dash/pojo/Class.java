@@ -4,6 +4,9 @@ package dash.pojo;
 import java.util.Date;
 import java.util.Set;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -13,7 +16,8 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import dash.helpers.SimpleDateAdapter;
 import dash.security.IAclObject;
 
-
+@Entity
+@Table(name = "class")
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Class implements  IAclObject{
@@ -32,49 +36,62 @@ public class Class implements  IAclObject{
 		Teaching_Skills;
 	}
 	
-	
+	@Column(name="id")
 	@XmlElement(name="id")
 	private Long id;
 	
+	@Column(name="location_id")
 	@XmlElement(name="location_id")
 	private Long location_id;
 	
+	@Column(name="name")
 	@XmlElement(name="name")
 	private String name;
 	
+	@Column(name="description")
 	@XmlElement(name="description")
 	private String description;
 	
+	@Column(name="time")
 	@XmlElement(name="time")
 	@XmlJavaTypeAdapter(SimpleDateAdapter.class)
 	private Date time;
 	
+	@Column(name="duration")
 	@XmlElement(name="duration")
-	private int duration;
+	private Integer duration;
 	
+	@Column(name="room")
 	@XmlElement(name="room")
 	private String room;
 	
+	@Column(name="address")
 	@XmlElement(name="address")
 	private String address;
 	
+	@Column(name="creation_timestamp")
 	@XmlElement(name="creation_timestamp")
 	private Date creation_timestamp;
 	
+	@Column(name="finished")
 	@XmlElement(name="finished")
-	private int finished;
+	private Integer finished;
 	
+	@Column(name="cores")
 	@XmlElement(name="cores")
 	private Set<Cores> cores; //enum
 	
+	@Column(name="forCHW")
 	@XmlElement(name="forCHW")
-	private int forCHW;
+	private Integer forCHW;
 	
+	@Column(name="forCredit")
 	@XmlElement(name="forCredit")
-	private int forCredit;
+	private Integer forCredit;
 	
+	@Column(name="active")
 	@XmlElement(name="active")
-	private int active;
+	private Integer active;
 	
 	
 	public Class(){}
@@ -119,11 +136,11 @@ public class Class implements  IAclObject{
 		this.time = time;
 	}
 
-	public int getDuration() {
+	public Integer getDuration() {
 		return duration;
 	}
 
-	public void setDuration(int duration) {
+	public void setDuration(Integer duration) {
 		this.duration = duration;
 	}
 
@@ -151,36 +168,36 @@ public class Class implements  IAclObject{
 		this.creation_timestamp = creation_timestamp;
 	}
 
-	public int getFinished() {
+	public Integer getFinished() {
 		return finished;
 	}
 
-	public void setFinished(int finished) {
+	public void setFinished(Integer finished) {
 		this.finished = finished;
 	}
 	
 	
-	public int getForCHW() {
+	public Integer getForCHW() {
 		return forCHW;
 	}
 
-	public int getForCredit() {
+	public Integer getForCredit() {
 		return forCredit;
 	}
 
-	public int getActive() {
+	public Integer getActive() {
 		return active;
 	}
 
-	public void setForCHW(int forCHW) {
+	public void setForCHW(Integer forCHW) {
 		this.forCHW = forCHW;
 	}
 
-	public void setForCredit(int forCredit) {
+	public void setForCredit(Integer forCredit) {
 		this.forCredit = forCredit;
 	}
 
-	public void setActive(int active) {
+	public void setActive(Integer active) {
 		this.active = active;
 	}
 

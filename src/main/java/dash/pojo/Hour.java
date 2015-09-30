@@ -53,15 +53,15 @@ public class Hour implements IAclObject {
 	
 	@XmlElement(name="duration")
     @Column(name="duration")
-	private int duration;
+	private Integer duration;
 	
 	@XmlElement(name="approved")
     @Column(name="approved")
-	private boolean approved;
+	private Boolean approved;
 	
 	@XmlElement(name="pending")
     @Column(name="pending")
-	private boolean pending;
+	private Boolean pending;
 
 	/** name of a photo stored at picturePath that is the selected profile photo*/
 	@XmlElement(name= "profile_picture_filename")
@@ -121,11 +121,11 @@ public class Hour implements IAclObject {
 		this.end_time = end_time;
 	}
 
-	public int getDuration() {
+	public Integer getDuration() {
 		return duration;
 	}
 
-	public void setDuration(int duration) {
+	public void setDuration(Integer duration) {
 		this.duration = duration;
 	}
 
@@ -133,11 +133,11 @@ public class Hour implements IAclObject {
 		return approved;
 	}
 
-	public void setApproved(boolean approved) {
+	public void setApproved(Boolean approved) {
 		this.approved = approved;
 	}
 
-	public boolean isPending() {
+	public Boolean isPending() {
 		return pending;
 	}
 

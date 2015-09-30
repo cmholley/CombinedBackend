@@ -44,7 +44,7 @@ public class Task implements IAclObject {
 
 	@XmlElement(name = "duration")
 	@Column(name = "duration")
-	private int duration;
+	private Integer duration;
 
 	@XmlElement(name = "location")
 	@Column(name = "location")
@@ -56,7 +56,7 @@ public class Task implements IAclObject {
 
 	@XmlElement(name = "finished")
 	@Column(name = "finished")
-	private boolean finished;
+	private Boolean finished;
 
 	@XmlElement(name = "badge_id")
 	@Column(name = "badge_id")
@@ -123,11 +123,11 @@ public class Task implements IAclObject {
 		this.time = time;
 	}
 
-	public int getDuration() {
+	public Integer getDuration() {
 		return duration;
 	}
 
-	public void setDuration(int duration) {
+	public void setDuration(Integer duration) {
 		this.duration = duration;
 	}
 
@@ -147,11 +147,11 @@ public class Task implements IAclObject {
 		this.creation_timestamp = creation_timestamp;
 	}
 
-	public boolean getFinished() {
+	public Boolean getFinished() {
 		return finished;
 	}
 
-	public void setFinished(boolean finished) {
+	public void setFinished(Boolean finished) {
 		this.finished = finished;
 	}
 
