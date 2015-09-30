@@ -51,9 +51,9 @@ public class Post implements IAclObject {
     @Column(name="latest_activity_timestamp")
 	private Date latest_activity_timestamp;
 	
-	@XmlElement(name="like_count")
+	@XmlElement(name="like_counts")
     @Column(name="like_counts")
-	private int like_count;
+	private Integer like_count;
 	
 	@XmlElement(name="task_link_id")
     @Column(name="task_link_id")

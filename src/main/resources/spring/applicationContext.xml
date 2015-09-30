@@ -42,7 +42,7 @@
 					value-ref="simpleTenantConnectionProvider" />
 			</map>
 		</property>
-
+		    <property name="configLocation" value="classpath:hibernate.cfg.xml"/>
 	</bean>
 
 	<bean id="webSessionTenantIdentifierResolver"

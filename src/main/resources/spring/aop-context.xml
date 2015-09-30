@@ -10,11 +10,10 @@
         	 based off of naming. Ex all methods called get* will
         	 have a propogation level of SUPPORTS and rollback-for 
         	 any java.lang.Exception -->
-            <tx:method name="exists" propagation="SUPPORTS" rollback-for="java.lang.Exception"/>
-            <tx:method name="find*" propagation="SUPPORTS" rollback-for="java.lang.Exception"/>
-            <tx:method name="get*" propagation="SUPPORTS" rollback-for="java.lang.Exception"/>
-            <tx:method name="*" propagation="REQUIRED" rollback-for="java.lang.Exception"/>
-            <tx:method name="*Commit" propagation="REQUIRES_NEW" rollback-for="java.lang.Exception"/>
+            <!-- all methods starting with 'get' are read-only -->
+            <tx:method name="get*" read-only="true"/>
+            <!-- other methods use the default transaction settings (see below) -->
+            <tx:method name="*"/>
         </tx:attributes>
     </tx:advice>
 

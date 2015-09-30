@@ -8,12 +8,14 @@ import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import dash.pojo.Group;
 import dash.pojo.Post;
+import net.sf.ehcache.hibernate.HibernateUtil;
 
 @Component("postDao")
 public class PostDaoJPA2Impl implements PostDao {
@@ -59,14 +61,12 @@ public class PostDaoJPA2Impl implements PostDao {
 	@Override
 	public Post getPostById(Long id) {
 
-		
-		
+		Session session;
+		Post post;
 		try {
-			String qlString = "SELECT u FROM Post u WHERE u.id = ?1";
-			org.hibernate.Query query = sessionFactory.getCurrentSession().createQuery(qlString);
-			query.setParameter(1, id);
-			
-			return (Post) query.list().get(0);
+            session = sessionFactory.openSession();
+            post =  (Post) session.get(Post.class, id);
+            return post;
 		} catch (NoResultException e) {
 			return null;
 		}

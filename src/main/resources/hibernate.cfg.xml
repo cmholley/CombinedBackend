@@ -10,7 +10,6 @@
 		<property name="hibernate.connection.driver_class">
 			com.mysql.jdbc.Driver
 		</property>
-
 		<property name="hibernate.connection.url">
 			jdbc:mysql://localhost:3306/CHWApp?allowMultiQueries=true
 		</property>
@@ -20,5 +19,9 @@
 		<property name="hibernate.connection.password">
 			hs@SQL2011
 		</property>
+		<property name="hibernate.hbm2ddl.auto">
+			update
+		</property>		
+		<mapping class="dash.pojo.Post"/>
 	</session-factory>
 </hibernate-configuration>
