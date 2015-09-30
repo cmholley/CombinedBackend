@@ -26,10 +26,6 @@ import dash.pojo.Location;
 public class ClassDaoJPA2Impl implements ClassDao {
 	@PersistenceContext(unitName = "dashPersistenceCHW")
 	private EntityManager entityManager;
-	
-	@PersistenceContext(unitName = "dashPersistenceVMA")
-	private EntityManager entityManagerVMA;
-
 
 	@Override
 	public List<Class> getClasses(String orderByInsertionDate) {
@@ -164,14 +160,7 @@ public class ClassDaoJPA2Impl implements ClassDao {
 
 	@Override
 	public List<String> getMembersForClass(Class clas) {
-		Configuration configuration = new Configuration().configure();
-		ServiceRegistry serviceRegistry = new ServiceRegistryBuilder()
-				.applySettings(configuration.getProperties())
-				.buildServiceRegistry();
-		SessionFactory sessionFactory = configuration
-				.buildSessionFactory(serviceRegistry);
-		Session session = sessionFactory.openSession();
-		
+		Session session = entityManager.unwrap(Session.class);
 		String qlString = "SELECT acl_sid.sid FROM acl_entry"
 				+ " JOIN acl_object_identity ON acl_entry.acl_object_identity = acl_object_identity.id"
 				+ " JOIN acl_sid ON acl_entry.sid = acl_sid.id"
