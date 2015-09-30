@@ -22,6 +22,14 @@
 		<property name="hibernate.hbm2ddl.auto">
 			update
 		</property>		
+		<mapping class="dash.pojo.Class"/>
+		<mapping class="dash.pojo.Comment"/>
+		<mapping class="dash.pojo.Group"/>
+		<mapping class="dash.pojo.Hour"/>
+		<mapping class="dash.pojo.Location"/>
+		<mapping class="dash.pojo.Message"/>
 		<mapping class="dash.pojo.Post"/>
+		<mapping class="dash.pojo.Task"/>
+		<mapping class="dash.pojo.User"/>
 	</session-factory>
 </hibernate-configuration>
