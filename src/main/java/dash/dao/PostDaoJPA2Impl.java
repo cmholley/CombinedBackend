@@ -61,11 +61,9 @@ public class PostDaoJPA2Impl implements PostDao {
 	@Override
 	public Post getPostById(Long id) {
 
-		Session session;
-		Post post;
 		try {
-            session = sessionFactory.openSession();
-            post =  (Post) session.get(Post.class, id);
+           Session session = sessionFactory.openSession();
+           Post post =  (Post) session.get(Post.class, id);
             return post;
 		} catch (NoResultException e) {
 			return null;
@@ -86,7 +84,7 @@ public class PostDaoJPA2Impl implements PostDao {
 
 		post.setCreation_timestamp(new Date());
 		post.setLatest_activity_timestamp(new Date());
-		sessionFactory.getCurrentSession().save(post);
+		sessionFactory.getCurrentSession().persist(post);
 
 		// Give admin over new post to the new post
 
