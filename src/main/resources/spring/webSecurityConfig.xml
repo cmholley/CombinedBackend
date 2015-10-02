@@ -13,10 +13,13 @@
 	<!-- Declare intercept patterns -->
 	<security:http auto-config="true" create-session="stateless"
 		use-expressions="true" entry-point-ref="restAuthenticationEntryPoint">
+		<security:custom-filter before="FIRST" ref="tenantFilter" />
 		<security:intercept-url pattern="/**"
 			access="isAuthenticated()" />
 		<security:http-basic />
 	</security:http>
+	
+	<bean id="tenantFilter" class="dash.filters.MultiTenantIdentifierFilter"></bean>
 
 	<!-- Define what you will use as an authentication provider (in our case 
 		securityDataSource) -->
