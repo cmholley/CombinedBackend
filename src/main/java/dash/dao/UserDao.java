@@ -7,8 +7,9 @@ import dash.pojo.User;
 /**
  *
  *
- * @see <a
- *      href="http://www.codingpedia.org/ama/spring-mybatis-integration-example/">http://www.codingpedia.org/ama/spring-mybatis-integration-example/</a>
+ * @see <a href=
+ *      "http://www.codingpedia.org/ama/spring-mybatis-integration-example/">
+ *      http://www.codingpedia.org/ama/spring-mybatis-integration-example/</a>
  */
 public interface UserDao {
 
@@ -35,13 +36,13 @@ public interface UserDao {
 	public User getUserByName(String name);
 
 	public String getRoleByName(String username);
-	
+
 	public void deleteUserById(User user);
 
 	public Long createUser(User user);
 
 	public void updateUser(User user);
-	
+
 	public void updateUserRole(String role, String username);
 
 	/** removes all users */

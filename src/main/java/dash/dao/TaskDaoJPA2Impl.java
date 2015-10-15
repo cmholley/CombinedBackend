@@ -28,13 +28,11 @@ public class TaskDaoJPA2Impl implements TaskDao {
 		String sqlString = null;
 
 		if (orderByInsertionDate != null) {
-			sqlString = "SELECT u FROM Task u"
-					+ " ORDER BY u.creation_timestamp " + orderByInsertionDate;
+			sqlString = "SELECT u FROM Task u" + " ORDER BY u.creation_timestamp " + orderByInsertionDate;
 		} else {
 			sqlString = "SELECT u FROM Task u";
 		}
-		TypedQuery<Task> query = entityManager.createQuery(sqlString,
-				Task.class);
+		TypedQuery<Task> query = entityManager.createQuery(sqlString, Task.class);
 
 		return query.getResultList();
 	}
@@ -52,10 +50,8 @@ public class TaskDaoJPA2Impl implements TaskDao {
 		Date dateToLookBackAfter = calendar.getTime();
 
 		String qlString = "SELECT u FROM Task u where u.creation_timestamp > :dateToLookBackAfter ORDER BY u.creation_timestamp DESC";
-		TypedQuery<Task> query = entityManager
-				.createQuery(qlString, Task.class);
-		query.setParameter("dateToLookBackAfter", dateToLookBackAfter,
-				TemporalType.DATE);
+		TypedQuery<Task> query = entityManager.createQuery(qlString, Task.class);
+		query.setParameter("dateToLookBackAfter", dateToLookBackAfter, TemporalType.DATE);
 
 		return query.getResultList();
 	}
@@ -65,8 +61,7 @@ public class TaskDaoJPA2Impl implements TaskDao {
 
 		try {
 			String qlString = "SELECT u FROM Task u WHERE u.id = ?1";
-			TypedQuery<Task> query = entityManager.createQuery(qlString,
-					Task.class);
+			TypedQuery<Task> query = entityManager.createQuery(qlString, Task.class);
 			query.setParameter(1, id);
 
 			return query.getSingleResult();
@@ -79,8 +74,7 @@ public class TaskDaoJPA2Impl implements TaskDao {
 	public Task getTaskByName(String name) {
 		try {
 			String qlString = "SELECT u FROM Task u WHERE u.name = ?1";
-			TypedQuery<Task> query = entityManager.createQuery(qlString,
-					Task.class);
+			TypedQuery<Task> query = entityManager.createQuery(qlString, Task.class);
 			query.setParameter(1, name);
 			return query.getSingleResult();
 		} catch (NoResultException e) {
@@ -91,8 +85,7 @@ public class TaskDaoJPA2Impl implements TaskDao {
 	@Override
 	public List<Task> getTasksByGroup(Group group) {
 		String qlString = "SELECT u FROM Task u where u.group_id = ?1";
-		TypedQuery<Task> query = entityManager
-				.createQuery(qlString, Task.class);
+		TypedQuery<Task> query = entityManager.createQuery(qlString, Task.class);
 		query.setParameter(1, group.getId());
 		return query.getResultList();
 	}
@@ -129,8 +122,7 @@ public class TaskDaoJPA2Impl implements TaskDao {
 	public int getNumberOfTasks() {
 		try {
 			String qlString = "SELECT COUNT(*) FROM group";
-			TypedQuery<Task> query = entityManager.createQuery(qlString,
-					Task.class);
+			TypedQuery<Task> query = entityManager.createQuery(qlString, Task.class);
 
 			return query.getFirstResult();
 		} catch (NoResultException e) {

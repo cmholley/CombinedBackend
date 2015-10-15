@@ -30,14 +30,12 @@ public class ClassDaoJPA2Impl implements ClassDao {
 	@Override
 	public List<Class> getClasses(String orderByInsertionDate) {
 		String sqlString = null;
-		if(orderByInsertionDate != null){
-			sqlString = "SELECT u FROM Class u"
-					+ " ORDER BY u.creation_timestamp " + orderByInsertionDate;
+		if (orderByInsertionDate != null) {
+			sqlString = "SELECT u FROM Class u" + " ORDER BY u.creation_timestamp " + orderByInsertionDate;
 		} else {
 			sqlString = "SELECT u FROM Class u";
 		}
-		TypedQuery<Class> query = entityManager.createQuery(sqlString,
-				Class.class);
+		TypedQuery<Class> query = entityManager.createQuery(sqlString, Class.class);
 
 		return query.getResultList();
 	}
@@ -48,12 +46,14 @@ public class ClassDaoJPA2Impl implements ClassDao {
 		Calendar calendar = new GregorianCalendar();
 		calendar.setTimeZone(TimeZone.getTimeZone("UTC+6"));
 		calendar.setTime(new Date());
-		calendar.add(Calendar.DATE, -numberOfDaysToLookBack);//substract the number of days to look back
+		calendar.add(Calendar.DATE, -numberOfDaysToLookBack);// substract the
+																// number of
+																// days to look
+																// back
 		Date dateToLookBackAfter = calendar.getTime();
 
 		String qlString = "SELECT u FROM Class u where u.creation_timestamp > :dateToLookBackAfter ORDER BY u.creation_timestamp DESC";
-		TypedQuery<Class> query = entityManager.createQuery(qlString,
-				Class.class);
+		TypedQuery<Class> query = entityManager.createQuery(qlString, Class.class);
 		query.setParameter("dateToLookBackAfter", dateToLookBackAfter, TemporalType.DATE);
 
 		return query.getResultList();
@@ -64,8 +64,7 @@ public class ClassDaoJPA2Impl implements ClassDao {
 
 		try {
 			String qlString = "SELECT u FROM Class u WHERE u.id = ?1";
-			TypedQuery<Class> query = entityManager.createQuery(qlString,
-					Class.class);
+			TypedQuery<Class> query = entityManager.createQuery(qlString, Class.class);
 			query.setParameter(1, id);
 
 			return query.getSingleResult();
@@ -79,8 +78,7 @@ public class ClassDaoJPA2Impl implements ClassDao {
 
 		try {
 			String qlString = "SELECT u FROM Class u WHERE u.name = ?1";
-			TypedQuery<Class> query = entityManager.createQuery(qlString,
-					Class.class);
+			TypedQuery<Class> query = entityManager.createQuery(qlString, Class.class);
 			query.setParameter(1, name);
 
 			return query.getSingleResult();
@@ -88,24 +86,21 @@ public class ClassDaoJPA2Impl implements ClassDao {
 			return null;
 		}
 	}
-	
+
 	@Override
 	public List<Class> getClassesByLocation(Location location) {
-		
+
 		String qlString = "SELECT u FROM Class u where u.location_id = ?1";
-		TypedQuery<Class> query = entityManager.createQuery(qlString,
-				Class.class);
-		query.setParameter(1, location.getId() );
+		TypedQuery<Class> query = entityManager.createQuery(qlString, Class.class);
+		query.setParameter(1, location.getId());
 
 		return query.getResultList();
 	}
 
-
 	@Override
 	public void deleteClass(Class classPojo) {
 
-		Class clas = entityManager
-				.find(Class.class, classPojo.getId());
+		Class clas = entityManager.find(Class.class, classPojo.getId());
 		entityManager.remove(clas);
 
 	}
@@ -136,25 +131,25 @@ public class ClassDaoJPA2Impl implements ClassDao {
 	public List<Class> getTodaysClasses() {
 		String qlString = "SELECT u FROM Class u WHERE u.time BETWEEN :startTime AND :endTime";
 		TypedQuery<Class> query = entityManager.createQuery(qlString, Class.class);
-		
+
 		Calendar cal;
 		Date startTime, endTime;
 		cal = Calendar.getInstance();
-        cal.set(Calendar.MILLISECOND, 0);
-        cal.set(Calendar.SECOND, 0);
-        cal.set(Calendar.MINUTE, 0);
-        cal.set(Calendar.HOUR_OF_DAY, 0);
-        cal.add(Calendar.DAY_OF_MONTH, 1);
-		
-        startTime = cal.getTime();
-		
-        cal.add(Calendar.DAY_OF_MONTH, 1);
-		
-        endTime = cal.getTime();
-        
+		cal.set(Calendar.MILLISECOND, 0);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.HOUR_OF_DAY, 0);
+		cal.add(Calendar.DAY_OF_MONTH, 1);
+
+		startTime = cal.getTime();
+
+		cal.add(Calendar.DAY_OF_MONTH, 1);
+
+		endTime = cal.getTime();
+
 		query.setParameter("startTime", startTime);
 		query.setParameter("endTime", endTime);
-		
+
 		return query.getResultList();
 	}
 
@@ -169,5 +164,5 @@ public class ClassDaoJPA2Impl implements ClassDao {
 		query.setLong("classId", clas.getId());
 		List<String> userNames = query.list();
 		return userNames;
-	}		
+	}
 }

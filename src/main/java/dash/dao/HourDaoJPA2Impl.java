@@ -8,7 +8,6 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
-
 import dash.pojo.Hour;
 import dash.pojo.Task;
 
@@ -24,12 +23,9 @@ public class HourDaoJPA2Impl implements HourDao {
 		if (onlyPending) {
 			qPending = "where u.pending = 1";
 		}
-		sqlString = "SELECT u FROM Hour u " +qPending
-				+ " ORDER BY u.end_time "+orderBy;
-	
+		sqlString = "SELECT u FROM Hour u " + qPending + " ORDER BY u.end_time " + orderBy;
 
-		TypedQuery<Hour> query = entityManager.createQuery(sqlString,
-				Hour.class);
+		TypedQuery<Hour> query = entityManager.createQuery(sqlString, Hour.class);
 		query.setFirstResult(startIndex.intValue());
 		query.setMaxResults(numberOfHours);
 		return query.getResultList();
@@ -37,15 +33,13 @@ public class HourDaoJPA2Impl implements HourDao {
 
 	@Override
 	public List<Hour> getHours(int numberOfHours, Long startIndex, Task task, boolean onlyPending) {
-		String qPending= new String();
-		if(onlyPending){
-			qPending=", u.pending = 1";
+		String qPending = new String();
+		if (onlyPending) {
+			qPending = ", u.pending = 1";
 		}
-		String qlString = "SELECT u FROM Hour u where u.task_id = ?1 " +qPending
-				+ " ORDER BY u.end_time ";
+		String qlString = "SELECT u FROM Hour u where u.task_id = ?1 " + qPending + " ORDER BY u.end_time ";
 
-		TypedQuery<Hour> query = entityManager.createQuery(qlString,
-				Hour.class);
+		TypedQuery<Hour> query = entityManager.createQuery(qlString, Hour.class);
 		query.setFirstResult(startIndex.intValue());
 		query.setMaxResults(numberOfHours);
 		query.setParameter(1, task.getId());
@@ -58,8 +52,7 @@ public class HourDaoJPA2Impl implements HourDao {
 
 		try {
 			String qlString = "SELECT u FROM Hour u WHERE u.id = ?1";
-			TypedQuery<Hour> query = entityManager.createQuery(qlString,
-					Hour.class);
+			TypedQuery<Hour> query = entityManager.createQuery(qlString, Hour.class);
 			query.setParameter(1, id);
 
 			return query.getSingleResult();
@@ -71,8 +64,7 @@ public class HourDaoJPA2Impl implements HourDao {
 	@Override
 	public void deleteHourById(Hour hourPojo) {
 
-		Hour hour = entityManager
-				.find(Hour.class, hourPojo.getId());
+		Hour hour = entityManager.find(Hour.class, hourPojo.getId());
 		entityManager.remove(hour);
 
 	}
@@ -101,8 +93,7 @@ public class HourDaoJPA2Impl implements HourDao {
 	public int getNumberOfHours() {
 		try {
 			String qlString = "SELECT COUNT(*) FROM hour";
-			TypedQuery<Hour> query = entityManager.createQuery(qlString,
-					Hour.class);
+			TypedQuery<Hour> query = entityManager.createQuery(qlString, Hour.class);
 
 			return query.getFirstResult();
 		} catch (NoResultException e) {

@@ -4,15 +4,14 @@ import java.util.List;
 import dash.pojo.Message;
 import dash.pojo.Task;
 
-
 /*
  * Message DAO
  * @Author CarlSteven
  */
 public interface MessageDao {
-	
+
 	public List<Message> getMessages(int numberOfMessages, Long startIndex);
-	
+
 	public List<Message> getMessages(int numberOfMessages, Long startIndex, Task task);
 
 	public int getNumberOfMessages();
@@ -24,7 +23,7 @@ public interface MessageDao {
 	 * @return
 	 */
 	public Message getMessageById(Long id);
-	
+
 	public void deleteMessageById(Message message);
 
 	public Long createMessage(Message message);

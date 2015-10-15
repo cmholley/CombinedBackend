@@ -22,8 +22,7 @@ public class CommentDaoJPA2Impl implements CommentDao {
 
 		sqlString = "SELECT u FROM Comment u WHERE u.id < ?1 ORDER BY u.creation_timestamp DESC";
 
-		TypedQuery<Comment> query = entityManager.createQuery(sqlString,
-				Comment.class);
+		TypedQuery<Comment> query = entityManager.createQuery(sqlString, Comment.class);
 
 		if (startIndex == 0)
 			startIndex = Long.MAX_VALUE;
@@ -34,11 +33,11 @@ public class CommentDaoJPA2Impl implements CommentDao {
 
 	@Override
 	public List<Comment> getComments(int numberOfComments, Long startIndex, Post post) {
-//		String qlString = "SELECT u FROM Comment u where u.post_id = ?1 AND u.id < ?2 ORDER BY u.creation_timestamp ASC";
+		// String qlString = "SELECT u FROM Comment u where u.post_id = ?1 AND
+		// u.id < ?2 ORDER BY u.creation_timestamp ASC";
 		String qlString = "SELECT u FROM Comment u where u.post_id = ?1 ORDER BY u.creation_timestamp ASC";
 
-		TypedQuery<Comment> query = entityManager.createQuery(qlString,
-				Comment.class);
+		TypedQuery<Comment> query = entityManager.createQuery(qlString, Comment.class);
 		query.setParameter(1, post.getId());
 
 		return query.getResultList();
@@ -49,8 +48,7 @@ public class CommentDaoJPA2Impl implements CommentDao {
 
 		try {
 			String qlString = "SELECT u FROM Comment u WHERE u.id = ?1";
-			TypedQuery<Comment> query = entityManager.createQuery(
-					qlString, Comment.class);
+			TypedQuery<Comment> query = entityManager.createQuery(qlString, Comment.class);
 			query.setParameter(1, id);
 
 			return query.getSingleResult();
@@ -62,8 +60,7 @@ public class CommentDaoJPA2Impl implements CommentDao {
 	@Override
 	public void deleteCommentById(Comment commentPojo) {
 
-		Comment post = entityManager.find(Comment.class,
-				commentPojo.getId());
+		Comment post = entityManager.find(Comment.class, commentPojo.getId());
 		entityManager.remove(post);
 
 	}
@@ -98,8 +95,7 @@ public class CommentDaoJPA2Impl implements CommentDao {
 	public int getNumberOfComments() {
 		try {
 			String qlString = "SELECT COUNT(*) FROM comment";
-			TypedQuery<Post> query = entityManager.createQuery(qlString,
-					Post.class);
+			TypedQuery<Post> query = entityManager.createQuery(qlString, Post.class);
 
 			return query.getFirstResult();
 		} catch (NoResultException e) {

@@ -4,7 +4,6 @@ import java.util.List;
 import dash.pojo.Group;
 import dash.pojo.Task;
 
-
 /*
  * @Author tswensen
  */
@@ -30,7 +29,7 @@ public interface TaskDao {
 	 * @return the task with the name specified or null if not existent
 	 */
 	public Task getTaskByName(String name);
-	
+
 	/**
 	 * Returns all of the taskes owned by a given group
 	 * 

@@ -19,18 +19,15 @@ public class GroupDaoJPA2Impl implements GroupDao {
 	@PersistenceContext(unitName = "dashPersistenceCHW")
 	private EntityManager entityManager;
 
-
 	@Override
 	public List<Group> getGroups(String orderByInsertionDate) {
 		String sqlString = null;
-		if(orderByInsertionDate != null){
-			sqlString = "SELECT u FROM Group u"
-					+ " ORDER BY u.creation_timestamp " + orderByInsertionDate;
+		if (orderByInsertionDate != null) {
+			sqlString = "SELECT u FROM Group u" + " ORDER BY u.creation_timestamp " + orderByInsertionDate;
 		} else {
 			sqlString = "SELECT u FROM Group u";
 		}
-		TypedQuery<Group> query = entityManager.createQuery(sqlString,
-				Group.class);
+		TypedQuery<Group> query = entityManager.createQuery(sqlString, Group.class);
 
 		return query.getResultList();
 	}
@@ -41,12 +38,14 @@ public class GroupDaoJPA2Impl implements GroupDao {
 		Calendar calendar = new GregorianCalendar();
 		calendar.setTimeZone(TimeZone.getTimeZone("UTC+6"));
 		calendar.setTime(new Date());
-		calendar.add(Calendar.DATE, -numberOfDaysToLookBack);//substract the number of days to look back
+		calendar.add(Calendar.DATE, -numberOfDaysToLookBack);// substract the
+																// number of
+																// days to look
+																// back
 		Date dateToLookBackAfter = calendar.getTime();
 
 		String qlString = "SELECT u FROM Group u where u.creation_timestamp > :dateToLookBackAfter ORDER BY u.creation_timestamp DESC";
-		TypedQuery<Group> query = entityManager.createQuery(qlString,
-				Group.class);
+		TypedQuery<Group> query = entityManager.createQuery(qlString, Group.class);
 		query.setParameter("dateToLookBackAfter", dateToLookBackAfter, TemporalType.DATE);
 
 		return query.getResultList();
@@ -57,8 +56,7 @@ public class GroupDaoJPA2Impl implements GroupDao {
 
 		try {
 			String qlString = "SELECT u FROM Group u WHERE u.id = ?1";
-			TypedQuery<Group> query = entityManager.createQuery(qlString,
-					Group.class);
+			TypedQuery<Group> query = entityManager.createQuery(qlString, Group.class);
 			query.setParameter(1, id);
 
 			return query.getSingleResult();
@@ -72,8 +70,7 @@ public class GroupDaoJPA2Impl implements GroupDao {
 
 		try {
 			String qlString = "SELECT u FROM Group u WHERE u.name = ?1";
-			TypedQuery<Group> query = entityManager.createQuery(qlString,
-					Group.class);
+			TypedQuery<Group> query = entityManager.createQuery(qlString, Group.class);
 			query.setParameter(1, name);
 
 			return query.getSingleResult();
@@ -82,12 +79,10 @@ public class GroupDaoJPA2Impl implements GroupDao {
 		}
 	}
 
-
 	@Override
 	public void deleteGroupById(Group groupPojo) {
 
-		Group group = entityManager
-				.find(Group.class, groupPojo.getId());
+		Group group = entityManager.find(Group.class, groupPojo.getId());
 		entityManager.remove(group);
 
 	}
@@ -106,7 +101,7 @@ public class GroupDaoJPA2Impl implements GroupDao {
 
 	@Override
 	public void updateGroup(Group group) {
-		//TODO think about partial update and full update
+		// TODO think about partial update and full update
 		entityManager.merge(group);
 	}
 
@@ -120,8 +115,7 @@ public class GroupDaoJPA2Impl implements GroupDao {
 	public int getNumberOfGroups() {
 		try {
 			String qlString = "SELECT COUNT(*) FROM group";
-			TypedQuery<Group> query = entityManager.createQuery(qlString,
-					Group.class);
+			TypedQuery<Group> query = entityManager.createQuery(qlString, Group.class);
 
 			return query.getFirstResult();
 		} catch (NoResultException e) {
