@@ -81,7 +81,7 @@ public class MessageResource {
 	 * 
 	 */
 	@GET
-	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Produces({ MediaType.APPLICATION_JSON })
 	public List<Message> getMessages(
 			@QueryParam("numberOfMessages") @DefaultValue("25") int numberOfMessages,
 			@QueryParam("startIndex") @DefaultValue("0") Long startIndex,
@@ -95,7 +95,7 @@ public class MessageResource {
 
 	@GET
 	@Path("{id}")
-	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Produces({ MediaType.APPLICATION_JSON })
 	public Response getPostById(@PathParam("id") Long id,
 			@QueryParam("detailed") boolean detailed) throws IOException,
 			AppException {

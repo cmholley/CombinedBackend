@@ -80,7 +80,6 @@ public class PostDaoJPA2Impl implements PostDao {
 		post.setCreation_timestamp(new Date());
 		post.setLatest_activity_timestamp(new Date());
 		entityManager.persist(post);
-		entityManager.flush();// force insert to receive the id of the post
 
 		// Give admin over new post to the new post
 

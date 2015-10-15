@@ -69,7 +69,7 @@ public class CommentResource {
 	 * 
 	 */
 	@GET
-	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Produces({ MediaType.APPLICATION_JSON })
 	public List<Comment> getComments(
 			@QueryParam("numberOfComments") @DefaultValue("25") int numberOfComments,
 			@QueryParam("startIndex") @DefaultValue("0") Long startIndex,
@@ -87,7 +87,7 @@ public class CommentResource {
 
 	@GET
 	@Path("{id}")
-	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Produces({ MediaType.APPLICATION_JSON })
 	public Response getCommentById(@PathParam("id") Long id,
 			@QueryParam("detailed") boolean detailed) throws IOException,
 			AppException {

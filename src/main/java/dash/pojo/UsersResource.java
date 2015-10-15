@@ -156,7 +156,7 @@ public class UsersResource {
 	 * @throws AppException
 	 */
 	@GET
-	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Produces({ MediaType.APPLICATION_JSON })
 	public List<User> getUsers(
 			@QueryParam("orderByInsertionDate") String orderByInsertionDate,
 			@QueryParam("numberDaysToLookBack") Integer numberDaysToLookBack)
@@ -168,7 +168,7 @@ public class UsersResource {
 
 	@GET
 	@Path("myUser")
-	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Produces({ MediaType.APPLICATION_JSON })
 	public List<User> getMyUser(
 			@QueryParam("orderByInsertionDate") String orderByInsertionDate,
 			@QueryParam("numberDaysToLookBack") Integer numberDaysToLookBack)
@@ -180,7 +180,7 @@ public class UsersResource {
 
 	@GET
 	@Path("{id}")
-	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Produces({ MediaType.APPLICATION_JSON })
 	public Response getUserById(@PathParam("id") Long id,
 			@QueryParam("detailed") boolean detailed) throws IOException,
 			AppException {
@@ -193,7 +193,7 @@ public class UsersResource {
 
 	@GET
 	@Path("myRole")
-	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Produces({ MediaType.APPLICATION_JSON })
 	public Response getMyRole() throws IOException, AppException {
 
 		try {
@@ -430,7 +430,7 @@ public class UsersResource {
 
 	@GET
 	@Path("/upload")
-	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Produces({ MediaType.APPLICATION_JSON })
 	public Response getFileNames(@QueryParam("userId") Long id)
 			throws AppException {
 

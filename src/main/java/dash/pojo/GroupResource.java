@@ -47,7 +47,7 @@ public class GroupResource {
 	}
 
 	@GET
-	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Produces({ MediaType.APPLICATION_JSON })
 	public List<Group> getGroups(
 			@QueryParam("orderByInsertionDate") String orderByInsertionDate,
 			@QueryParam("numberDaysToLookBack") Integer numberDaysToLookBack)
@@ -59,7 +59,7 @@ public class GroupResource {
 
 	@GET
 	@Path("byMembership")
-	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Produces({ MediaType.APPLICATION_JSON })
 	public List<Group> getGroupsByMembership(
 			@QueryParam("orderByInsertionDate") String orderByInsertionDate,
 			@QueryParam("numberDaysToLookBack") Integer numberDaysToLookBack)
@@ -71,7 +71,7 @@ public class GroupResource {
 
 	@GET
 	@Path("byManager")
-	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Produces({ MediaType.APPLICATION_JSON })
 	public List<Group> getGroupsByManager(
 			@QueryParam("orderByInsertionDate") String orderByInsertionDate,
 			@QueryParam("numberDaysToLookBack") Integer numberDaysToLookBack)
@@ -83,7 +83,7 @@ public class GroupResource {
 
 	@GET
 	@Path("{id}")
-	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Produces({ MediaType.APPLICATION_JSON })
 	public Response getGroupById(@PathParam("id") Long id)
 					throws IOException,	AppException {
 		Group groupById = groupService.getGroupById(id);

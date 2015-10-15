@@ -48,7 +48,7 @@ public class TaskResource {
 	}
 	
 	@GET
-	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Produces({ MediaType.APPLICATION_JSON })
 	public List<Task> getTasks(
 			@QueryParam("orderByInsertionDate") String orderByInsertionDate,
 			@QueryParam("numberDaysToLookBack") Integer numberDaysToLookBack,
@@ -62,7 +62,7 @@ public class TaskResource {
 	//TODO: Modify so it filters out completed tasks by default
 	@GET
 	@Path("byMembership")
-	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Produces({ MediaType.APPLICATION_JSON })
 	public List<Task> getTasksByMembership(
 			@QueryParam("orderByInsertionDate") String orderByInsertionDate,
 			@QueryParam("numberDaysToLookBack") Integer numberDaysToLookBack,
@@ -76,7 +76,7 @@ public class TaskResource {
 	//TODO: Modify so it filters out completed tasks by default
 	@GET
 	@Path("byManager")
-	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Produces({ MediaType.APPLICATION_JSON })
 	public List<Task> getTasksByManager(
 			@QueryParam("orderByInsertionDate") String orderByInsertionDate,
 			@QueryParam("numberDaysToLookBack") Integer numberDaysToLookBack,
@@ -90,7 +90,7 @@ public class TaskResource {
 	
 	@GET
 	@Path("byGroup/{groupId}")
-	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Produces({MediaType.APPLICATION_JSON })
 	public List<Task> getTasksByGroup(@PathParam("groupId") Long id)
 					throws IOException,	AppException {
 		Group group= new Group();
@@ -103,7 +103,7 @@ public class TaskResource {
 
 	@GET
 	@Path("{id}")
-	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Produces({ MediaType.APPLICATION_JSON })
 	public Response getTaskById(@PathParam("id") Long id,
 			@QueryParam("detailed") boolean detailed)
 					throws IOException,	AppException {

@@ -109,7 +109,7 @@ public class ClassResource {
 	// TODO: Modify so it filters out completed classes by default
 	@GET
 	@Path("byMembership")
-	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Produces({ MediaType.APPLICATION_JSON })
 	public List<Class> getClassesByMembership(
 			@QueryParam("orderByInsertionDate") String orderByInsertionDate,
 			@QueryParam("numberDaysToLookBack") Integer numberDaysToLookBack)
