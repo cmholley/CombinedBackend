@@ -59,7 +59,7 @@ public class LocationResource {
 	}
 	
 	@GET
-	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Produces({ MediaType.APPLICATION_JSON })
 	public List<Location> getLocations(
 			@QueryParam("orderByInsertionDate") String orderByInsertionDate,
 			@QueryParam("numberDaysToLookBack") Integer numberDaysToLookBack)
@@ -71,7 +71,7 @@ public class LocationResource {
 	
 	@GET
 	@Path("byManager")
-	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Produces({ MediaType.APPLICATION_JSON })
 	public List<Location> getLocationsByManager(
 			@QueryParam("orderByInsertionDate") String orderByInsertionDate,
 			@QueryParam("numberDaysToLookBack") Integer numberDaysToLookBack)
@@ -83,7 +83,7 @@ public class LocationResource {
 
 	@GET
 	@Path("{id}")
-	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Produces({ MediaType.APPLICATION_JSON })
 	public Response getLocationById(@PathParam("id") Long id)
 					throws IOException,	AppException {
 		Location locationById = locationService.getLocationById(id);

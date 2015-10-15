@@ -22,7 +22,7 @@ import dash.pojo.User;
 public class UserDaoJPA2Impl implements
 UserDao {
 
-	@PersistenceContext(unitName = "dashPersistenceCHW")
+	@PersistenceContext(unitName = "dashPersistence")
 	private EntityManager entityManagerCHW;
 	
 	@PersistenceContext(unitName = "dashPersistenceVMA")

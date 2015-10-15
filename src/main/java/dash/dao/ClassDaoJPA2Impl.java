@@ -24,12 +24,8 @@ import dash.pojo.Class;
 import dash.pojo.Location;
 
 public class ClassDaoJPA2Impl implements ClassDao {
-	@PersistenceContext(unitName = "dashPersistenceCHW")
-	private EntityManager entityManagerCHW;
-	
-	@PersistenceContext(unitName = "dashPersistenceVMA")
-	private EntityManager entityManagerVMA;
-
+	@PersistenceContext(unitName = "dashPersistence")
+	private EntityManager entityManager;
 
 	@Override
 	public List<Class> getClasses(String orderByInsertionDate) {
@@ -40,7 +36,7 @@ public class ClassDaoJPA2Impl implements ClassDao {
 		} else {
 			sqlString = "SELECT u FROM Class u";
 		}
-		TypedQuery<Class> query = entityManagerCHW.createQuery(sqlString,
+		TypedQuery<Class> query = entityManager.createQuery(sqlString,
 				Class.class);
 
 		return query.getResultList();
@@ -56,7 +52,7 @@ public class ClassDaoJPA2Impl implements ClassDao {
 		Date dateToLookBackAfter = calendar.getTime();
 
 		String qlString = "SELECT u FROM Class u where u.creation_timestamp > :dateToLookBackAfter ORDER BY u.creation_timestamp DESC";
-		TypedQuery<Class> query = entityManagerCHW.createQuery(qlString,
+		TypedQuery<Class> query = entityManager.createQuery(qlString,
 				Class.class);
 		query.setParameter("dateToLookBackAfter", dateToLookBackAfter, TemporalType.DATE);
 
@@ -68,7 +64,7 @@ public class ClassDaoJPA2Impl implements ClassDao {
 
 		try {
 			String qlString = "SELECT u FROM Class u WHERE u.id = ?1";
-			TypedQuery<Class> query = entityManagerCHW.createQuery(qlString,
+			TypedQuery<Class> query = entityManager.createQuery(qlString,
 					Class.class);
 			query.setParameter(1, id);
 
@@ -83,7 +79,7 @@ public class ClassDaoJPA2Impl implements ClassDao {
 
 		try {
 			String qlString = "SELECT u FROM Class u WHERE u.name = ?1";
-			TypedQuery<Class> query = entityManagerCHW.createQuery(qlString,
+			TypedQuery<Class> query = entityManager.createQuery(qlString,
 					Class.class);
 			query.setParameter(1, name);
 
@@ -97,7 +93,7 @@ public class ClassDaoJPA2Impl implements ClassDao {
 	public List<Class> getClassesByLocation(Location location) {
 		
 		String qlString = "SELECT u FROM Class u where u.location_id = ?1";
-		TypedQuery<Class> query = entityManagerCHW.createQuery(qlString,
+		TypedQuery<Class> query = entityManager.createQuery(qlString,
 				Class.class);
 		query.setParameter(1, location.getId() );
 
@@ -106,53 +102,40 @@ public class ClassDaoJPA2Impl implements ClassDao {
 
 
 	@Override
-	public void deleteClass(Class classPojo, int ds) {
-		
-		
-		if(ds == 1){
-			Class clas = entityManagerCHW
-					.find(Class.class, classPojo.getId());
-			entityManagerCHW.remove(clas);
-			}
-			else if (ds == 2){
-				Class clas = entityManagerVMA
-						.find(Class.class, classPojo.getId());
-				entityManagerVMA.remove(clas);
-			}
-		
+	public void deleteClass(Class classPojo) {
+
+		Class clas = entityManager
+				.find(Class.class, classPojo.getId());
+		entityManager.remove(clas);
+
 	}
 
 	@Override
-	public Long createClass(Class clas, int ds) {
+	public Long createClass(Class clas) {
 
 		clas.setCreation_timestamp(new Date());
-		if(ds == 1){
-		entityManagerCHW.persist(clas);
-		entityManagerCHW.flush();// force insert to receive the id of the user
-		}
-		else if (ds == 2){
-			entityManagerVMA.persist(clas);
-			entityManagerVMA.flush();
-		}
+		entityManager.persist(clas);
+		entityManager.flush();// force insert to receive the id of the group
+
 		// Give admin over new group to the new group
 		return clas.getId();
 	}
 
 	@Override
-	public void updateClass(Class clas, int ds) {
-		entityManagerCHW.merge(clas);
+	public void updateClass(Class clas) {
+		entityManager.merge(clas);
 	}
 
 	@Override
 	public void deleteClasses() {
-		Query query = entityManagerCHW.createNativeQuery("TRUNCATE TABLE classes");
+		Query query = entityManager.createNativeQuery("TRUNCATE TABLE classes");
 		query.executeUpdate();
 	}
 
 	@Override
 	public List<Class> getTodaysClasses() {
 		String qlString = "SELECT u FROM Class u WHERE u.time BETWEEN :startTime AND :endTime";
-		TypedQuery<Class> query = entityManagerCHW.createQuery(qlString, Class.class);
+		TypedQuery<Class> query = entityManager.createQuery(qlString, Class.class);
 		
 		Calendar cal;
 		Date startTime, endTime;
@@ -177,14 +160,7 @@ public class ClassDaoJPA2Impl implements ClassDao {
 
 	@Override
 	public List<String> getMembersForClass(Class clas) {
-		Configuration configuration = new Configuration().configure();
-		ServiceRegistry serviceRegistry = new ServiceRegistryBuilder()
-				.applySettings(configuration.getProperties())
-				.buildServiceRegistry();
-		SessionFactory sessionFactory = configuration
-				.buildSessionFactory(serviceRegistry);
-		Session session = sessionFactory.openSession();
-		
+		Session session = entityManager.unwrap(Session.class);
 		String qlString = "SELECT acl_sid.sid FROM acl_entry"
 				+ " JOIN acl_object_identity ON acl_entry.acl_object_identity = acl_object_identity.id"
 				+ " JOIN acl_sid ON acl_entry.sid = acl_sid.id"

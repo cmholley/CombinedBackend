@@ -16,7 +16,7 @@ import dash.pojo.Group;
 
 @Component("groupDao")
 public class GroupDaoJPA2Impl implements GroupDao {
-	@PersistenceContext(unitName = "dashPersistenceCHW")
+	@PersistenceContext(unitName = "dashPersistence")
 	private EntityManager entityManagerCHW;
 	
 	@PersistenceContext(unitName = "dashPersistenceVMA")

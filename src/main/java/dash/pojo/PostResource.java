@@ -72,7 +72,7 @@ public class PostResource {
 	 * 
 	 */
 	@GET
-	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Produces({ MediaType.APPLICATION_JSON })
 	public List<Post> getPosts(
 			@QueryParam("numberOfPosts") @DefaultValue("25") int numberOfPosts,
 			@QueryParam("startIndex") @DefaultValue("0") Long startIndex,
@@ -93,7 +93,7 @@ public class PostResource {
 	// part of.
 	@GET
 	@Path("myPosts")
-	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Produces({ MediaType.APPLICATION_JSON })
 	public List<Post> getMyPosts(
 			@QueryParam("numberOfPosts") @DefaultValue("25") int numberOfPosts,
 			@QueryParam("startIndex") @DefaultValue("0") Long startIndex)
@@ -106,7 +106,7 @@ public class PostResource {
 
 	@GET
 	@Path("{id}")
-	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Produces({ MediaType.APPLICATION_JSON })
 	public Response getPostById(@PathParam("id") Long id,
 			@QueryParam("detailed") boolean detailed) throws IOException,
 			AppException {

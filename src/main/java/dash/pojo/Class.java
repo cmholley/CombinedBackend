@@ -4,6 +4,15 @@ package dash.pojo;
 import java.util.Date;
 import java.util.Set;
 
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -13,67 +22,88 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import dash.helpers.SimpleDateAdapter;
 import dash.security.IAclObject;
 
-
+@Entity
+@Table(name = "classes")
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Class implements  IAclObject{
 	
-	public static enum Cores{
-		Advocacy,
-		Capacity_Building, 
-		Communication_Skills, 
-		Community_Service,
-		Coordination,
-		Interpersonal_Communication, 
-		Knowledge_Base, 
-		Organizational, 
-		Service_Coordination,
-		Skills,
-		Teaching_Skills;
-	}
+
 	
-	
+	@Id
+	@GeneratedValue
 	@XmlElement(name="id")
+	@Column(name="id")
 	private Long id;
 	
 	@XmlElement(name="location_id")
+	@Column(name="location_id")
 	private Long location_id;
 	
 	@XmlElement(name="name")
+	@Column(name="name")
 	private String name;
 	
 	@XmlElement(name="description")
+	@Column(name="description")
 	private String description;
 	
 	@XmlElement(name="time")
 	@XmlJavaTypeAdapter(SimpleDateAdapter.class)
+	@Column(name="time")
 	private Date time;
 	
 	@XmlElement(name="duration")
+	@Column(name="duration")
 	private int duration;
 	
 	@XmlElement(name="room")
+	@Column(name="room")
 	private String room;
 	
 	@XmlElement(name="address")
+	@Column(name="address")
 	private String address;
 	
 	@XmlElement(name="creation_timestamp")
+	@Column(name="creation_timestamp")
 	private Date creation_timestamp;
 	
 	@XmlElement(name="finished")
+	@Column(name="finished")
 	private int finished;
 	
+	/*
+	 * This attribute contains a list of Longs that corresponds
+	 * to the core competencies for the class. 
+	 *  0 = Advocacy
+	 *	1 = Capacity_Building, 
+	 *	2 = Communication_Skills, 
+	 *	3 = Community_Service,
+	 *	4 = Coordination,
+	 *	5 = Interpersonal_Communication, 
+	 *	6 = Knowledge_Base, 
+	 *	7 = Organizational, 
+	 *	8 = Service_Coordination,
+	 *	9 = Skills,
+	 *	10 = Teaching_Skills,
+	 */
+	
 	@XmlElement(name="cores")
-	private Set<Cores> cores; //enum
+	@ElementCollection(fetch= FetchType.EAGER)
+	@CollectionTable(name = "class_cores", joinColumns = {@JoinColumn(name="class_id")})
+	private Set<Long> cores; //enum
 	
 	@XmlElement(name="forCHW")
+	@Column(name="forCHW")
 	private int forCHW;
 	
 	@XmlElement(name="forCredit")
+	@Column(name="forCredit")
 	private int forCredit;
 	
 	@XmlElement(name="active")
+	@Column(name="active")
 	private int active;
 	
 	
@@ -184,11 +214,11 @@ public class Class implements  IAclObject{
 		this.active = active;
 	}
 
-	public Set<Cores> getCores() {
+	public Set<Long> getCores() {
 		return cores;
 	}
 
-	public void setCores(Set<Cores> cores) {
+	public void setCores(Set<Long> cores) {
 		this.cores = cores;
 	}
 }

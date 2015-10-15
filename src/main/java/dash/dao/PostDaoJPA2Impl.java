@@ -14,19 +14,16 @@ import dash.pojo.Post;
 
 @Component("postDao")
 public class PostDaoJPA2Impl implements PostDao {
-	@PersistenceContext(unitName = "dashPersistenceCHW")
-	private EntityManager entityManagerCHW;
-	
-	@PersistenceContext(unitName = "dashPersistenceVMA")
-	private EntityManager entityManagerVMA;
-	
+	@PersistenceContext(unitName = "dashPersistence")
+	private EntityManager entityManager;
+
 	@Override
 	public List<Post> getPosts(int numberOfPosts, Long startIndex) {
 		String sqlString = null;
 
 		sqlString = "SELECT u FROM Post u WHERE u.id < ?1 ORDER BY u.creation_timestamp DESC";
 
-		TypedQuery<Post> query = entityManagerCHW.createQuery(sqlString,
+		TypedQuery<Post> query = entityManager.createQuery(sqlString,
 				Post.class);
 		if (startIndex == 0)
 			startIndex = Long.MAX_VALUE;
@@ -42,7 +39,7 @@ public class PostDaoJPA2Impl implements PostDao {
 
 		String qlString = "SELECT u FROM Post u WHERE u.group_id = ?1 AND u.id < ?2 ORDER BY u.creation_timestamp DESC";
 
-		TypedQuery<Post> query = entityManagerCHW.createQuery(qlString,
+		TypedQuery<Post> query = entityManager.createQuery(qlString,
 				Post.class);
 		if (startIndex == 0)
 			startIndex = Long.MAX_VALUE;
@@ -58,7 +55,7 @@ public class PostDaoJPA2Impl implements PostDao {
 
 		try {
 			String qlString = "SELECT u FROM Post u WHERE u.id = ?1";
-			TypedQuery<Post> query = entityManagerCHW.createQuery(qlString,
+			TypedQuery<Post> query = entityManager.createQuery(qlString,
 					Post.class);
 			query.setParameter(1, id);
 
@@ -69,35 +66,20 @@ public class PostDaoJPA2Impl implements PostDao {
 	}
 
 	@Override
-	public void deletePostById(Post postPojo, int ds) {
-		if(ds == 1){
-			Post post = entityManagerCHW
+	public void deletePostById(Post postPojo) {
+
+		Post post = entityManager
 				.find(Post.class, postPojo.getId());
-		entityManagerCHW.remove(post);
-		}
-		else if(ds == 2){
-			Post post = entityManagerVMA
-					.find(Post.class, postPojo.getId());
-			entityManagerVMA.remove(post);
-		}
-		
+		entityManager.remove(post);
 
 	}
 
 	@Override
-	public Long createPost(Post post, int ds) {
+	public Long createPost(Post post) {
+
 		post.setCreation_timestamp(new Date());
 		post.setLatest_activity_timestamp(new Date());
-		if(ds == 1){
-			entityManagerCHW.persist(post);
-			entityManagerCHW.flush();// force insert to receive the id of the post
-		}
-		else if(ds == 2){
-			entityManagerVMA.persist(post);
-			entityManagerVMA.flush();// force insert to receive the id of the post
-		}
-		
-		
+		entityManager.persist(post);
 
 		// Give admin over new post to the new post
 
@@ -105,21 +87,15 @@ public class PostDaoJPA2Impl implements PostDao {
 	}
 
 	@Override
-	public void updatePost(Post post, int ds) {
+	public void updatePost(Post post) {
 		// TODO think about partial update and full update
 		post.setLatest_activity_timestamp(new Date());
-		if(ds == 1){
-			entityManagerCHW.merge(post);
-		}
-		else if(ds == 2){
-			entityManagerVMA.merge(post);
-		}
-		
+		entityManager.merge(post);
 	}
 
 	@Override
 	public void deletePosts() {
-		Query query = entityManagerCHW.createNativeQuery("TRUNCATE TABLE post");
+		Query query = entityManager.createNativeQuery("TRUNCATE TABLE post");
 		query.executeUpdate();
 	}
 
@@ -127,7 +103,7 @@ public class PostDaoJPA2Impl implements PostDao {
 	public int getNumberOfPosts() {
 		try {
 			String qlString = "SELECT COUNT(*) FROM post";
-			TypedQuery<Post> query = entityManagerCHW.createQuery(qlString,
+			TypedQuery<Post> query = entityManager.createQuery(qlString,
 					Post.class);
 
 			return query.getFirstResult();

@@ -88,7 +88,7 @@ public class HourResource {
 	 * 
 	 */
 	@GET
-	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Produces({ MediaType.APPLICATION_JSON })
 	public List<Hour> getHours(
 			@QueryParam("numberOfHours") @DefaultValue("25") int numberOfHours,
 			@QueryParam("startIndex") @DefaultValue("0") Long startIndex,
@@ -111,7 +111,7 @@ public class HourResource {
 	// part of.
 	@GET
 	@Path("myHours")
-	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Produces({ MediaType.APPLICATION_JSON })
 	public List<Hour> getMyHours(
 			@QueryParam("numberOfHours") @DefaultValue("25") int numberOfHours,
 			@QueryParam("startIndex") @DefaultValue("0") Long startIndex,
@@ -125,7 +125,7 @@ public class HourResource {
 
 	@GET
 	@Path("{id}")
-	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Produces({ MediaType.APPLICATION_JSON })
 	public Response getHourById(@PathParam("id") Long id,
 			@QueryParam("detailed") boolean detailed) throws IOException,
 			AppException {
@@ -296,7 +296,7 @@ public class HourResource {
 
 	@GET
 	@Path("/upload")
-	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Produces({ MediaType.APPLICATION_JSON })
 	public Response getFileNames(@QueryParam("hourId") Long id)
 			throws AppException {
 

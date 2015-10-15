@@ -35,7 +35,7 @@
 	<!-- Declare an acl service -->
 	<bean id="aclService"
 		class="org.springframework.security.acls.jdbc.JdbcMutableAclService">
-		<constructor-arg ref="dashDS_CHW" />
+		<constructor-arg ref="datasource" />
 		<constructor-arg ref="lookupStrategy" />
 		<constructor-arg ref="aclCache" />
 		<property name="classIdentityQuery" value="SELECT @@IDENTITY" />
@@ -45,7 +45,7 @@
 	<!-- Declare a lookup strategy -->
 	<bean id="lookupStrategy"
 		class="org.springframework.security.acls.jdbc.BasicLookupStrategy">
-		<constructor-arg ref="dashDS_CHW" />
+		<constructor-arg ref="datasource" />
 		<constructor-arg ref="aclCache" />
 		<constructor-arg ref="aclAuthorizationStrategy" />
 		<constructor-arg ref="auditLogger" />

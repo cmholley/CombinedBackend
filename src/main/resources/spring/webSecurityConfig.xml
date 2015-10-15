@@ -13,17 +13,20 @@
 	<!-- Declare intercept patterns -->
 	<security:http auto-config="true" create-session="stateless"
 		use-expressions="true" entry-point-ref="restAuthenticationEntryPoint">
+		<security:custom-filter before="FIRST" ref="tenantFilter" />
 		<security:intercept-url pattern="/**"
 			access="isAuthenticated()" />
 		<security:http-basic />
 	</security:http>
+	
+	<bean id="tenantFilter" class="dash.filters.MultiTenantIdentifierFilter"></bean>
 
 	<!-- Define what you will use as an authentication provider (in our case 
 		securityDataSource) -->
 	<security:authentication-manager alias="authenticationManager">
 		<security:authentication-provider>
 			<security:jdbc-user-service
-				data-source-ref="dashDS_CHW"
+				data-source-ref="datasource"
 
 				users-by-username-query="
             select username, password, enabled from login where username = ?"
@@ -38,7 +41,7 @@
 	</bean>
 
 	<bean id="authoritiesController" class="dash.security.UserLoginController">
-		<property name="dataSource" ref="dashDS_CHW" />
+		<property name="dataSource" ref="datasource" />
 	</bean>
 
 </beans>
