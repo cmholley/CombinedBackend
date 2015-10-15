@@ -13,10 +13,10 @@
   	</appender>
   	
   	<appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<file>/var/log/tomcat/webapps/chw-backend.log</file>
+		<file>/var/log/tomcat/webapps/combined-backend.log</file>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
       		<!-- rollover daily -->
-			<fileNamePattern>/var/logs/tomcat/webapps/chw-backend-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+			<fileNamePattern>/var/logs/tomcat/webapps/combined-backend-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
 			
 			<timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <maxFileSize>5MB</maxFileSize>
