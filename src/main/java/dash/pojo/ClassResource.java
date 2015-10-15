@@ -39,7 +39,7 @@ public class ClassResource {
 	@POST
 	@Consumes({ MediaType.APPLICATION_JSON })
 	@Produces({ MediaType.TEXT_HTML })
-	public Response createClass(Class clas, @QueryParam(value = "ds") int ds) throws AppException {
+	public Response createClass(Class clas) throws AppException {
 		Location verifyLocation = locationService
 				.verifyLocationExistenceById(clas.getLocation_id());
 		if (verifyLocation != null) {
@@ -125,7 +125,7 @@ public class ClassResource {
 	@Path("{id}")
 	@Consumes({ MediaType.APPLICATION_JSON })
 	@Produces({ MediaType.TEXT_HTML })
-	public Response partialUpdateTask(@PathParam("id") Long id, Class clas, @QueryParam(value = "ds") int ds)
+	public Response partialUpdateTask(@PathParam("id") Long id, Class clas)
 			throws AppException {
 		clas.setId(id);
 		try {
@@ -160,7 +160,7 @@ public class ClassResource {
 	@DELETE
 	@Path("{id}")
 	@Produces({ MediaType.TEXT_HTML })
-	public Response deleteClass(@PathParam("id") Long id, @QueryParam(value = "ds") int ds) throws AppException {
+	public Response deleteClass(@PathParam("id") Long id) throws AppException {
 
 		try {
 			Class clas = classService.getClassById(id);

@@ -22,7 +22,7 @@
 	<bean id="entityManagerFactory"
 		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
 		<property name="persistenceXmlLocation" value="classpath:config/persistence-dash.xml" />
-		<property name="persistenceUnitName" value="dashPersistenceCHW" />
+		<property name="persistenceUnitName" value="dashPersistence" />
 		<property name="dataSource" ref="datasource" />
 		<property name="packagesToScan" value="dash.*" />
 		<property name="jpaVendorAdapter">
