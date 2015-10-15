@@ -20,9 +20,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import dash.errorhandling.AppException;
+import dash.service.ClassService;
 import dash.service.LocationService;
 import dash.service.UserService;
-import dash.tran.ClassSwitch;
 
 @Component
 @Path("/locations")
@@ -34,14 +34,11 @@ public class LocationResource {
 	@Autowired 
 	private UserService userService;
 	
-	@Autowired
-	private ClassSwitch classTransaction;
-	
 	@POST
 	@Consumes({ MediaType.APPLICATION_JSON })
 	@Produces({ MediaType.TEXT_HTML })
-	public Response createLocation(Location location, @QueryParam("userName") String user_name, @QueryParam(value = "ds") int ds) throws AppException {
-		Long createLocationId = locationService.createLocation(location, user_name, ds);
+	public Response createLocation(Location location, @QueryParam("userName") String user_name) throws AppException {
+		Long createLocationId = locationService.createLocation(location, user_name);
 		return Response.status(Response.Status.CREATED)
 				// 201
 				.entity("A new location has been created")
@@ -52,8 +49,8 @@ public class LocationResource {
 	@POST
 	@Path("list")
 	@Consumes({ MediaType.APPLICATION_JSON })
-	public Response createLocations(List<Location> locations, @QueryParam("userName") String user_name, @QueryParam(value = "ds") int ds) throws AppException {
-		locationService.createLocations(locations, user_name, ds);
+	public Response createLocations(List<Location> locations, @QueryParam("userName") String user_name) throws AppException {
+		locationService.createLocations(locations, user_name);
 		return Response.status(Response.Status.CREATED) 
 				.entity("List of clocations was successfully created").build();
 	}
@@ -107,7 +104,7 @@ public class LocationResource {
 		if (locationById == null) {
 			// resource not existent yet, and should be created under the
 			// specified URI
-			Long createLocationId = locationService.createLocation(location, user_name, 00);
+			Long createLocationId = locationService.createLocation(location, user_name);
 			return Response
 					.status(Response.Status.CREATED)
 					// 201

@@ -40,11 +40,11 @@ public interface TaskDao {
 	 */
 	public List<Task> getTasksByGroup(Group group);
 
-	public void deleteTaskById(Task task, int ds);
+	public void deleteTaskById(Task task);
 
-	public Long createTask(Task task, int ds);
+	public Long createTask(Task task);
 
-	public void updateTask(Task task, int ds);
+	public void updateTask(Task task);
 
 	/** removes all tasks */
 	public void deleteTasks();

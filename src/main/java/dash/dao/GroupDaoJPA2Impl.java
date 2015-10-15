@@ -17,22 +17,17 @@ import dash.pojo.Group;
 @Component("groupDao")
 public class GroupDaoJPA2Impl implements GroupDao {
 	@PersistenceContext(unitName = "dashPersistence")
-	private EntityManager entityManagerCHW;
-	
-	@PersistenceContext(unitName = "dashPersistenceVMA")
-	private EntityManager entityManagerVMA;
+	private EntityManager entityManager;
 
 	@Override
 	public List<Group> getGroups(String orderByInsertionDate) {
 		String sqlString = null;
-		if(orderByInsertionDate != null){
-			sqlString = "SELECT u FROM Group u"
-					+ " ORDER BY u.creation_timestamp " + orderByInsertionDate;
+		if (orderByInsertionDate != null) {
+			sqlString = "SELECT u FROM Group u" + " ORDER BY u.creation_timestamp " + orderByInsertionDate;
 		} else {
 			sqlString = "SELECT u FROM Group u";
 		}
-		TypedQuery<Group> query = entityManagerCHW.createQuery(sqlString,
-				Group.class);
+		TypedQuery<Group> query = entityManager.createQuery(sqlString, Group.class);
 
 		return query.getResultList();
 	}
@@ -43,12 +38,14 @@ public class GroupDaoJPA2Impl implements GroupDao {
 		Calendar calendar = new GregorianCalendar();
 		calendar.setTimeZone(TimeZone.getTimeZone("UTC+6"));
 		calendar.setTime(new Date());
-		calendar.add(Calendar.DATE, -numberOfDaysToLookBack);//substract the number of days to look back
+		calendar.add(Calendar.DATE, -numberOfDaysToLookBack);// substract the
+																// number of
+																// days to look
+																// back
 		Date dateToLookBackAfter = calendar.getTime();
 
 		String qlString = "SELECT u FROM Group u where u.creation_timestamp > :dateToLookBackAfter ORDER BY u.creation_timestamp DESC";
-		TypedQuery<Group> query = entityManagerCHW.createQuery(qlString,
-				Group.class);
+		TypedQuery<Group> query = entityManager.createQuery(qlString, Group.class);
 		query.setParameter("dateToLookBackAfter", dateToLookBackAfter, TemporalType.DATE);
 
 		return query.getResultList();
@@ -59,8 +56,7 @@ public class GroupDaoJPA2Impl implements GroupDao {
 
 		try {
 			String qlString = "SELECT u FROM Group u WHERE u.id = ?1";
-			TypedQuery<Group> query = entityManagerCHW.createQuery(qlString,
-					Group.class);
+			TypedQuery<Group> query = entityManager.createQuery(qlString, Group.class);
 			query.setParameter(1, id);
 
 			return query.getSingleResult();
@@ -74,8 +70,7 @@ public class GroupDaoJPA2Impl implements GroupDao {
 
 		try {
 			String qlString = "SELECT u FROM Group u WHERE u.name = ?1";
-			TypedQuery<Group> query = entityManagerCHW.createQuery(qlString,
-					Group.class);
+			TypedQuery<Group> query = entityManager.createQuery(qlString, Group.class);
 			query.setParameter(1, name);
 
 			return query.getSingleResult();
@@ -84,37 +79,18 @@ public class GroupDaoJPA2Impl implements GroupDao {
 		}
 	}
 
-
 	@Override
-	public void deleteGroupById(Group groupPojo, int ds) {
-		
-		if(ds == 1){
-			Group group = entityManagerCHW
-					.find(Group.class, groupPojo.getId());
-			entityManagerCHW.remove(group);
-		}
-		if(ds == 2){
-			Group group = entityManagerVMA
-					.find(Group.class, groupPojo.getId());
-			entityManagerVMA.remove(group);
-		}
-		
-
+	public void deleteGroupById(Group groupPojo) {
+		Group group = entityManager.find(Group.class, groupPojo.getId());
+		entityManager.remove(group);
 	}
 
 	@Override
-	public Long createGroup(Group group, int ds) {
+	public Long createGroup(Group group) {
 
 		group.setCreation_timestamp(new Date());
-		if(ds == 1){
-			entityManagerCHW.persist(group);
-		entityManagerCHW.flush();// force insert to receive the id of the group
-		}
-		if(ds == 2){
-			entityManagerVMA.persist(group);
-			entityManagerVMA.flush();// force insert to receive the id of the group
-		}
-		
+		entityManager.persist(group);
+		entityManager.flush();// force insert to receive the id of the group
 
 		// Give admin over new group to the new group
 
@@ -122,20 +98,15 @@ public class GroupDaoJPA2Impl implements GroupDao {
 	}
 
 	@Override
-	public void updateGroup(Group group, int ds) {
-		//TODO think about partial update and full update
-		if(ds == 1){
-			entityManagerCHW.merge(group);
-		}
-		if(ds == 2){
-			entityManagerVMA.merge(group);
-		}
-		
+	public void updateGroup(Group group) {
+		// TODO think about partial update and full update
+		entityManager.merge(group);
+
 	}
 
 	@Override
 	public void deleteGroups() {
-		Query query = entityManagerCHW.createNativeQuery("TRUNCATE TABLE group");
+		Query query = entityManager.createNativeQuery("TRUNCATE TABLE group");
 		query.executeUpdate();
 	}
 
@@ -143,8 +114,7 @@ public class GroupDaoJPA2Impl implements GroupDao {
 	public int getNumberOfGroups() {
 		try {
 			String qlString = "SELECT COUNT(*) FROM group";
-			TypedQuery<Group> query = entityManagerCHW.createQuery(qlString,
-					Group.class);
+			TypedQuery<Group> query = entityManager.createQuery(qlString, Group.class);
 
 			return query.getFirstResult();
 		} catch (NoResultException e) {

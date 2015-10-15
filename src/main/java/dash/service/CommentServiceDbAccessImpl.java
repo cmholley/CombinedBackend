@@ -41,8 +41,9 @@ public class CommentServiceDbAccessImpl extends ApplicationObjectSupport
 
 	/********************* Create related methods implementation ***********************/
 	@Override
-	public Long createComment(Comment comment, Group group, int ds) throws AppException {
-		long commentId = commentDao.createComment(comment, ds);
+	@Transactional
+	public Long createComment(Comment comment, Group group) throws AppException {
+		long commentId = commentDao.createComment(comment);
 		comment.setId(commentId);
 		aclController.createACL(comment);
 		aclController.createAce(comment, CustomPermission.READ);
@@ -123,8 +124,9 @@ public class CommentServiceDbAccessImpl extends ApplicationObjectSupport
 
 	/********************* DELETE-related methods implementation ***********************/
 	@Override
-	public void deleteComment(Comment comment, int ds) {
-		commentDao.deleteCommentById(comment, ds);
+	@Transactional
+	public void deleteComment(Comment comment) {
+		commentDao.deleteCommentById(comment);
 		aclController.deleteACL(comment);
 
 	}

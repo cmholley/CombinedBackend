@@ -18,10 +18,10 @@ public interface UserService {
 	/*
 	 * ******************** Create related methods **********************
 	 */
-	public Long createUser(User user, int ds) throws AppException;
+	public Long createUser(User user) throws AppException;
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	public void createUsers(List<User> users, int ds) throws AppException;
+	public void createUsers(List<User> users) throws AppException;
 
 	/*
 	 * ******************* Read related methods ********************
@@ -59,10 +59,10 @@ public interface UserService {
 	public List<String> getRole(User user);
 
 	@PreAuthorize("hasPermission(#user, 'WRITE') or hasRole('ROLE_ADMIN')")
-	public void updateFullyUser(User user, int ds) throws AppException;
+	public void updateFullyUser(User user) throws AppException;
 
 	@PreAuthorize("hasPermission(#user, 'WRITE') or hasRole('ROLE_ADMIN')")
-	public void updatePartiallyUser(User user, int ds) throws AppException;
+	public void updatePartiallyUser(User user) throws AppException;
 
 	@PreAuthorize("hasPermission(#user, 'WRITE') or hasRole('ROLE_ADMIN')")
 	public void resetPassword(User user) throws AppException;
@@ -77,7 +77,7 @@ public interface UserService {
 	public void setRoleAdmin(User user);
 	
 	@PreAuthorize("hasPermission(#user, 'DELETE') or hasRole('ROLE_ADMIN')")
-	public void deleteUser(User user, int ds);
+	public void deleteUser(User user);
 
 	/*
 	 * ******************** Delete related methods **********************

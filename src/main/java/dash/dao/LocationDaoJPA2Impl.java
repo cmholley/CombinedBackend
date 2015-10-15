@@ -17,43 +17,41 @@ import dash.pojo.Location;
 
 /**
  * Location DAO implementation
+ * 
  * @author plindner
  * 
  */
 public class LocationDaoJPA2Impl implements LocationDao {
 	@PersistenceContext(unitName = "dashPersistence")
-	private EntityManager entityManagerCHW;
-	
-	@PersistenceContext(unitName = "dashPersistenceVMA")
-	private EntityManager entityManagerVMA;
+	private EntityManager entityManager;
 
 	@Override
 	public List<Location> getLocations(String orderByInsertionDate) {
 		String sqlString = null;
-		if(orderByInsertionDate != null){
-			sqlString = "SELECT u FROM Location u"
-					+ " ORDER BY u.creation_timestamp " + orderByInsertionDate;
+		if (orderByInsertionDate != null) {
+			sqlString = "SELECT u FROM Location u" + " ORDER BY u.creation_timestamp " + orderByInsertionDate;
 		} else {
 			sqlString = "SELECT u FROM Location u";
 		}
-		TypedQuery<Location> query = entityManagerCHW.createQuery(sqlString,
-				Location.class);
+		TypedQuery<Location> query = entityManager.createQuery(sqlString, Location.class);
 
 		return query.getResultList();
 	}
-	
+
 	@Override
 	public List<Location> getRecentLocations(int numberOfDaysToLookBack) {
 
 		Calendar calendar = new GregorianCalendar();
 		calendar.setTimeZone(TimeZone.getTimeZone("UTC+6"));
 		calendar.setTime(new Date());
-		calendar.add(Calendar.DATE, -numberOfDaysToLookBack);//substract the number of days to look back
+		calendar.add(Calendar.DATE, -numberOfDaysToLookBack);// substract the
+																// number of
+																// days to look
+																// back
 		Date dateToLookBackAfter = calendar.getTime();
 
 		String qlString = "SELECT u FROM Location u where u.creation_timestamp > :dateToLookBackAfter ORDER BY u.creation_timestamp DESC";
-		TypedQuery<Location> query = entityManagerCHW.createQuery(qlString,
-				Location.class);
+		TypedQuery<Location> query = entityManager.createQuery(qlString, Location.class);
 		query.setParameter("dateToLookBackAfter", dateToLookBackAfter, TemporalType.DATE);
 
 		return query.getResultList();
@@ -64,8 +62,7 @@ public class LocationDaoJPA2Impl implements LocationDao {
 
 		try {
 			String qlString = "SELECT u FROM Location u WHERE u.name = ?1";
-			TypedQuery<Location> query = entityManagerCHW.createQuery(qlString,
-					Location.class);
+			TypedQuery<Location> query = entityManager.createQuery(qlString, Location.class);
 			query.setParameter(1, name);
 
 			return query.getSingleResult();
@@ -73,14 +70,13 @@ public class LocationDaoJPA2Impl implements LocationDao {
 			return null;
 		}
 	}
-	
+
 	@Override
 	public Location getLocationById(Long id) {
 
 		try {
 			String qlString = "SELECT u FROM Location u WHERE u.id = ?1";
-			TypedQuery<Location> query = entityManagerCHW.createQuery(qlString,
-					Location.class);
+			TypedQuery<Location> query = entityManager.createQuery(qlString, Location.class);
 			query.setParameter(1, id);
 
 			return query.getSingleResult();
@@ -90,38 +86,32 @@ public class LocationDaoJPA2Impl implements LocationDao {
 	}
 
 	@Override
-	public Long createLocation(Location location, int ds) {
-		
+	public Long createLocation(Location location) {
+
 		location.setCreation_timestamp(new Date());
-		if(ds == 1){
-		entityManagerCHW.persist(location);
-		entityManagerCHW.flush();// force insert to receive the id of the location
-		}
-		else if(ds == 2){
-			entityManagerVMA.persist(location);
-			entityManagerVMA.flush();// force insert to receive the id of the location
-		}
+		entityManager.persist(location);
+		entityManager.flush();// force insert to receive the id of the location
+
 		return location.getId();
 	}
-	
+
 	@Override
 	public void deleteLocation(Location locationPojo) {
 
-		Location location = entityManagerCHW
-				.find(Location.class, locationPojo.getId());
-		entityManagerCHW.remove(location);
+		Location location = entityManager.find(Location.class, locationPojo.getId());
+		entityManager.remove(location);
 
 	}
 
 	@Override
 	public void updateLocation(Location location) {
-		//TODO think about partial update and full update
-		entityManagerCHW.merge(location);
+		// TODO think about partial update and full update
+		entityManager.merge(location);
 	}
 
 	@Override
 	public void deleteLocations() {
-		Query query = entityManagerCHW.createNativeQuery("TRUNCATE TABLE location");
+		Query query = entityManager.createNativeQuery("TRUNCATE TABLE location");
 		query.executeUpdate();
 	}
 }

@@ -19,7 +19,7 @@ public interface PostService {
 	 * @throws AppException
 	 */
 	@PreAuthorize("hasPermission(#group, 'member') or hasPermission(#group, 'manager')")
-	public Long createPost(Post post, Group group, int ds) throws AppException;
+	public Long createPost(Post post, Group group) throws AppException;
 	/*
 	 * ******************* Read related methods ********************
 	 */
@@ -46,7 +46,7 @@ public interface PostService {
 	 * ******************** Update related methods **********************
 	 */
 	@PreAuthorize("hasPermission(#post, 'write') or hasRole('ROLE_MODERATOR')")
-	public void updateFullyPost(Post post, int ds) throws AppException;
+	public void updateFullyPost(Post post) throws AppException;
 
 	@PreAuthorize("hasPermission(#post, 'write') or hasRole('ROLE_MODERATOR')")
 	public void updatePartiallyPost(Post post) throws AppException;
@@ -56,7 +56,7 @@ public interface PostService {
 	 */
 
 	@PreAuthorize("hasPermission(#post, 'delete') or hasRole('ROLE_MODERATOR')")
-	public void deletePost(Post post, int ds);	
+	public void deletePost(Post post);	
 	
 	/*
 	 * ******************** Helper methods **********************

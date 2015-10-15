@@ -22,7 +22,6 @@ import dash.errorhandling.AppException;
 import dash.service.ClassService;
 import dash.service.LocationService;
 import dash.service.UserService;
-import dash.tran.ClassSwitch;
 
 @Component
 @Path("/classes")
@@ -30,9 +29,6 @@ public class ClassResource {
 
 	@Autowired
 	private ClassService classService;
-	
-	@Autowired
-	private ClassSwitch classTran;
 	
 	@Autowired
 	private UserService userService;
@@ -47,7 +43,7 @@ public class ClassResource {
 		Location verifyLocation = locationService
 				.verifyLocationExistenceById(clas.getLocation_id());
 		if (verifyLocation != null) {
-			Long createClassId = classService.createClass(clas, verifyLocation, ds);
+			Long createClassId = classService.createClass(clas, verifyLocation);
 			return Response
 					.status(Response.Status.CREATED)
 					// 201
@@ -145,7 +141,7 @@ public class ClassResource {
 		Location verifyLocation = locationService
 				.verifyLocationExistenceById(clas.getLocation_id());
 		if (verifyLocation != null) {
-			classTran.updatePartiallyClass(clas, verifyLocation, ds);
+			classService.updatePartiallyClass(clas, verifyLocation);
 			return Response
 					.status(Response.Status.OK)
 					// 200
@@ -172,7 +168,7 @@ public class ClassResource {
 			Location verifyLocation = locationService
 					.verifyLocationExistenceById(clas.getLocation_id());
 			if (verifyLocation != null) {
-				classTran.deleteClass(clas, verifyLocation, ds);
+				classService.deleteClass(clas, verifyLocation);
 				return Response.status(Response.Status.NO_CONTENT)
 						// 204
 						.entity("Class successfully removed from database")

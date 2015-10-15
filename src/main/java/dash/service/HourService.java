@@ -22,7 +22,7 @@ public interface HourService {
 	 * @return
 	 * @throws AppException
 	 */
-	public Long createHour(Hour hour, int ds) throws AppException;
+	public Long createHour(Hour hour) throws AppException;
 
 	/*
 	 * ******************* Read related methods ********************
@@ -80,7 +80,7 @@ public interface HourService {
 	 * ******************** Delete related methods **********************
 	 */
 	@PreAuthorize("hasPermission(#hour, 'delete') or hasRole('ROLE_MODERATOR')")
-	public void deleteHour(Hour hour, int ds);
+	public void deleteHour(Hour hour);
 	
 	/*
 	 * ******************** Upload related methods **********************
@@ -97,7 +97,7 @@ public interface HourService {
 	public List<String> getFileNames(Hour hour);
 	
 	@PreAuthorize("hasRole('ROLE_ADMIN_APPROVER')")
-	public void approveHour(Hour hour, boolean approved, int ds) throws AppException;
+	public void approveHour(Hour hour, boolean approved) throws AppException;
 
 	/*
 	 * ******************** Helper methods **********************

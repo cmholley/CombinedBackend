@@ -63,7 +63,8 @@ public class UserServiceDbAccessImpl extends ApplicationObjectSupport implements
 
 	/********************* Create related methods implementation ***********************/
 	@Override
-	public Long createUser(User user, int ds) throws AppException {
+	@Transactional
+	public Long createUser(User user) throws AppException {
 
 		validateInputForCreation(user);
 
@@ -80,7 +81,7 @@ public class UserServiceDbAccessImpl extends ApplicationObjectSupport implements
 					AppConstants.DASH_POST_URL);
 		}
 
-		long userId = userDao.createUser(user, ds);
+		long userId = userDao.createUser(user);
 		user.setId(userId);
 		authoritiesController.create(user, userRole);
 		createUserACL(user, new PrincipalSid(user.getUsername()));
@@ -109,9 +110,10 @@ public class UserServiceDbAccessImpl extends ApplicationObjectSupport implements
 	}
 
 	@Override
-	public void createUsers(List<User> users, int ds) throws AppException {
+	@Transactional
+	public void createUsers(List<User> users) throws AppException {
 		for (User user : users) {
-			createUser(user, ds);
+			createUser(user);
 		}
 	}
 
@@ -212,14 +214,15 @@ public class UserServiceDbAccessImpl extends ApplicationObjectSupport implements
 
 	/********************* UPDATE-related methods implementation ***********************/
 	@Override
-	public void updateFullyUser(User user, int ds) throws AppException {
+	@Transactional
+	public void updateFullyUser(User user) throws AppException {
 		
 		try {
 			//verify existence of user
 			User verifyUserExistenceById = getUserById(user.getId());
 			
 			copyAllProperties(verifyUserExistenceById, user);
-			userDao.updateUser(verifyUserExistenceById, ds);
+			userDao.updateUser(verifyUserExistenceById);
 			
 		} catch (AppException ex) {
 			throw new AppException(Response.Status.NOT_FOUND.getStatusCode(),
@@ -265,26 +268,27 @@ public class UserServiceDbAccessImpl extends ApplicationObjectSupport implements
 	/*********************
 	 * DELETE-related methods implementation **********************
 	 * 
-<<<<<<< HEAD
 	 * 
 	 * */
 
 	@Override
-	public void deleteUser(User user, int ds) {
-		userDao.deleteUserById(user, ds);
+	@Transactional
+	public void deleteUser(User user) {
+		userDao.deleteUserById(user);
 		deleteACL(user);
 	}
 
 
 
 	@Override
-	public void updatePartiallyUser(User user, int ds) throws AppException {
+	@Transactional
+	public void updatePartiallyUser(User user) throws AppException {
 		
 		try {
 			// do a validation to verify existence of the resource
 			User verifyUserExistenceById = getUserById(user.getId());
 			copyPartialProperties(verifyUserExistenceById, user);
-			userDao.updateUser(verifyUserExistenceById, ds);
+			userDao.updateUser(verifyUserExistenceById);
 		} catch (AppException ex) {
 			throw new AppException(Response.Status.NOT_FOUND.getStatusCode(),
 					404,

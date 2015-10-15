@@ -41,11 +41,11 @@ public class CommentResource {
 	@POST
 	@Consumes({ MediaType.APPLICATION_JSON })
 	@Produces({ MediaType.TEXT_HTML })
-	public Response createComments(Comment comment, @QueryParam(value = "ds") int ds) throws AppException {
+	public Response createComments(Comment comment) throws AppException {
 		Post post = postService.getPostById(comment.getPost_id());
 		Group group = groupService.getGroupById(post.getGroup_id());
 
-		Long createCommentId = commentService.createComment(comment, group, ds);
+		Long createCommentId = commentService.createComment(comment, group);
 		return Response.status(Response.Status.CREATED)
 				// 201
 				.entity("A new comment has been created")
@@ -134,9 +134,9 @@ public class CommentResource {
 	@DELETE
 	@Path("{id}")
 	@Produces({ MediaType.TEXT_HTML })
-	public Response deleteComment(@PathParam("id") Long id, @QueryParam(value = "ds") int ds) throws AppException {
+	public Response deleteComment(@PathParam("id") Long id) throws AppException {
 		Comment comment = commentService.getCommentById(id);
-		commentService.deleteComment(comment, ds);
+		commentService.deleteComment(comment);
 		return Response.status(Response.Status.NO_CONTENT)// 204
 				.entity("Post successfully removed from database").build();
 	}

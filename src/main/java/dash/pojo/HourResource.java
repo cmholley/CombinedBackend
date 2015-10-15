@@ -33,8 +33,6 @@ import dash.service.GroupService;
 import dash.service.HourService;
 import dash.service.TaskService;
 import dash.service.UserService;
-import dash.tran.GroupSwitch;
-import dash.tran.HourSwitch;
 
 @Component("hourResource")
 @Path("/hours")
@@ -51,9 +49,6 @@ public class HourResource {
 	
 	@Autowired
 	private TaskService taskService;
-
-	@Autowired
-	private HourSwitch hourTran;
 	
 	private static final String hourPicturePathCHW = AppConstants.APPLICATION_UPLOAD_LOCATION_FOLDER_CHW
 			+ "/hours";
@@ -64,8 +59,8 @@ public class HourResource {
 	@POST
 	@Consumes({ MediaType.APPLICATION_JSON })
 	@Produces({ MediaType.TEXT_HTML, MediaType.APPLICATION_JSON })
-	public Response createHour(Hour hour, @QueryParam(value = "ds") int ds) throws AppException {
-		Long createHourId = hourTran.createHour(hour, ds);
+	public Response createHour(Hour hour) throws AppException {
+		Long createHourId = hourService.createHour(hour);
 		hour.setId(createHourId);
 		return Response.status(Response.Status.CREATED)
 				// 201
@@ -161,7 +156,7 @@ public class HourResource {
 		} catch (AppException ex) {
 			if (ex.getStatus() == 404) {
 				// resource not existent yet, and should be created
-				Long createHourId = hourService.createHour(hour, 0);
+				Long createHourId = hourService.createHour(hour);
 				return Response
 						.status(Response.Status.CREATED)
 						// 201
@@ -206,7 +201,7 @@ public class HourResource {
 	@Path("approve/{id}")
 	@Produces({ MediaType.TEXT_HTML })
 	public Response approveHour(@PathParam("id") Long id,
-			@QueryParam("isApproved") boolean isApproved, @QueryParam(value = "ds") int ds) throws AppException {
+			@QueryParam("isApproved") boolean isApproved) throws AppException {
 		Hour hour = hourService.getHourById(id);
 		if (hour == null) {
 			throw new AppException(Response.Status.NOT_FOUND.getStatusCode(),
@@ -221,7 +216,7 @@ public class HourResource {
 			group.setId(task.getGroup_id());
 			hourService.approveHour(hour, group, isApproved);
 		} catch (AppException e) {
-			hourTran.approveHour(hour, isApproved, ds);
+			hourService.approveHour(hour, isApproved);
 		}
 
 		return Response.status(Response.Status.OK)
@@ -237,10 +232,10 @@ public class HourResource {
 	@DELETE
 	@Path("{id}")
 	@Produces({ MediaType.TEXT_HTML })
-	public Response deleteHour(@PathParam("id") Long id, @QueryParam(value = "ds") int ds) throws AppException {
+	public Response deleteHour(@PathParam("id") Long id) throws AppException {
 		Hour hour = hourService.getHourById(id);
 
-		hourTran.deleteHour(hour, ds);
+		hourService.deleteHour(hour);
 		return Response.status(Response.Status.NO_CONTENT)// 204
 				.entity("Hour successfully removed from database").build();
 	}

@@ -25,11 +25,11 @@ public interface HourDao {
 	 */
 	public Hour getHourById(Long id);
 	
-	public void deleteHourById(Hour hour, int ds);
+	public void deleteHourById(Hour hour);
 
-	public Long createHour(Hour hour, int ds);
+	public Long createHour(Hour hour);
 
-	public void updateHour(Hour hour, int ds);
+	public void updateHour(Hour hour);
 
 	/** removes all hours */
 	public void deleteHours();

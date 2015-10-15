@@ -16,7 +16,7 @@ public interface LocationDao {
 
 	public void deleteLocation(Location location);
 
-	public Long createLocation(Location location, int ds);
+	public Long createLocation(Location location);
 
 	public void updateLocation(Location location);
 

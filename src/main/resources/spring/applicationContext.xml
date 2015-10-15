@@ -61,51 +61,35 @@
 	<bean id="userResource" class="dash.pojo.UsersResource" />
 
 	<bean id="groupDao" class="dash.dao.GroupDaoJPA2Impl" />
-	<bean id="groupService" class="dash.service.GroupServiceDbAccessImpl" />
-	<bean id="groupSwitch" class="dash.tran.GroupSwitch"/> 
-	<bean id="groupTran" class="dash.tran.GroupTransactionImpl"/> 
+	<bean id="groupService" class="dash.service.GroupServiceDbAccessImpl" /> 
 	<bean id="groupResource" class="dash.pojo.GroupResource" />
 
 	<bean id="taskDao" class="dash.dao.TaskDaoJPA2Impl" />
 	<bean id="taskService" class="dash.service.TaskServiceDbAccessImpl" />
-	<bean id="taskSwitch" class="dash.tran.TaskSwitch"/> 
-	<bean id="taskTran" class="dash.tran.TaskTransactionImpl"/> 
 	<bean id="taskResource" class="dash.pojo.TaskResource" />
 
 	<bean id="postDao" class="dash.dao.PostDaoJPA2Impl" />
 	<bean id="postService" class="dash.service.PostServiceDbAccessImpl" />
-	<bean id="postSwitch" class="dash.tran.PostSwitch"/> 
-	<bean id="postTran" class="dash.tran.PostTransactionImpl"/>
 	<bean id="postResource" class="dash.pojo.PostResource" />
 
 	<bean id="commentDao" class="dash.dao.CommentDaoJPA2Impl" />
 	<bean id="commentService" class="dash.service.CommentServiceDbAccessImpl" />
-	<bean id="commentSwitch" class="dash.tran.CommentSwitch" />
-	<bean id="commentTran" class="dash.tran.CommentTransactionImpl" />
 	<bean id="commentResource" class="dash.pojo.CommentResource" />
 
 	<bean id="messageDao" class="dash.dao.MessageDaoJPA2Impl" />
 	<bean id="messageService" class="dash.service.MessageServiceDbAccessImpl" />
-	<bean id="messageSwitch" class="dash.tran.MessageSwitch"/> 
-	<bean id="messageTran" class="dash.tran.MessageTransactionImpl"/>
 	<bean id="messageResource" class="dash.pojo.MessageResource" />
 
 	<bean id="hourDao" class="dash.dao.HourDaoJPA2Impl" />
 	<bean id="hourService" class="dash.service.HourServiceDbAccessImpl" />
-	<bean id="hourSwitch" class="dash.tran.HourSwitch"/> 
-	<bean id="hourTran" class="dash.tran.HourTransactionImpl"/>
 	<bean id="hourResource" class="dash.pojo.HourResource" />
 
 	<bean id="locationDao" class="dash.dao.LocationDaoJPA2Impl" />
 	<bean id="locationService" class="dash.service.LocationServiceDbAccessImpl" />
-	<bean id="locationSwitch" class="dash.tran.LocationSwitch"/> 
-	<bean id="locationTran" class="dash.tran.LocationTransactionImpl"/>
 	<bean id="locationResource" class="dash.pojo.LocationResource" />
 
 	<bean id="classDao" class="dash.dao.ClassDaoJPA2Impl" />
 	<bean id="classService" class="dash.service.ClassServiceDbAccessImpl" />
-	<bean id="classSwitch" class="dash.tran.ClassSwitch"/> 
-	<bean id="classTran" class="dash.tran.ClassTransactionImpl"/> 
 	<bean id="classResource" class="dash.pojo.ClassResource" />
 
 

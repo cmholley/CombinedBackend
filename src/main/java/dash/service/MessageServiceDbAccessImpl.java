@@ -44,8 +44,9 @@ public class MessageServiceDbAccessImpl extends ApplicationObjectSupport
 
 	/********************* Create related methods implementation ***********************/
 	@Override
-	public Long createMessage(Message message, Task task, int ds) throws AppException {
-		long messageId = messageDao.createMessage(message, ds);
+	@Transactional
+	public Long createMessage(Message message, Task task) throws AppException {
+		long messageId = messageDao.createMessage(message);
 		message.setId(messageId);
 		aclController.createACL(message);
 		aclController.createAce(message, CustomPermission.READ);
@@ -105,7 +106,8 @@ public class MessageServiceDbAccessImpl extends ApplicationObjectSupport
 
 	/********************* UPDATE-related methods implementation ***********************/
 	@Override
-	public void updateFullyMessage(Message message, int ds) throws AppException {
+	@Transactional
+	public void updateFullyMessage(Message message) throws AppException {
 		// do a validation to verify FULL update with PUT
 		if (isFullUpdate(message)) {
 			throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(),
@@ -116,7 +118,7 @@ public class MessageServiceDbAccessImpl extends ApplicationObjectSupport
 
 		//verify whether message exists
 		getMessageById(message.getId());
-		messageDao.updateMessage(message, ds);
+		messageDao.updateMessage(message);
 	}
 
 	/**
@@ -132,15 +134,17 @@ public class MessageServiceDbAccessImpl extends ApplicationObjectSupport
 	/********************* DELETE-related methods implementation ***********************/
 
 	@Override
-	public void deleteMessage(Message message, int ds) {
+	@Transactional
+	public void deleteMessage(Message message) {
 
-		messageDao.deleteMessageById(message, ds);
+		messageDao.deleteMessageById(message);
 		aclController.deleteACL(message);
 
 	}
 
 	@Override
-	public void updatePartiallyMessage(Message message, Task task, int ds) throws AppException {
+	@Transactional
+	public void updatePartiallyMessage(Message message, Task task) throws AppException {
 		//do a validation to verify existence of the resource
 		Message verifyMessageExistenceById = getMessageById(message.getId());
 		
@@ -151,7 +155,7 @@ public class MessageServiceDbAccessImpl extends ApplicationObjectSupport
 							+ message.getId(), AppConstants.DASH_POST_URL);
 		}
 		copyPartialProperties(verifyMessageExistenceById, message);
-		messageDao.updateMessage(verifyMessageExistenceById, ds);
+		messageDao.updateMessage(verifyMessageExistenceById);
 	}
 
 	private void copyPartialProperties(Message verifyPostExistenceById,

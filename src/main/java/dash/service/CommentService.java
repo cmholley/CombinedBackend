@@ -14,7 +14,7 @@ public interface CommentService {
 	 * Create a new comment and set the current user as owner and manager.
 	 */
 	@PreAuthorize("hasPermission(#group, 'member') or hasPermission(#group, 'manager') or hasRole('ROLE_MODERATOR')")
-	public Long createComment(Comment comment, Group group, int ds) throws AppException;
+	public Long createComment(Comment comment, Group group) throws AppException;
 
 
 	/*
@@ -53,7 +53,7 @@ public interface CommentService {
 	 * ******************** Delete related methods **********************
 	 */
 	@PreAuthorize("hasPermission(#comment, 'delete') or hasRole('ROLE_MODERATOR')")
-	public void deleteComment(Comment comment, int ds);
+	public void deleteComment(Comment comment);
 
 	/*
 	 * ******************** Helper methods **********************

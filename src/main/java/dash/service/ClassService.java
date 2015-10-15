@@ -21,7 +21,7 @@ public interface ClassService {
 	 * @throws AppException if class has to be generated does not contain a name.
 	 */
 	@PreAuthorize("hasPermission(#loc, 'MANAGER') or hasRole('ROLE_ADMIN')")
-	public Long createClass(Class clas, Location loc, int ds) throws AppException;
+	public Long createClass(Class clas, Location loc) throws AppException;
 
 	/**
 	 * Create multiple groups, only available for MANAGER.
@@ -75,14 +75,14 @@ public interface ClassService {
 	 * ******************** Update related methods **********************
 	 */
 	@PreAuthorize("hasPermission(#clas, 'MANAGER') or hasPermission(#loc, 'MANAGER') or hasRole('ROLE_MODERATOR')")
-	public void updatePartiallyClass(Class clas, Location loc, int ds)
+	public void updatePartiallyClass(Class clas, Location loc)
 			throws AppException;
 
 	/*
 	 * ******************** Delete related methods **********************
 	 */
 	@PreAuthorize("hasPermission(#clas, 'MANAGER') or hasPermission(#loc, 'MANAGER') or hasRole('ROLE_MODERATOR')")
-	public void deleteClass(Class clas, Location loc, int ds) throws AppException;
+	public void deleteClass(Class clas, Location loc) throws AppException;
 
 	/*
 	 * ******************** Membership related methods **********************
