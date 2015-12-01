@@ -28,7 +28,20 @@ import dash.security.IAclObject;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Class implements  IAclObject{
 	
-
+	public static enum Cores{
+		Advocacy,
+		Capacity_Building, 
+		Communication_Skills, 
+		Community_Service,
+		Coordination,
+		Interpersonal_Communication, 
+		Knowledge_Base, 
+		Organizational, 
+		Service_Coordination,
+		Skills,
+		Teaching_Skills;
+	}
+	
 	
 	@Id
 	@GeneratedValue
@@ -92,7 +105,7 @@ public class Class implements  IAclObject{
 	@XmlElement(name="cores")
 	@ElementCollection(fetch= FetchType.EAGER)
 	@CollectionTable(name = "class_cores", joinColumns = {@JoinColumn(name="class_id")})
-	private Set<Long> cores; //enum
+	private Set<Cores> cores; //enum
 	
 	@XmlElement(name="forCHW")
 	@Column(name="forCHW")
@@ -106,7 +119,30 @@ public class Class implements  IAclObject{
 	@Column(name="active")
 	private int active;
 	
+	@XmlElement(name="registration_info")
+	@Column(name="registration_info")
+	private String registration_info;
 	
+	@XmlElement(name="cost")
+	@Column(name="cost")
+	private String cost;
+	
+	public String getRegistration_info() {
+		return registration_info;
+	}
+
+	public void setRegistration_info(String registration_info) {
+		this.registration_info = registration_info;
+	}
+
+	public String getCost() {
+		return cost;
+	}
+
+	public void setCost(String cost) {
+		this.cost = cost;
+	}
+
 	public Class(){}
 
 	public Long getId() {
@@ -214,11 +250,11 @@ public class Class implements  IAclObject{
 		this.active = active;
 	}
 
-	public Set<Long> getCores() {
+	public Set<Cores> getCores() {
 		return cores;
 	}
 
-	public void setCores(Set<Long> cores) {
+	public void setCores(Set<Cores> cores) {
 		this.cores = cores;
 	}
 }
