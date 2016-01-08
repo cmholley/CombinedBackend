@@ -14,13 +14,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import dash.security.IAclObject;
 
-import org.apache.commons.beanutils.BeanUtils;
-
-import dash.security.IAclObject;
-
-import java.lang.reflect.InvocationTargetException;
-import java.util.Date;
-
 @Entity
 @Table(name = "comment")
 @XmlRootElement

@@ -20,7 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import dash.errorhandling.AppException;
-import dash.service.ClassService;
 import dash.service.LocationService;
 import dash.service.UserService;
 
