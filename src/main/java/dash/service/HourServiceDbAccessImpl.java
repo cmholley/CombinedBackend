@@ -17,6 +17,8 @@ import java.util.List;
 import javax.ws.rs.core.Response;
 
 import org.apache.commons.beanutils.BeanUtilsBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.ApplicationObjectSupport;
 import org.springframework.security.acls.model.MutableAclService;
@@ -34,8 +36,7 @@ import dash.security.CustomPermission;
 import dash.security.GenericAclController;
 
 @Component("hourService")
-public class HourServiceDbAccessImpl extends ApplicationObjectSupport implements
-		HourService {
+public class HourServiceDbAccessImpl extends ApplicationObjectSupport implements HourService {
 
 	@Autowired
 	HourDao hourDao;
@@ -52,7 +53,9 @@ public class HourServiceDbAccessImpl extends ApplicationObjectSupport implements
 	@Autowired
 	private GenericAclController<Hour> aclController;
 
-	/********************* Create related methods implementation ***********************/
+	/*********************
+	 * Create related methods implementation
+	 ***********************/
 	@Override
 	@Transactional
 	public Long createHour(Hour hour) throws AppException {
@@ -66,24 +69,25 @@ public class HourServiceDbAccessImpl extends ApplicationObjectSupport implements
 		return hourId;
 	}
 
-	// ******************** Read related methods implementation **********************
+	// ******************** Read related methods implementation
+	// **********************
 	@Override
-	public List<Hour> getHours(int numberOfHours, Long startIndex, boolean onlyPending) throws AppException{
-		
+	public List<Hour> getHours(int numberOfHours, Long startIndex, boolean onlyPending) throws AppException {
+
 		List<Hour> hours = hourDao.getHours(numberOfHours, startIndex, onlyPending, "ASC");
 
 		return getHoursFromEntities(hours);
 	}
 
 	@Override
-	public List<Hour> getHoursByGroup(int numberOfHours, Long startIndex,
-			Group group, boolean onlyPending) throws AppException {
+	public List<Hour> getHoursByGroup(int numberOfHours, Long startIndex, Group group, boolean onlyPending)
+			throws AppException {
 
 		// verify optional parameter numberDaysToLookBack first
 		List<Task> tasksByGroup = taskService.getTasksByGroup(group);
-		List<Hour> groupHours= new ArrayList<Hour>();
-		for(Task task: tasksByGroup){
-			groupHours.addAll( hourDao.getHours(numberOfHours, startIndex, task, onlyPending));
+		List<Hour> groupHours = new ArrayList<Hour>();
+		for (Task task : tasksByGroup) {
+			groupHours.addAll(hourDao.getHours(numberOfHours, startIndex, task, onlyPending));
 		}
 
 		return getHoursFromEntities(groupHours);
@@ -91,8 +95,7 @@ public class HourServiceDbAccessImpl extends ApplicationObjectSupport implements
 
 	@Override
 	public List<Hour> getHoursByMyUser(int numberOfHours, Long startIndex, boolean onlyPending) throws AppException {
-		
-		
+
 		List<Hour> hours = hourDao.getHours(numberOfHours, startIndex, onlyPending, "DESC");
 		return getHoursFromEntities(hours);
 
@@ -102,11 +105,10 @@ public class HourServiceDbAccessImpl extends ApplicationObjectSupport implements
 	public Hour getHourById(Long id) throws AppException {
 		Hour hourById = hourDao.getHourById(id);
 		if (hourById == null) {
-			throw new AppException(Response.Status.NOT_FOUND.getStatusCode(),
-					404, "The hour you requested with id " + id
-							+ " was not found in the database",
-					"Verify the existence of the hour with the id " + id
-							+ " in the database", AppConstants.DASH_POST_URL);
+			throw new AppException(Response.Status.NOT_FOUND.getStatusCode(), 404,
+					"The hour you requested with id " + id + " was not found in the database",
+					"Verify the existence of the hour with the id " + id + " in the database",
+					AppConstants.DASH_POST_URL);
 		}
 
 		return hourDao.getHourById(id);
@@ -121,8 +123,6 @@ public class HourServiceDbAccessImpl extends ApplicationObjectSupport implements
 		return response;
 	}
 
-
-
 	@Override
 	public int getNumberOfHours() {
 		int totalNumber = hourDao.getNumberOfHours();
@@ -131,13 +131,14 @@ public class HourServiceDbAccessImpl extends ApplicationObjectSupport implements
 
 	}
 
-	/********************* UPDATE-related methods implementation ***********************/
+	/*********************
+	 * UPDATE-related methods implementation
+	 ***********************/
 	@Override
 	@Transactional
 	public void updateFullyHour(Hour hour) throws AppException {
-		Hour verifyHourExistenceById = getHourById(hour
-				.getId());
-		
+		Hour verifyHourExistenceById = getHourById(hour.getId());
+
 		copyAllProperties(verifyHourExistenceById, hour);
 		verifyHourExistenceById.setPending(true);
 		verifyHourExistenceById.setApproved(false);
@@ -154,24 +155,24 @@ public class HourServiceDbAccessImpl extends ApplicationObjectSupport implements
 
 		BeanUtilsBean withNull = new BeanUtilsBean();
 		try {
-			withNull.copyProperty(verifyHourExistenceById, "title",
-					hour.getTitle());
-			withNull.copyProperty(verifyHourExistenceById, "start_time",
-					hour.getStart_time());
-			withNull.copyProperty(verifyHourExistenceById, "end_time",
-					hour.getEnd_time());
-			withNull.copyProperty(verifyHourExistenceById, "duration",
-					hour.getDuration());
+			withNull.copyProperty(verifyHourExistenceById, "title", hour.getTitle());
+			withNull.copyProperty(verifyHourExistenceById, "start_time", hour.getStart_time());
+			withNull.copyProperty(verifyHourExistenceById, "end_time", hour.getEnd_time());
+			withNull.copyProperty(verifyHourExistenceById, "duration", hour.getDuration());
 
 		} catch (IllegalAccessException e) {
-			e.printStackTrace();
+			Logger logger = LoggerFactory.getLogger(this.getClass());
+			logger.error("Exception thrown in " + this.getClass().getName(), e);
 		} catch (InvocationTargetException e) {
-			e.printStackTrace();
+			Logger logger = LoggerFactory.getLogger(this.getClass());
+			logger.error("Exception thrown in " + this.getClass().getName(), e);
 		}
 
 	}
 
-	/********************* DELETE-related methods implementation ***********************/
+	/*********************
+	 * DELETE-related methods implementation
+	 ***********************/
 
 	@Override
 	@Transactional
@@ -185,14 +186,13 @@ public class HourServiceDbAccessImpl extends ApplicationObjectSupport implements
 	@Override
 	@Transactional
 	public void updatePartiallyHour(Hour hour) throws AppException {
-		//do a validation to verify existence of the resource
+		// do a validation to verify existence of the resource
 		Hour verifyHourExistenceById = getHourById(hour.getId());
-		
+
 		copyPartialProperties(verifyHourExistenceById, hour);
 		verifyHourExistenceById.setApproved(false);
 		verifyHourExistenceById.setPending(true);
 		hourDao.updateHour(verifyHourExistenceById);
-
 
 	}
 
@@ -208,9 +208,11 @@ public class HourServiceDbAccessImpl extends ApplicationObjectSupport implements
 		try {
 			notNull.copyProperties(verifyHourExistenceById, hour);
 		} catch (IllegalAccessException e) {
-			e.printStackTrace();
+			Logger logger = LoggerFactory.getLogger(this.getClass());
+			logger.error("Exception thrown in " + this.getClass().getName(), e);
 		} catch (InvocationTargetException e) {
-			e.printStackTrace();
+			Logger logger = LoggerFactory.getLogger(this.getClass());
+			logger.error("Exception thrown in " + this.getClass().getName(), e);
 		}
 
 	}
@@ -222,24 +224,22 @@ public class HourServiceDbAccessImpl extends ApplicationObjectSupport implements
 		hour.setApproved(approved);
 		hour.setPending(false);
 		hourDao.updateHour(hour);
-		
-		
+
 	}
 
 	@Override
 	@Transactional
-	public void approveHour(Hour hour, Group group, boolean approved)
-			throws AppException {
+	public void approveHour(Hour hour, Group group, boolean approved) throws AppException {
 		approveHour(hour, approved);
 	}
-	
+
 	/*----------------------------------------------------------
 	 * The Following Methods are to manipulate uploaded files
 	 * ------------------------------------------------------------
 	 */
 
-	public void uploadFile(InputStream uploadedInputStream,
-			String uploadedFileLocation, Hour hour) throws AppException {
+	public void uploadFile(InputStream uploadedInputStream, String uploadedFileLocation, Hour hour)
+			throws AppException {
 
 		try {
 			File file = new File(uploadedFileLocation);
@@ -256,45 +256,36 @@ public class HourServiceDbAccessImpl extends ApplicationObjectSupport implements
 			out.close();
 		} catch (IOException e) {
 
-			throw new AppException(
-					Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), 500,
-					"Could not upload file due to IOException", "\n\n"
-							+ e.getMessage(), AppConstants.DASH_POST_URL);
+			throw new AppException(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), 500,
+					"Could not upload file due to IOException", "\n\n" + e.getMessage(), AppConstants.DASH_POST_URL);
 		}
 
 	}
 
 	@Override
-	public void deleteUploadFile(String uploadedFileLocation, Hour hour)
-			throws AppException {
+	public void deleteUploadFile(String uploadedFileLocation, Hour hour) throws AppException {
 		Path path = Paths.get(uploadedFileLocation);
 		try {
 			Files.delete(path);
 		} catch (NoSuchFileException x) {
 			x.printStackTrace();
-			throw new AppException(Response.Status.NOT_FOUND.getStatusCode(),
-					404, "NoSuchFileException thrown, Operation unsuccesful.",
-					"Please ensure the file you are attempting to"
-							+ " delete exists at " + path + ".",
+			throw new AppException(Response.Status.NOT_FOUND.getStatusCode(), 404,
+					"NoSuchFileException thrown, Operation unsuccesful.",
+					"Please ensure the file you are attempting to" + " delete exists at " + path + ".",
 					AppConstants.DASH_POST_URL);
 
 		} catch (DirectoryNotEmptyException x) {
 			x.printStackTrace();
-			throw new AppException(
-					Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
-					404,
+			throw new AppException(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), 404,
 					"DirectoryNotEmptyException thrown, operation unsuccesful.",
 					"This method should not attempt to delete,"
-							+ " This should be considered a very serious error. Occured at "
-							+ path + ".", AppConstants.DASH_POST_URL);
+							+ " This should be considered a very serious error. Occured at " + path + ".",
+					AppConstants.DASH_POST_URL);
 		} catch (IOException x) {
 			x.printStackTrace();
-			throw new AppException(
-					Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
-					500,
+			throw new AppException(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), 500,
 					"IOException thrown and the designated file was not deleted.",
-					" Permission problems occured at " + path + ".",
-					AppConstants.DASH_POST_URL);
+					" Permission problems occured at " + path + ".", AppConstants.DASH_POST_URL);
 		}
 
 	}
@@ -302,10 +293,10 @@ public class HourServiceDbAccessImpl extends ApplicationObjectSupport implements
 	@Override
 	public List<String> getFileNames(Hour hour) {
 		List<String> results = new ArrayList<String>();
-		
-		//TODO:Switch statement for datasources
-		File[] files = new File(AppConstants.APPLICATION_UPLOAD_LOCATION_FOLDER_CHW
-				+ "/" + hour.getPicturePath()).listFiles();
+
+		// TODO:Switch statement for datasources
+		File[] files = new File(AppConstants.APPLICATION_UPLOAD_LOCATION_FOLDER_CHW + "/" + hour.getPicturePath())
+				.listFiles();
 		// If this pathname does not denote a directory, then listFiles()
 		// returns null.
 

@@ -30,10 +30,10 @@ public class LocationResource {
 
 	@Autowired
 	private LocationService locationService;
-	
-	@Autowired 
+
+	@Autowired
 	private UserService userService;
-	
+
 	@POST
 	@Consumes({ MediaType.APPLICATION_JSON })
 	@Produces({ MediaType.TEXT_HTML })
@@ -41,63 +41,51 @@ public class LocationResource {
 		Long createLocationId = locationService.createLocation(location, user_name);
 		return Response.status(Response.Status.CREATED)
 				// 201
-				.entity("A new location has been created")
-				.header("Location", String.valueOf(createLocationId))
-		         .header("ObjectId", String.valueOf(createLocationId)).build();
+				.entity("A new location has been created").header("Location", String.valueOf(createLocationId))
+				.header("ObjectId", String.valueOf(createLocationId)).build();
 	}
-	
+
 	@POST
 	@Path("list")
 	@Consumes({ MediaType.APPLICATION_JSON })
-	public Response createLocations(List<Location> locations, @QueryParam("userName") String user_name) throws AppException {
+	public Response createLocations(List<Location> locations, @QueryParam("userName") String user_name)
+			throws AppException {
 		locationService.createLocations(locations, user_name);
-		return Response.status(Response.Status.CREATED) 
-				.entity("List of clocations was successfully created").build();
+		return Response.status(Response.Status.CREATED).entity("List of clocations was successfully created").build();
 	}
-	
+
 	@GET
 	@Produces({ MediaType.APPLICATION_JSON })
-	public List<Location> getLocations(
-			@QueryParam("orderByInsertionDate") String orderByInsertionDate,
-			@QueryParam("numberDaysToLookBack") Integer numberDaysToLookBack)
-					throws IOException,	AppException {
-		List<Location> locations = locationService.getLocations(
-				orderByInsertionDate, numberDaysToLookBack);
+	public List<Location> getLocations(@QueryParam("orderByInsertionDate") String orderByInsertionDate,
+			@QueryParam("numberDaysToLookBack") Integer numberDaysToLookBack) throws IOException, AppException {
+		List<Location> locations = locationService.getLocations(orderByInsertionDate, numberDaysToLookBack);
 		return locations;
 	}
-	
+
 	@GET
 	@Path("byManager")
 	@Produces({ MediaType.APPLICATION_JSON })
-	public List<Location> getLocationsByManager(
-			@QueryParam("orderByInsertionDate") String orderByInsertionDate,
-			@QueryParam("numberDaysToLookBack") Integer numberDaysToLookBack)
-					throws IOException,	AppException {
-		List<Location> locations = locationService.getLocationsByManager(
-				orderByInsertionDate, numberDaysToLookBack);
+	public List<Location> getLocationsByManager(@QueryParam("orderByInsertionDate") String orderByInsertionDate,
+			@QueryParam("numberDaysToLookBack") Integer numberDaysToLookBack) throws IOException, AppException {
+		List<Location> locations = locationService.getLocationsByManager(orderByInsertionDate, numberDaysToLookBack);
 		return locations;
 	}
 
 	@GET
 	@Path("{id}")
 	@Produces({ MediaType.APPLICATION_JSON })
-	public Response getLocationById(@PathParam("id") Long id)
-					throws IOException,	AppException {
+	public Response getLocationById(@PathParam("id") Long id) throws IOException, AppException {
 		Location locationById = locationService.getLocationById(id);
-		return Response
-				.status(Response.Status.OK)
-				.entity(new GenericEntity<Location>(locationById) {
-				})
-						.header("Access-Control-Allow-Headers", "X-extra-header")
-						.allow("OPTIONS").build();
+		return Response.status(Response.Status.OK).entity(new GenericEntity<Location>(locationById) {
+		}).header("Access-Control-Allow-Headers", "X-extra-header").allow("OPTIONS").build();
 	}
-	
+
 	@PUT
 	@Path("{id}")
 	@Consumes({ MediaType.APPLICATION_JSON })
 	@Produces({ MediaType.TEXT_HTML })
-	public Response putLocationById(@PathParam("id") Long id, Location location, @QueryParam("userName") String user_name)
-			throws AppException {
+	public Response putLocationById(@PathParam("id") Long id, Location location,
+			@QueryParam("userName") String user_name) throws AppException {
 
 		Location locationById = locationService.verifyLocationExistenceById(id);
 
@@ -105,23 +93,17 @@ public class LocationResource {
 			// resource not existent yet, and should be created under the
 			// specified URI
 			Long createLocationId = locationService.createLocation(location, user_name);
-			return Response
-					.status(Response.Status.CREATED)
+			return Response.status(Response.Status.CREATED)
 					// 201
 					.entity("A new location has been created AT THE LOCATION you specified")
-					.header("Location",
-							"../locations/"
-									+ String.valueOf(createLocationId)).build();
+					.header("Location", "../locations/" + String.valueOf(createLocationId)).build();
 		} else {
 			// resource is existent and a full update should occur
 			locationService.updateFullyLocation(location);
-			return Response
-					.status(Response.Status.OK)
+			return Response.status(Response.Status.OK)
 					// 200
 					.entity("The location you specified has been fully updated created AT THE LOCATION you specified")
-					.header("Location",
-							"../locations/"
-									+ String.valueOf(id)).build();
+					.header("Location", "../locations/" + String.valueOf(id)).build();
 		}
 	}
 
@@ -130,65 +112,65 @@ public class LocationResource {
 	@Path("{id}")
 	@Consumes({ MediaType.APPLICATION_JSON })
 	@Produces({ MediaType.TEXT_HTML })
-	public Response partialUpdateLocationp(@PathParam("id") Long id, Location location)
-			throws AppException {
+	public Response partialUpdateLocationp(@PathParam("id") Long id, Location location) throws AppException {
 		location.setId(id);
 		locationService.updatePartiallyLocation(location);
-		return Response
-				.status(Response.Status.OK)
-				.entity("The location you specified has been successfully updated")
+		return Response.status(Response.Status.OK).entity("The location you specified has been successfully updated")
 				.build();
 	}
 
 	/*
-	 * *********************************** DELETE ***********************************
+	 * *********************************** DELETE
+	 * ***********************************
 	 */
 	@DELETE
 	@Path("{id}")
 	@Produces({ MediaType.TEXT_HTML })
-	public Response deleteLocation(@PathParam("id") Long id)
-			throws AppException {
-		Location location= new Location();
+	public Response deleteLocation(@PathParam("id") Long id) throws AppException {
+		Location location = new Location();
 		location.setId(id);
 		locationService.deleteLocation(location);
 		return Response.status(Response.Status.NO_CONTENT)// 204
 				.entity("Location successfully removed from database").build();
 	}
-	
+
 	@PUT
 	@Path("{id}/MANAGER/{user}")
-	@Produces({MediaType.TEXT_HTML})
-	public Response resetManager(@PathParam("user") Long userId, @PathParam("id") Long id) throws AppException{
-		User user= userService.getUserById(userId);
-		Location location= new Location();
+	@Produces({ MediaType.TEXT_HTML })
+	public Response resetManager(@PathParam("user") Long userId, @PathParam("id") Long id) throws AppException {
+		User user = userService.getUserById(userId);
+		Location location = new Location();
 		location.setId(id);
 		locationService.resetManager(user, location);
-		return Response.status(Response.Status.OK).entity("MANAGER RESET: User "+user.getUsername()
-				+" set as sole MANAGER for location "+ location.getId()).build();
+		return Response.status(Response.Status.OK).entity(
+				"MANAGER RESET: User " + user.getUsername() + " set as sole MANAGER for location " + location.getId())
+				.build();
 	}
-	
+
 	@POST
 	@Path("{id}/MANAGER/{user}")
-	@Produces({MediaType.TEXT_HTML})
-	public Response addManager(@PathParam("user") Long userId, @PathParam("id") Long id) throws AppException{
-		User user= userService.getUserById(userId);
-		Location location= new Location();
+	@Produces({ MediaType.TEXT_HTML })
+	public Response addManager(@PathParam("user") Long userId, @PathParam("id") Long id) throws AppException {
+		User user = userService.getUserById(userId);
+		Location location = new Location();
 		location.setId(id);
 		locationService.addManager(user, location);
-		return Response.status(Response.Status.OK).entity("MANAGER ADDED: User "+user.getUsername()
-				+" added as a MANAGER for location "+ location.getId()).build();
+		return Response.status(Response.Status.OK).entity(
+				"MANAGER ADDED: User " + user.getUsername() + " added as a MANAGER for location " + location.getId())
+				.build();
 	}
-	
+
 	@DELETE
 	@Path("{id}/MANAGER/{user}")
-	@Produces({MediaType.TEXT_HTML})
-	public Response deleteManager(@PathParam("user") Long userId, @PathParam("id") Long id) throws AppException{
-		User user= userService.getUserById(userId);
-		Location location= new Location();
+	@Produces({ MediaType.TEXT_HTML })
+	public Response deleteManager(@PathParam("user") Long userId, @PathParam("id") Long id) throws AppException {
+		User user = userService.getUserById(userId);
+		Location location = new Location();
 		location.setId(id);
 		locationService.deleteManager(user, location);
-		return Response.status(Response.Status.OK).entity("MANAGER DELETED: User "+user.getUsername()
-				+" removed as MANAGER for location "+ location.getId()).build();
+		return Response.status(Response.Status.OK).entity(
+				"MANAGER DELETED: User " + user.getUsername() + " removed as MANAGER for location " + location.getId())
+				.build();
 	}
-	
+
 }

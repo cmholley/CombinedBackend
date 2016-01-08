@@ -49,11 +49,8 @@ public class CommentResource {
 		return Response.status(Response.Status.CREATED)
 				// 201
 				.entity("A new comment has been created")
-				.header("Location",
-						"http://localhost:8080/comments/"
-								+ String.valueOf(createCommentId)).build();
+				.header("Location", "http://localhost:8080/comments/" + String.valueOf(createCommentId)).build();
 	}
-
 
 	/**
 	 * @param numberOfComments
@@ -70,15 +67,12 @@ public class CommentResource {
 	 */
 	@GET
 	@Produces({ MediaType.APPLICATION_JSON })
-	public List<Comment> getComments(
-			@QueryParam("numberOfComments") @DefaultValue("25") int numberOfComments,
-			@QueryParam("startIndex") @DefaultValue("0") Long startIndex,
-			@QueryParam("post_id") Long post_id) throws IOException,
-			AppException {
+	public List<Comment> getComments(@QueryParam("numberOfComments") @DefaultValue("25") int numberOfComments,
+			@QueryParam("startIndex") @DefaultValue("0") Long startIndex, @QueryParam("post_id") Long post_id)
+					throws IOException, AppException {
 		if (post_id != null) {
 			Post post = postService.getPostById(post_id);
-			List<Comment> comments = commentService.getCommentsByPost(
-					numberOfComments, startIndex, post);
+			List<Comment> comments = commentService.getCommentsByPost(numberOfComments, startIndex, post);
 			return comments;
 		} else {
 			return new ArrayList<Comment>();
@@ -88,15 +82,11 @@ public class CommentResource {
 	@GET
 	@Path("{id}")
 	@Produces({ MediaType.APPLICATION_JSON })
-	public Response getCommentById(@PathParam("id") Long id,
-			@QueryParam("detailed") boolean detailed) throws IOException,
-			AppException {
+	public Response getCommentById(@PathParam("id") Long id, @QueryParam("detailed") boolean detailed)
+			throws IOException, AppException {
 		Comment commentById = commentService.getCommentById(id);
-		return Response
-				.status(200)
-				.entity(new GenericEntity<Comment>(commentById) {})
-						.header("Access-Control-Allow-Headers", "X-extra-header")
-						.allow("OPTIONS").build();
+		return Response.status(200).entity(new GenericEntity<Comment>(commentById) {
+		}).header("Access-Control-Allow-Headers", "X-extra-header").allow("OPTIONS").build();
 	}
 
 	/************************ Update Methods *********************/
@@ -105,26 +95,19 @@ public class CommentResource {
 	@Path("{id}")
 	@Consumes({ MediaType.APPLICATION_JSON })
 	@Produces({ MediaType.TEXT_HTML })
-	public Response partialUpdatePost(@PathParam("id") Long id, Comment comment)
-			throws AppException {
+	public Response partialUpdatePost(@PathParam("id") Long id, Comment comment) throws AppException {
 		comment.setId(id);
 		Post post = new Post();
 		if (comment.getPost_id() == null) {
-			return Response
-					.status(Response.Status.BAD_REQUEST)
-					.entity("Must have set post_id")
-					.header("Location",
-							"http://localhost:8080/services/posts/"
-									+ String.valueOf(post)).build();
+			return Response.status(Response.Status.BAD_REQUEST).entity("Must have set post_id")
+					.header("Location", "http://localhost:8080/services/posts/" + String.valueOf(post)).build();
 		} else {
 			post.setId(comment.getPost_id());
 		}
 		commentService.updatePartiallyComment(comment);
-		return Response
-				.status(Response.Status.OK)
+		return Response.status(Response.Status.OK)
 				// 200
-				.entity("The comment you specified has been successfully updated")
-				.build();
+				.entity("The comment you specified has been successfully updated").build();
 	}
 
 	/*

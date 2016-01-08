@@ -9,9 +9,11 @@ import dash.pojo.Location;
  */
 public interface LocationDao {
 	public List<Location> getLocations(String orderByInsertionDate);
+
 	public List<Location> getRecentLocations(int numberOfDaysToLookBack);
 
 	public Location getLocationByName(String name);
+
 	public Location getLocationById(Long id);
 
 	public void deleteLocation(Location location);

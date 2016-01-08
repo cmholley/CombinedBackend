@@ -48,8 +48,7 @@ import dash.security.UserLoginController;
  */
 
 @Component("userService")
-public class UserServiceDbAccessImpl extends ApplicationObjectSupport implements
-		UserService {
+public class UserServiceDbAccessImpl extends ApplicationObjectSupport implements UserService {
 
 	@Autowired
 	UserDao userDao;
@@ -61,24 +60,22 @@ public class UserServiceDbAccessImpl extends ApplicationObjectSupport implements
 	private UserLoginController authoritiesController;
 	public static final String userRole = "ROLE_USER";
 
-	/********************* Create related methods implementation ***********************/
+	/*********************
+	 * Create related methods implementation
+	 ***********************/
 	@Override
 	@Transactional
 	public Long createUser(User user) throws AppException {
 
 		validateInputForCreation(user);
 
-		//verify existence of resource in the db (feed must be unique)
+		// verify existence of resource in the db (feed must be unique)
 
 		User userByName = userDao.getUserByName(user.getUsername());
 		if (userByName != null) {
-			throw new AppException(
-					Response.Status.CONFLICT.getStatusCode(),
-					409,
-					"User with username already existing in the database with the id "
-							+ userByName.getId(),
-					"Please verify that the username and password are properly generated",
-					AppConstants.DASH_POST_URL);
+			throw new AppException(Response.Status.CONFLICT.getStatusCode(), 409,
+					"User with username already existing in the database with the id " + userByName.getId(),
+					"Please verify that the username and password are properly generated", AppConstants.DASH_POST_URL);
 		}
 
 		long userId = userDao.createUser(user);
@@ -91,20 +88,14 @@ public class UserServiceDbAccessImpl extends ApplicationObjectSupport implements
 
 	private void validateInputForCreation(User user) throws AppException {
 		if (user.getUsername() == null) {
-			throw new AppException(
-					Response.Status.BAD_REQUEST.getStatusCode(),
-					400,
+			throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(), 400,
 					"Provided data not sufficient for insertion",
-					"Please verify that the username is properly generated/set",
-					AppConstants.DASH_POST_URL);
+					"Please verify that the username is properly generated/set", AppConstants.DASH_POST_URL);
 		}
 		if (user.getPassword() == null) {
-			throw new AppException(
-					Response.Status.BAD_REQUEST.getStatusCode(),
-					400,
+			throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(), 400,
 					"Provided data not sufficient for insertion",
-					"Please verify that the password is properly generated/set",
-					AppConstants.DASH_POST_URL);
+					"Please verify that the password is properly generated/set", AppConstants.DASH_POST_URL);
 		}
 		// etc...
 	}
@@ -120,22 +111,18 @@ public class UserServiceDbAccessImpl extends ApplicationObjectSupport implements
 	// ******************** Read related methods implementation
 	// **********************
 	@Override
-	public List<User> getUsers(String orderByInsertionDate,
-			Integer numberDaysToLookBack) throws AppException {
+	public List<User> getUsers(String orderByInsertionDate, Integer numberDaysToLookBack) throws AppException {
 
-		//verify optional parameter numberDaysToLookBack first
-		if(numberDaysToLookBack!=null){
-			List<User> recentUsers = userDao
-					.getRecentUsers(numberDaysToLookBack);
+		// verify optional parameter numberDaysToLookBack first
+		if (numberDaysToLookBack != null) {
+			List<User> recentUsers = userDao.getRecentUsers(numberDaysToLookBack);
 			return getUsersFromEntities(recentUsers);
 		}
 
 		if (isOrderByInsertionDateParameterValid(orderByInsertionDate)) {
-			throw new AppException(
-					Response.Status.BAD_REQUEST.getStatusCode(),
-					400,
-					"Please set either ASC or DESC for the orderByInsertionDate parameter",
-					null, AppConstants.DASH_POST_URL);
+			throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(), 400,
+					"Please set either ASC or DESC for the orderByInsertionDate parameter", null,
+					AppConstants.DASH_POST_URL);
 		}
 		List<User> users = userDao.getUsers(orderByInsertionDate);
 
@@ -143,28 +130,24 @@ public class UserServiceDbAccessImpl extends ApplicationObjectSupport implements
 	}
 
 	@Override
-	public List<User> getMyUser(String orderByInsertionDate,
-			Integer numberDaysToLookBack) throws AppException {
+	public List<User> getMyUser(String orderByInsertionDate, Integer numberDaysToLookBack) throws AppException {
 		return getUsers(orderByInsertionDate, numberDaysToLookBack);
 
 	}
 
-	private boolean isOrderByInsertionDateParameterValid(
-			String orderByInsertionDate) {
+	private boolean isOrderByInsertionDateParameterValid(String orderByInsertionDate) {
 		return orderByInsertionDate != null
-				&& !("ASC".equalsIgnoreCase(orderByInsertionDate) || "DESC"
-						.equalsIgnoreCase(orderByInsertionDate));
+				&& !("ASC".equalsIgnoreCase(orderByInsertionDate) || "DESC".equalsIgnoreCase(orderByInsertionDate));
 	}
 
 	@Override
 	public User getUserById(Long id) throws AppException {
 		User userById = userDao.getUserById(id);
 		if (userById == null) {
-			throw new AppException(Response.Status.NOT_FOUND.getStatusCode(),
-					404, "The user you requested with id " + id
-							+ " was not found in the database",
-					"Verify the existence of the user with the id " + id
-							+ " in the database", AppConstants.DASH_POST_URL);
+			throw new AppException(Response.Status.NOT_FOUND.getStatusCode(), 404,
+					"The user you requested with id " + id + " was not found in the database",
+					"Verify the existence of the user with the id " + id + " in the database",
+					AppConstants.DASH_POST_URL);
 		}
 
 		return userDao.getUserById(id);
@@ -180,8 +163,7 @@ public class UserServiceDbAccessImpl extends ApplicationObjectSupport implements
 	}
 
 	public List<User> getRecentUsers(int numberOfDaysToLookBack) {
-		List<User> recentUsers = userDao
-				.getRecentUsers(numberOfDaysToLookBack);
+		List<User> recentUsers = userDao.getRecentUsers(numberOfDaysToLookBack);
 
 		return getUsersFromEntities(recentUsers);
 	}
@@ -202,8 +184,7 @@ public class UserServiceDbAccessImpl extends ApplicationObjectSupport implements
 	}
 
 	protected String getUsername() {
-		Authentication auth = SecurityContextHolder.getContext()
-				.getAuthentication();
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
 		if (auth.getPrincipal() instanceof UserDetails) {
 			return ((UserDetails) auth.getPrincipal()).getUsername();
@@ -212,26 +193,26 @@ public class UserServiceDbAccessImpl extends ApplicationObjectSupport implements
 		}
 	}
 
-	/********************* UPDATE-related methods implementation ***********************/
+	/*********************
+	 * UPDATE-related methods implementation
+	 ***********************/
 	@Override
 	@Transactional
 	public void updateFullyUser(User user) throws AppException {
-		
+
 		try {
-			//verify existence of user
+			// verify existence of user
 			User verifyUserExistenceById = getUserById(user.getId());
-			
+
 			copyAllProperties(verifyUserExistenceById, user);
 			userDao.updateUser(verifyUserExistenceById);
-			
+
 		} catch (AppException ex) {
-			throw new AppException(Response.Status.NOT_FOUND.getStatusCode(),
-					404,
+			throw new AppException(Response.Status.NOT_FOUND.getStatusCode(), 404,
 					"The resource you are trying to update does not exist in the database",
-					"Please verify existence of data in the database for the id - "
-							+ user.getId(),
-							AppConstants.DASH_POST_URL);
-		}		
+					"Please verify existence of data in the database for the id - " + user.getId(),
+					AppConstants.DASH_POST_URL);
+		}
 	}
 
 	/**
@@ -243,24 +224,17 @@ public class UserServiceDbAccessImpl extends ApplicationObjectSupport implements
 
 		BeanUtilsBean withNull = new BeanUtilsBean();
 		try {
-			withNull.copyProperty(verifyUserExistenceById, "firstName",
-					user.getFirstName());
-			withNull.copyProperty(verifyUserExistenceById, "lastName",
-					user.getLastName());
-			withNull.copyProperty(verifyUserExistenceById, "city",
-					user.getCity());
-			withNull.copyProperty(verifyUserExistenceById, "homePhone",
-					user.getHomePhone());
-			withNull.copyProperty(verifyUserExistenceById, "cellPhone",
-					user.getCellPhone());
-			withNull.copyProperty(verifyUserExistenceById, "email",
-					user.getEmail());
-			withNull.copyProperty(verifyUserExistenceById, "picture",
-					user.getPicture());
+			withNull.copyProperty(verifyUserExistenceById, "firstName", user.getFirstName());
+			withNull.copyProperty(verifyUserExistenceById, "lastName", user.getLastName());
+			withNull.copyProperty(verifyUserExistenceById, "city", user.getCity());
+			withNull.copyProperty(verifyUserExistenceById, "homePhone", user.getHomePhone());
+			withNull.copyProperty(verifyUserExistenceById, "cellPhone", user.getCellPhone());
+			withNull.copyProperty(verifyUserExistenceById, "email", user.getEmail());
+			withNull.copyProperty(verifyUserExistenceById, "picture", user.getPicture());
 		} catch (IllegalAccessException e) {
-			logger.debug("debugging info for exception: ", e); 
+			logger.debug("debugging info for exception: ", e);
 		} catch (InvocationTargetException e) {
-			logger.debug("debugging info for exception: ", e); 
+			logger.debug("debugging info for exception: ", e);
 		}
 
 	}
@@ -269,7 +243,7 @@ public class UserServiceDbAccessImpl extends ApplicationObjectSupport implements
 	 * DELETE-related methods implementation **********************
 	 * 
 	 * 
-	 * */
+	 */
 
 	@Override
 	@Transactional
@@ -278,23 +252,20 @@ public class UserServiceDbAccessImpl extends ApplicationObjectSupport implements
 		deleteACL(user);
 	}
 
-
-
 	@Override
 	@Transactional
 	public void updatePartiallyUser(User user) throws AppException {
-		
+
 		try {
 			// do a validation to verify existence of the resource
 			User verifyUserExistenceById = getUserById(user.getId());
 			copyPartialProperties(verifyUserExistenceById, user);
 			userDao.updateUser(verifyUserExistenceById);
 		} catch (AppException ex) {
-			throw new AppException(Response.Status.NOT_FOUND.getStatusCode(),
-					404,
+			throw new AppException(Response.Status.NOT_FOUND.getStatusCode(), 404,
 					"The resource you are trying to update does not exist in the database",
-					"Please verify existence of data in the database for the id - "
-							+ user.getId(), AppConstants.DASH_POST_URL);
+					"Please verify existence of data in the database for the id - " + user.getId(),
+					AppConstants.DASH_POST_URL);
 		}
 	}
 
@@ -304,9 +275,9 @@ public class UserServiceDbAccessImpl extends ApplicationObjectSupport implements
 		try {
 			notNull.copyProperties(verifyUserExistenceById, user);
 		} catch (IllegalAccessException e) {
-			logger.debug("debugging info for exception: ", e); 
+			logger.debug("debugging info for exception: ", e);
 		} catch (InvocationTargetException e) {
-			logger.debug("debugging info for exception: ", e); 
+			logger.debug("debugging info for exception: ", e);
 		}
 
 	}
@@ -315,24 +286,24 @@ public class UserServiceDbAccessImpl extends ApplicationObjectSupport implements
 	@Transactional
 	public void resetPassword(User user) throws AppException {
 		try {
-			//verify existence of user
+			// verify existence of user
 			getUserById(user.getId());
-			
+
 			authoritiesController.passwordReset(user);
 		} catch (AppException ex) {
-			throw new AppException(Response.Status.NOT_FOUND.getStatusCode(),
-					404,
+			throw new AppException(Response.Status.NOT_FOUND.getStatusCode(), 404,
 					"The resource you are trying to update does not exist in the database",
-					"Please verify existence of data in the database for the id - "
-							+ user.getId(), AppConstants.DASH_POST_URL);
+					"Please verify existence of data in the database for the id - " + user.getId(),
+					AppConstants.DASH_POST_URL);
 		}
 	}
 
-	//****************** Methods for Acl *****************/
+	// ****************** Methods for Acl *****************/
 
 	/**
 	 * Creates/Updates the ACL of user
-	 * @param user 
+	 * 
+	 * @param user
 	 * @param recipient
 	 */
 	public void createUserACL(User user, Sid recipient) {
@@ -344,18 +315,14 @@ public class UserServiceDbAccessImpl extends ApplicationObjectSupport implements
 		} catch (NotFoundException nfe) {
 			acl = mutableAclService.createAcl(oid);
 		}
-		acl.insertAce(acl.getEntries().size(), BasePermission.READ, recipient,
-				true);
-		acl.insertAce(acl.getEntries().size(), BasePermission.WRITE, recipient,
-				true);
-		acl.insertAce(acl.getEntries().size(), BasePermission.DELETE,
-				recipient, true);
+		acl.insertAce(acl.getEntries().size(), BasePermission.READ, recipient, true);
+		acl.insertAce(acl.getEntries().size(), BasePermission.WRITE, recipient, true);
+		acl.insertAce(acl.getEntries().size(), BasePermission.DELETE, recipient, true);
 		mutableAclService.updateAcl(acl);
 		acl.setOwner(new PrincipalSid("Root"));
 		mutableAclService.updateAcl(acl);
 
-		logger.debug("Added permission " + "Read, Write, Delete" + " for Sid "
-				+ recipient + " contact " + user);
+		logger.debug("Added permission " + "Read, Write, Delete" + " for Sid " + recipient + " contact " + user);
 
 	}
 
@@ -371,8 +338,8 @@ public class UserServiceDbAccessImpl extends ApplicationObjectSupport implements
 	 * ------------------------------------------------------------
 	 */
 
-	public void uploadFile(InputStream uploadedInputStream,
-			String uploadedFileLocation, User user) throws AppException {
+	public void uploadFile(InputStream uploadedInputStream, String uploadedFileLocation, User user)
+			throws AppException {
 
 		try {
 			File file = new File(uploadedFileLocation);
@@ -389,45 +356,36 @@ public class UserServiceDbAccessImpl extends ApplicationObjectSupport implements
 			out.close();
 		} catch (IOException e) {
 
-			throw new AppException(
-					Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), 500,
-					"Could not upload file due to IOException", "\n\n"
-							+ e.getMessage(), AppConstants.DASH_POST_URL);
+			throw new AppException(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), 500,
+					"Could not upload file due to IOException", "\n\n" + e.getMessage(), AppConstants.DASH_POST_URL);
 		}
 
 	}
 
 	@Override
-	public void deleteUploadFile(String uploadedFileLocation, User user)
-			throws AppException {
+	public void deleteUploadFile(String uploadedFileLocation, User user) throws AppException {
 		Path path = Paths.get(uploadedFileLocation);
 		try {
 			Files.delete(path);
 		} catch (NoSuchFileException x) {
 			x.printStackTrace();
-			throw new AppException(Response.Status.NOT_FOUND.getStatusCode(),
-					404, "NoSuchFileException thrown, Operation unsuccesful.",
-					"Please ensure the file you are attempting to"
-							+ " delete exists at " + path + ".",
+			throw new AppException(Response.Status.NOT_FOUND.getStatusCode(), 404,
+					"NoSuchFileException thrown, Operation unsuccesful.",
+					"Please ensure the file you are attempting to" + " delete exists at " + path + ".",
 					AppConstants.DASH_POST_URL);
 
 		} catch (DirectoryNotEmptyException x) {
 			x.printStackTrace();
-			throw new AppException(
-					Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
-					404,
+			throw new AppException(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), 404,
 					"DirectoryNotEmptyException thrown, operation unsuccesful.",
 					"This method should not attempt to delete,"
-							+ " This should be considered a very serious error. Occured at "
-							+ path + ".", AppConstants.DASH_POST_URL);
+							+ " This should be considered a very serious error. Occured at " + path + ".",
+					AppConstants.DASH_POST_URL);
 		} catch (IOException x) {
 			x.printStackTrace();
-			throw new AppException(
-					Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
-					500,
+			throw new AppException(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), 500,
 					"IOException thrown and the designated file was not deleted.",
-					" Permission problems occured at " + path + ".",
-					AppConstants.DASH_POST_URL);
+					" Permission problems occured at " + path + ".", AppConstants.DASH_POST_URL);
 		}
 
 	}
@@ -436,9 +394,9 @@ public class UserServiceDbAccessImpl extends ApplicationObjectSupport implements
 	public List<String> getFileNames(User user) {
 		List<String> results = new ArrayList<String>();
 
-		//TODO:Switch statement for datasources
-		File[] files = new File(AppConstants.APPLICATION_UPLOAD_LOCATION_FOLDER_CHW
-				+ "/" + user.getPicture()).listFiles();
+		// TODO:Switch statement for datasources
+		File[] files = new File(AppConstants.APPLICATION_UPLOAD_LOCATION_FOLDER_CHW + "/" + user.getPicture())
+				.listFiles();
 		// If this pathname does not denote a directory, then listFiles()
 		// returns null.
 
@@ -475,7 +433,7 @@ public class UserServiceDbAccessImpl extends ApplicationObjectSupport implements
 	@Transactional
 	public void setRoleAdmin(User user) {
 		userDao.updateUserRole("ROLE_ADMIN", user.getUsername());
-		
+
 	}
 
 }

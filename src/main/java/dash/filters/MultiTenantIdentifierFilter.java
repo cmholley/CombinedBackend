@@ -16,15 +16,16 @@ import dash.multitenancy.ThreadLocalContextUtil;
 /**
  * Servlet Filter implementation class MultiTenantIdentifierFilter
  */
-@WebFilter(description = "This filter uses an HTTP request to identify the tenant the request came from", urlPatterns = { "/MultiTenantIdentifierFilter" })
+@WebFilter(description = "This filter uses an HTTP request to identify the tenant the request came from", urlPatterns = {
+		"/MultiTenantIdentifierFilter" })
 public class MultiTenantIdentifierFilter implements Filter {
 
-    /**
-     * Default constructor. 
-     */
-    public MultiTenantIdentifierFilter() {
-        // TODO Auto-generated constructor stub
-    }
+	/**
+	 * Default constructor.
+	 */
+	public MultiTenantIdentifierFilter() {
+		// TODO Auto-generated constructor stub
+	}
 
 	/**
 	 * @see Filter#destroy()
@@ -36,13 +37,14 @@ public class MultiTenantIdentifierFilter implements Filter {
 	/**
 	 * @see Filter#doFilter(ServletRequest, ServletResponse, FilterChain)
 	 */
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-		if(response instanceof HttpServletResponse){
+	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+			throws IOException, ServletException {
+		if (response instanceof HttpServletResponse) {
 			// Retrieve user id, password and tenant Id from the login page
 			HttpServletRequest httpRequest = (HttpServletRequest) request;
-			
+
 			String tenantId = httpRequest.getHeader("X-TenantId");
-			
+
 			// Set the tenant Id into a ThreadLocal object
 			ThreadLocalContextUtil.setTenantId(tenantId);
 		}

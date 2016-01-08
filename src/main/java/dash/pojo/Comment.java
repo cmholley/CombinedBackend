@@ -1,6 +1,5 @@
 package dash.pojo;
 
-
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -30,37 +29,36 @@ public class Comment implements IAclObject {
 
 	@Id
 	@GeneratedValue
-	@XmlElement(name="id")
-    @Column(name="id")
+	@XmlElement(name = "id")
+	@Column(name = "id")
 	private Long id;
-	
-	@XmlElement(name="post_id")
-    @Column(name="post_id")
+
+	@XmlElement(name = "post_id")
+	@Column(name = "post_id")
 	private Long post_id;
-	
-    @XmlElement(name="user_id")
-	@Column(name="user_id")
+
+	@XmlElement(name = "user_id")
+	@Column(name = "user_id")
 	private Long user_id;
-	
-	@XmlElement(name="content")
-    @Column(name="content")
+
+	@XmlElement(name = "content")
+	@Column(name = "content")
 	private String content;
-	
-    @XmlElement(name="image")
-	@Column(name="image")
+
+	@XmlElement(name = "image")
+	@Column(name = "image")
 	private String image;
 
-    @XmlElement(name="creation_timestamp")
-	@Column(name="creation_timestamp")
+	@XmlElement(name = "creation_timestamp")
+	@Column(name = "creation_timestamp")
 	private Date creation_timestamp;
-	
-	@XmlElement(name="latest_activity_timestamp")
-    @Column(name="latest_activity_timestamp")
+
+	@XmlElement(name = "latest_activity_timestamp")
+	@Column(name = "latest_activity_timestamp")
 	private Date latest_activity_timestamp;
 
-	
-	public Comment(){}
-
+	public Comment() {
+	}
 
 	public Long getId() {
 		return id;

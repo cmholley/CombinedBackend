@@ -35,7 +35,6 @@ public interface MessageService {
 
 	@PreAuthorize("hasPermission(#task, 'member') or hasPermission(#task, 'manager')")
 	public List<Message> getMessagesByTask(int numberOfPosts, Long startIndex, Task task) throws AppException;
-	
 
 	/**
 	 * Returns a post given its id
@@ -53,14 +52,14 @@ public interface MessageService {
 	public void updateFullyMessage(Message message) throws AppException;
 
 	@PreAuthorize("(hasPermission(#message, 'write') or hasRole('ROLE_MODERATOR')) and (hasPermission(#task, 'member') or hasPermission(#task, 'manager'))")
-	public void updatePartiallyMessage(Message message, Task task)
-			throws AppException;
+	public void updatePartiallyMessage(Message message, Task task) throws AppException;
 
 	/*
 	 * ******************** Delete related methods **********************
 	 */
 	@PreAuthorize("hasPermission(#message, 'delete') or hasRole('ROLE_MODERATOR')")
 	public void deleteMessage(Message message);
+
 	/*
 	 * ******************** Helper methods **********************
 	 */

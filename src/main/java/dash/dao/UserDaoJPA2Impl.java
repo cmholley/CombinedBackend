@@ -14,6 +14,8 @@ import javax.persistence.Query;
 import javax.persistence.TemporalType;
 import javax.persistence.TypedQuery;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import dash.pojo.User;
@@ -94,7 +96,8 @@ public class UserDaoJPA2Impl implements UserDao {
 
 			return query.getSingleResult();
 		} catch (NoResultException e) {
-			e.printStackTrace();
+			Logger logger = LoggerFactory.getLogger(this.getClass());
+			logger.error("Exception thrown in " + this.getClass().getName(), e);
 			return null;
 		}
 

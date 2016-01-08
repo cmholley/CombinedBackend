@@ -14,9 +14,10 @@ public interface TaskService {
 	/*
 	 * ******************** Create related methods **********************
 	 */
-	
+
 	/**
 	 * Create a new task and set the current user as owner and manager.
+	 * 
 	 * @param task
 	 * @param group
 	 * @return
@@ -37,24 +38,24 @@ public interface TaskService {
 	 *            - if set, it represents number of days to look back for tasks,
 	 *            null
 	 * @param group
-	 * 			- the group of by which to search for tasks
+	 *            - the group of by which to search for tasks
 	 * @return list with tasks corresponding to search criteria
 	 * @throws AppException
 	 */
-	
-	public List<Task> getTasks(String orderByInsertionDate,
-			Integer numberDaysToLookBack, boolean completedOnly) throws AppException;
+
+	public List<Task> getTasks(String orderByInsertionDate, Integer numberDaysToLookBack, boolean completedOnly)
+			throws AppException;
 
 	@PostFilter("hasPermission(filterObject, 'MEMBER')")
-	public List<Task> getTasksByMembership(String orderByInsertionDate,
-			Integer numberDaysToLookBack, boolean completedOnly) throws AppException;
-	
+	public List<Task> getTasksByMembership(String orderByInsertionDate, Integer numberDaysToLookBack,
+			boolean completedOnly) throws AppException;
+
 	@PostFilter("hasPermission(filterObject, 'Manager')")
-	public List<Task> getTasksByManager(String orderByInsertionDate,
-			Integer numberDaysToLookBack, boolean completedOnly) throws AppException;
-	
-	public List<Task> getTasksByGroup( Group group) throws AppException;
-	
+	public List<Task> getTasksByManager(String orderByInsertionDate, Integer numberDaysToLookBack,
+			boolean completedOnly) throws AppException;
+
+	public List<Task> getTasksByGroup(Group group) throws AppException;
+
 	public Task getTaskById(Long id) throws AppException;
 
 	/*
@@ -74,33 +75,32 @@ public interface TaskService {
 	@PreAuthorize("hasPermission(#task, 'MANAGER') or hasPermission(#group, 'manager') "
 			+ "or hasRole('ROLE_MODERATOR')")
 	public void deleteTask(Task task, Group group) throws AppException;
-	
+
 	/**
-	 * *******************  ACL related methods  ****************************
-	 * TODO: Rework permissions for 
+	 * ******************* ACL related methods ****************************
+	 * TODO: Rework permissions for
 	 */
 	// Adds an additional manager to the task
-	@PreAuthorize("hasPermission(#task, 'MANAGER') or hasPermission(#group, 'manager') "
-			+ "or hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasPermission(#task, 'MANAGER') or hasPermission(#group, 'manager') " + "or hasRole('ROLE_ADMIN')")
 	public void addManager(User user, Task task, Group group) throws AppException;
-	
-	//Removes all managers and sets new manager to user
+
+	// Removes all managers and sets new manager to user
 	@PreAuthorize("hasRole('ROLE_MODERATOR')")
 	public void resetManager(User user, Task task) throws AppException;
-	
-	//Removes a single manager from a task
+
+	// Removes a single manager from a task
 	@PreAuthorize("hasPermission(#user, 'WRITE')  or hasPermission(#group, 'manager') "
 			+ "or hasRole('ROLE_MODERATOR')")
 	public void deleteManager(User user, Task task, Group group) throws AppException;
-	
-	//Adds a member to the task
+
+	// Adds a member to the task
 	@PreAuthorize("hasRole('ROLE_USER')")
 	public void addMember(User user, Task task) throws AppException;
-	
-	//Removes member
+
+	// Removes member
 	@PreAuthorize("hasPermission(#user, 'WRITE') or hasPermission(#group, 'manager') "
 			+ "or hasRole('ROLE_MODERATOR') or hasPermission(#task, 'MANAGER')")
-	public void deleteMember(User user, Task task, Group group) throws AppException;	
+	public void deleteMember(User user, Task task, Group group) throws AppException;
 
 	/*
 	 * ******************** Helper methods **********************

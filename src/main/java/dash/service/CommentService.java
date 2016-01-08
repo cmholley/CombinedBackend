@@ -16,7 +16,6 @@ public interface CommentService {
 	@PreAuthorize("hasPermission(#group, 'member') or hasPermission(#group, 'manager') or hasRole('ROLE_MODERATOR')")
 	public Long createComment(Comment comment, Group group) throws AppException;
 
-
 	/*
 	 * ******************* Read related methods ********************
 	 */
@@ -32,7 +31,6 @@ public interface CommentService {
 	 * @throws AppException
 	 */
 	public List<Comment> getCommentsByPost(int numberOfPosts, Long startIndex, Post post) throws AppException;
-
 
 	/**
 	 * Returns a post given its id

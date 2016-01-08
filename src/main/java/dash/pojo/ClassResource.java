@@ -29,7 +29,7 @@ public class ClassResource {
 
 	@Autowired
 	private ClassService classService;
-	
+
 	@Autowired
 	private UserService userService;
 
@@ -40,19 +40,15 @@ public class ClassResource {
 	@Consumes({ MediaType.APPLICATION_JSON })
 	@Produces({ MediaType.TEXT_HTML })
 	public Response createClass(Class clas) throws AppException {
-		Location verifyLocation = locationService
-				.verifyLocationExistenceById(clas.getLocation_id());
+		Location verifyLocation = locationService.verifyLocationExistenceById(clas.getLocation_id());
 		if (verifyLocation != null) {
 			Long createClassId = classService.createClass(clas, verifyLocation);
-			return Response
-					.status(Response.Status.CREATED)
+			return Response.status(Response.Status.CREATED)
 					// 201
-					.entity("A new class has been created")
-					.header("Location", String.valueOf(createClassId))
+					.entity("A new class has been created").header("Location", String.valueOf(createClassId))
 					.header("ObjectId", String.valueOf(createClassId)).build();
 		} else {
-			return Response.status(Response.Status.NOT_FOUND)
-					.entity("The location specified does not exist").build();
+			return Response.status(Response.Status.NOT_FOUND).entity("The location specified does not exist").build();
 		}
 	}
 
@@ -60,35 +56,28 @@ public class ClassResource {
 	@Path("list")
 	@Consumes({ MediaType.APPLICATION_JSON })
 	public Response createClasses(List<Class> classes) throws AppException {
-		Location verifyLocation = locationService
-				.verifyLocationExistenceById(classes.get(0).getLocation_id());
+		Location verifyLocation = locationService.verifyLocationExistenceById(classes.get(0).getLocation_id());
 		if (verifyLocation != null) {
 			classService.createClasses(classes, verifyLocation);
-			return Response.status(Response.Status.CREATED)
-					.entity("List of classes was successfully created").build();
+			return Response.status(Response.Status.CREATED).entity("List of classes was successfully created").build();
 		} else {
-			return Response.status(Response.Status.NOT_FOUND)
-					.entity("The location specified does not exist").build();
+			return Response.status(Response.Status.NOT_FOUND).entity("The location specified does not exist").build();
 		}
 	}
 
 	@GET
 	@Produces({ MediaType.APPLICATION_JSON })
-	public List<Class> getClasses(
-			@QueryParam("orderByInsertionDate") String orderByInsertionDate,
-			@QueryParam("numberDaysToLookBack") Integer numberDaysToLookBack)
-			throws IOException, AppException {
-		List<Class> classes = classService.getClasses(orderByInsertionDate,
-				numberDaysToLookBack);
+	public List<Class> getClasses(@QueryParam("orderByInsertionDate") String orderByInsertionDate,
+			@QueryParam("numberDaysToLookBack") Integer numberDaysToLookBack) throws IOException, AppException {
+		List<Class> classes = classService.getClasses(orderByInsertionDate, numberDaysToLookBack);
 		return classes;
 	}
 
 	@GET
 	@Path("byLocation")
 	@Produces({ MediaType.APPLICATION_JSON })
-	public List<Class> getClassesByLocation(
-			@QueryParam("location") Location location) throws IOException,
-			AppException {
+	public List<Class> getClassesByLocation(@QueryParam("location") Location location)
+			throws IOException, AppException {
 		List<Class> classes = classService.getClassesByLocation(location);
 		return classes;
 	}
@@ -96,26 +85,20 @@ public class ClassResource {
 	@GET
 	@Path("{id}")
 	@Produces({ MediaType.APPLICATION_JSON })
-	public Response getClassById(@PathParam("id") Long id,
-			@QueryParam("detailed") boolean detailed) throws IOException,
-			AppException {
+	public Response getClassById(@PathParam("id") Long id, @QueryParam("detailed") boolean detailed)
+			throws IOException, AppException {
 		Class classById = classService.getClassById(id);
-		return Response.status(Response.Status.OK)
-				.entity(new GenericEntity<Class>(classById) {
-				}).header("Access-Control-Allow-Headers", "X-extra-header")
-				.allow("OPTIONS").build();
+		return Response.status(Response.Status.OK).entity(new GenericEntity<Class>(classById) {
+		}).header("Access-Control-Allow-Headers", "X-extra-header").allow("OPTIONS").build();
 	}
 
 	// TODO: Modify so it filters out completed classes by default
 	@GET
 	@Path("byMembership")
 	@Produces({ MediaType.APPLICATION_JSON })
-	public List<Class> getClassesByMembership(
-			@QueryParam("orderByInsertionDate") String orderByInsertionDate,
-			@QueryParam("numberDaysToLookBack") Integer numberDaysToLookBack)
-			throws IOException, AppException {
-		List<Class> classes = classService.getClassesByMembership(
-				orderByInsertionDate, numberDaysToLookBack);
+	public List<Class> getClassesByMembership(@QueryParam("orderByInsertionDate") String orderByInsertionDate,
+			@QueryParam("numberDaysToLookBack") Integer numberDaysToLookBack) throws IOException, AppException {
+		List<Class> classes = classService.getClassesByMembership(orderByInsertionDate, numberDaysToLookBack);
 		return classes;
 	}
 
@@ -125,31 +108,25 @@ public class ClassResource {
 	@Path("{id}")
 	@Consumes({ MediaType.APPLICATION_JSON })
 	@Produces({ MediaType.TEXT_HTML })
-	public Response partialUpdateTask(@PathParam("id") Long id, Class clas)
-			throws AppException {
+	public Response partialUpdateTask(@PathParam("id") Long id, Class clas) throws AppException {
 		clas.setId(id);
 		try {
 			classService.getClassById(id);
 		} catch (AppException ex) {
 
 			// resource not existent yet, and should be created
-			return Response.status(Response.Status.BAD_REQUEST)
-					.entity("Class Id not found")
+			return Response.status(Response.Status.BAD_REQUEST).entity("Class Id not found")
 					.header("Location", String.valueOf(clas)).build();
 		}
 
-		Location verifyLocation = locationService
-				.verifyLocationExistenceById(clas.getLocation_id());
+		Location verifyLocation = locationService.verifyLocationExistenceById(clas.getLocation_id());
 		if (verifyLocation != null) {
 			classService.updatePartiallyClass(clas, verifyLocation);
-			return Response
-					.status(Response.Status.OK)
+			return Response.status(Response.Status.OK)
 					// 200
-					.entity("The class you specified has been successfully updated")
-					.build();
+					.entity("The class you specified has been successfully updated").build();
 		} else {
-			return Response.status(Response.Status.NOT_FOUND)
-					.entity("The location specified does not exist").build();
+			return Response.status(Response.Status.NOT_FOUND).entity("The location specified does not exist").build();
 		}
 	}
 
@@ -165,22 +142,18 @@ public class ClassResource {
 		try {
 			Class clas = classService.getClassById(id);
 
-			Location verifyLocation = locationService
-					.verifyLocationExistenceById(clas.getLocation_id());
+			Location verifyLocation = locationService.verifyLocationExistenceById(clas.getLocation_id());
 			if (verifyLocation != null) {
 				classService.deleteClass(clas, verifyLocation);
 				return Response.status(Response.Status.NO_CONTENT)
 						// 204
-						.entity("Class successfully removed from database")
-						.build();
+						.entity("Class successfully removed from database").build();
 			} else {
-				return Response.status(Response.Status.NOT_FOUND)
-						.entity("The location specified does not exist")
+				return Response.status(Response.Status.NOT_FOUND).entity("The location specified does not exist")
 						.build();
 			}
 		} catch (AppException ex) {
-			return Response.status(Response.Status.BAD_REQUEST)
-					.entity("Class with Id: " + id + " not found.").build();
+			return Response.status(Response.Status.BAD_REQUEST).entity("Class with Id: " + id + " not found.").build();
 		}
 
 	}
@@ -188,43 +161,35 @@ public class ClassResource {
 	@POST
 	@Path("{id}/MEMBER/{user}")
 	@Produces({ MediaType.TEXT_HTML })
-	public Response addMember(@PathParam("user") Long userId,
-			@PathParam("id") Long id) throws AppException {
+	public Response addMember(@PathParam("user") Long userId, @PathParam("id") Long id) throws AppException {
 		User user = userService.getUserById(userId);
 
 		try {
 			Class clas = classService.getClassById(id);
 			classService.addMember(user, clas);
-			return Response
-					.status(Response.Status.OK)
-					.entity("MEMBER ADDED: User " + user.getUsername()
-							+ " set as MEMBER for class " + clas.getId())
+			return Response.status(Response.Status.OK)
+					.entity("MEMBER ADDED: User " + user.getUsername() + " set as MEMBER for class " + clas.getId())
 					.build();
 		} catch (AppException ex) {
-			return Response.status(Response.Status.BAD_REQUEST)
-					.entity("Class with Id: " + id + " not found.").build();
+			return Response.status(Response.Status.BAD_REQUEST).entity("Class with Id: " + id + " not found.").build();
 		}
 	}
 
 	@DELETE
 	@Path("{id}/MEMBER/{user}")
 	@Produces({ MediaType.TEXT_HTML })
-	public Response deleteMember(@PathParam("user") Long userId,
-			@PathParam("id") Long id) throws AppException {
+	public Response deleteMember(@PathParam("user") Long userId, @PathParam("id") Long id) throws AppException {
 		User user = userService.getUserById(userId);
 
 		try {
 			Class clas = classService.getClassById(id);
 			classService.deleteMember(user, clas);
-			return Response
-					.status(Response.Status.OK)
-					.entity("MEMBER deleted: User " + user.getUsername()
-							+ " removed as MEMBER from class id " + clas.getId())
+			return Response.status(Response.Status.OK).entity(
+					"MEMBER deleted: User " + user.getUsername() + " removed as MEMBER from class id " + clas.getId())
 					.build();
 
 		} catch (AppException ex) {
-			return Response.status(Response.Status.BAD_REQUEST)
-					.entity("Class with Id: " + id + " not found.").build();
+			return Response.status(Response.Status.BAD_REQUEST).entity("Class with Id: " + id + " not found.").build();
 		}
 
 	}

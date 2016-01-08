@@ -1,6 +1,5 @@
 package dash.pojo;
 
-
 import java.util.Date;
 import java.util.Set;
 
@@ -26,107 +25,88 @@ import dash.security.IAclObject;
 @Table(name = "classes")
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Class implements  IAclObject{
-	
-	public static enum Cores{
-		Advocacy,
-		Capacity_Building, 
-		Communication_Skills, 
-		Community_Service,
-		Coordination,
-		Interpersonal_Communication, 
-		Knowledge_Base, 
-		Organizational, 
-		Service_Coordination,
-		Skills,
-		Teaching_Skills;
+public class Class implements IAclObject {
+
+	public static enum Cores {
+		Advocacy, Capacity_Building, Communication_Skills, Community_Service, Coordination, Interpersonal_Communication, Knowledge_Base, Organizational, Service_Coordination, Skills, Teaching_Skills;
 	}
-	
-	
+
 	@Id
 	@GeneratedValue
-	@XmlElement(name="id")
-	@Column(name="id")
+	@XmlElement(name = "id")
+	@Column(name = "id")
 	private Long id;
-	
-	@XmlElement(name="location_id")
-	@Column(name="location_id")
+
+	@XmlElement(name = "location_id")
+	@Column(name = "location_id")
 	private Long location_id;
-	
-	@XmlElement(name="name")
-	@Column(name="name")
+
+	@XmlElement(name = "name")
+	@Column(name = "name")
 	private String name;
-	
-	@XmlElement(name="description")
-	@Column(name="description")
+
+	@XmlElement(name = "description")
+	@Column(name = "description")
 	private String description;
-	
-	@XmlElement(name="time")
+
+	@XmlElement(name = "time")
 	@XmlJavaTypeAdapter(SimpleDateAdapter.class)
-	@Column(name="time")
+	@Column(name = "time")
 	private Date time;
-	
-	@XmlElement(name="duration")
-	@Column(name="duration")
+
+	@XmlElement(name = "duration")
+	@Column(name = "duration")
 	private int duration;
-	
-	@XmlElement(name="room")
-	@Column(name="room")
+
+	@XmlElement(name = "room")
+	@Column(name = "room")
 	private String room;
-	
-	@XmlElement(name="address")
-	@Column(name="address")
+
+	@XmlElement(name = "address")
+	@Column(name = "address")
 	private String address;
-	
-	@XmlElement(name="creation_timestamp")
-	@Column(name="creation_timestamp")
+
+	@XmlElement(name = "creation_timestamp")
+	@Column(name = "creation_timestamp")
 	private Date creation_timestamp;
-	
-	@XmlElement(name="finished")
-	@Column(name="finished")
+
+	@XmlElement(name = "finished")
+	@Column(name = "finished")
 	private int finished;
-	
+
 	/*
-	 * This attribute contains a list of Longs that corresponds
-	 * to the core competencies for the class. 
-	 *  0 = Advocacy
-	 *	1 = Capacity_Building, 
-	 *	2 = Communication_Skills, 
-	 *	3 = Community_Service,
-	 *	4 = Coordination,
-	 *	5 = Interpersonal_Communication, 
-	 *	6 = Knowledge_Base, 
-	 *	7 = Organizational, 
-	 *	8 = Service_Coordination,
-	 *	9 = Skills,
-	 *	10 = Teaching_Skills,
+	 * This attribute contains a list of Longs that corresponds to the core
+	 * competencies for the class. 0 = Advocacy 1 = Capacity_Building, 2 =
+	 * Communication_Skills, 3 = Community_Service, 4 = Coordination, 5 =
+	 * Interpersonal_Communication, 6 = Knowledge_Base, 7 = Organizational, 8 =
+	 * Service_Coordination, 9 = Skills, 10 = Teaching_Skills,
 	 */
-	
-	@XmlElement(name="cores")
-	@ElementCollection(fetch= FetchType.EAGER)
-	@CollectionTable(name = "class_cores", joinColumns = {@JoinColumn(name="class_id")})
-	private Set<Cores> cores; //enum
-	
-	@XmlElement(name="forCHW")
-	@Column(name="forCHW")
+
+	@XmlElement(name = "cores")
+	@ElementCollection(fetch = FetchType.EAGER)
+	@CollectionTable(name = "class_cores", joinColumns = { @JoinColumn(name = "class_id") })
+	private Set<Cores> cores; // enum
+
+	@XmlElement(name = "forCHW")
+	@Column(name = "forCHW")
 	private int forCHW;
-	
-	@XmlElement(name="forCredit")
-	@Column(name="forCredit")
+
+	@XmlElement(name = "forCredit")
+	@Column(name = "forCredit")
 	private int forCredit;
-	
-	@XmlElement(name="active")
-	@Column(name="active")
+
+	@XmlElement(name = "active")
+	@Column(name = "active")
 	private int active;
-	
-	@XmlElement(name="registration_info")
-	@Column(name="registration_info")
+
+	@XmlElement(name = "registration_info")
+	@Column(name = "registration_info")
 	private String registration_info;
-	
-	@XmlElement(name="cost")
-	@Column(name="cost")
+
+	@XmlElement(name = "cost")
+	@Column(name = "cost")
 	private String cost;
-	
+
 	public String getRegistration_info() {
 		return registration_info;
 	}
@@ -143,12 +123,13 @@ public class Class implements  IAclObject{
 		this.cost = cost;
 	}
 
-	public Class(){}
+	public Class() {
+	}
 
 	public Long getId() {
 		return id;
 	}
-	
+
 	public void setId(Long id) {
 		this.id = id;
 	}
@@ -160,7 +141,7 @@ public class Class implements  IAclObject{
 	public void setLocation_id(Long location_id) {
 		this.location_id = location_id;
 	}
-	
+
 	public String getName() {
 		return name;
 	}
@@ -224,8 +205,7 @@ public class Class implements  IAclObject{
 	public void setFinished(int finished) {
 		this.finished = finished;
 	}
-	
-	
+
 	public int getForCHW() {
 		return forCHW;
 	}

@@ -23,8 +23,7 @@ public class PostDaoJPA2Impl implements PostDao {
 
 		sqlString = "SELECT u FROM Post u WHERE u.id < ?1 ORDER BY u.creation_timestamp DESC";
 
-		TypedQuery<Post> query = entityManager.createQuery(sqlString,
-				Post.class);
+		TypedQuery<Post> query = entityManager.createQuery(sqlString, Post.class);
 		if (startIndex == 0)
 			startIndex = Long.MAX_VALUE;
 		query.setParameter(1, startIndex);
@@ -34,13 +33,11 @@ public class PostDaoJPA2Impl implements PostDao {
 	}
 
 	@Override
-	public List<Post> getPosts(int numberOfPosts, Long startIndex,
-			Group group) {
+	public List<Post> getPosts(int numberOfPosts, Long startIndex, Group group) {
 
 		String qlString = "SELECT u FROM Post u WHERE u.group_id = ?1 AND u.id < ?2 ORDER BY u.creation_timestamp DESC";
 
-		TypedQuery<Post> query = entityManager.createQuery(qlString,
-				Post.class);
+		TypedQuery<Post> query = entityManager.createQuery(qlString, Post.class);
 		if (startIndex == 0)
 			startIndex = Long.MAX_VALUE;
 		query.setParameter(1, group.getId());
@@ -55,8 +52,7 @@ public class PostDaoJPA2Impl implements PostDao {
 
 		try {
 			String qlString = "SELECT u FROM Post u WHERE u.id = ?1";
-			TypedQuery<Post> query = entityManager.createQuery(qlString,
-					Post.class);
+			TypedQuery<Post> query = entityManager.createQuery(qlString, Post.class);
 			query.setParameter(1, id);
 
 			return query.getSingleResult();
@@ -68,8 +64,7 @@ public class PostDaoJPA2Impl implements PostDao {
 	@Override
 	public void deletePostById(Post postPojo) {
 
-		Post post = entityManager
-				.find(Post.class, postPojo.getId());
+		Post post = entityManager.find(Post.class, postPojo.getId());
 		entityManager.remove(post);
 
 	}
@@ -103,8 +98,7 @@ public class PostDaoJPA2Impl implements PostDao {
 	public int getNumberOfPosts() {
 		try {
 			String qlString = "SELECT COUNT(*) FROM post";
-			TypedQuery<Post> query = entityManager.createQuery(qlString,
-					Post.class);
+			TypedQuery<Post> query = entityManager.createQuery(qlString, Post.class);
 
 			return query.getFirstResult();
 		} catch (NoResultException e) {

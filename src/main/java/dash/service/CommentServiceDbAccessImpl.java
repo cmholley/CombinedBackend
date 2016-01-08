@@ -24,8 +24,7 @@ import dash.security.CustomPermission;
 import dash.security.GenericAclController;
 
 @Component("commentService")
-public class CommentServiceDbAccessImpl extends ApplicationObjectSupport
-		implements CommentService {
+public class CommentServiceDbAccessImpl extends ApplicationObjectSupport implements CommentService {
 
 	@Autowired
 	CommentDao commentDao;
@@ -39,7 +38,9 @@ public class CommentServiceDbAccessImpl extends ApplicationObjectSupport
 	@Autowired
 	private GenericAclController<Comment> aclController;
 
-	/********************* Create related methods implementation ***********************/
+	/*********************
+	 * Create related methods implementation
+	 ***********************/
 	@Override
 	@Transactional
 	public Long createComment(Comment comment, Group group) throws AppException {
@@ -52,10 +53,11 @@ public class CommentServiceDbAccessImpl extends ApplicationObjectSupport
 		return commentId;
 	}
 
-	// ******************** Read related methods implementation **********************
+	// ******************** Read related methods implementation
+	// **********************
 	@Override
 	public List<Comment> getCommentsByPost(int numberOfComments, Long startIndex, Post post) throws AppException {
-		//verify optional parameter numberDaysToLookBack first
+		// verify optional parameter numberDaysToLookBack first
 		List<Comment> postComments = commentDao.getComments(numberOfComments, startIndex, post);
 		return getCommentsFromEntities(postComments);
 	}
@@ -64,11 +66,10 @@ public class CommentServiceDbAccessImpl extends ApplicationObjectSupport
 	public Comment getCommentById(Long id) throws AppException {
 		Comment commentById = commentDao.getCommentById(id);
 		if (commentById == null) {
-			throw new AppException(Response.Status.NOT_FOUND.getStatusCode(),
-					404, "The post you requested with id " + id
-							+ " was not found in the database",
-					"Verify the existence of the post with the id " + id
-							+ " in the database", AppConstants.DASH_POST_URL);
+			throw new AppException(Response.Status.NOT_FOUND.getStatusCode(), 404,
+					"The post you requested with id " + id + " was not found in the database",
+					"Verify the existence of the post with the id " + id + " in the database",
+					AppConstants.DASH_POST_URL);
 		}
 
 		return commentDao.getCommentById(id);
@@ -83,6 +84,7 @@ public class CommentServiceDbAccessImpl extends ApplicationObjectSupport
 
 		return response;
 	}
+
 	@Override
 	public int getNumberOfPosts() {
 		int totalNumber = commentDao.getNumberOfComments();
@@ -91,38 +93,40 @@ public class CommentServiceDbAccessImpl extends ApplicationObjectSupport
 
 	}
 
-	/********************* UPDATE-related methods implementation ***********************/
+	/*********************
+	 * UPDATE-related methods implementation
+	 ***********************/
 	@Override
 	@Transactional
 	public void updatePartiallyComment(Comment comment) throws AppException {
-		
+
 		try {
 			Comment verifyCommentExistenceById = getCommentById(comment.getId());
 			copyPartialProperties(verifyCommentExistenceById, comment);
 			commentDao.updateComment(verifyCommentExistenceById);
 		} catch (AppException ex) {
-			throw new AppException(Response.Status.NOT_FOUND.getStatusCode(),
-					404,
+			throw new AppException(Response.Status.NOT_FOUND.getStatusCode(), 404,
 					"The resource you are trying to update does not exist in the database",
-					"Please verify existence of data in the database for the id - "
-							+ comment.getId(), AppConstants.DASH_POST_URL);
+					"Please verify existence of data in the database for the id - " + comment.getId(),
+					AppConstants.DASH_POST_URL);
 		}
 	}
 
-	private void copyPartialProperties(Comment verifyCommentExistenceById,
-			Comment comment) {
+	private void copyPartialProperties(Comment verifyCommentExistenceById, Comment comment) {
 
 		BeanUtilsBean notNull = new NullAwareBeanUtilsBean();
 		try {
 			notNull.copyProperties(verifyCommentExistenceById, comment);
 		} catch (IllegalAccessException e) {
-			logger.debug("debugging info for exception: ", e); 
+			logger.debug("debugging info for exception: ", e);
 		} catch (InvocationTargetException e) {
-			logger.debug("debugging info for exception: ", e); 
+			logger.debug("debugging info for exception: ", e);
 		}
 	}
 
-	/********************* DELETE-related methods implementation ***********************/
+	/*********************
+	 * DELETE-related methods implementation
+	 ***********************/
 	@Override
 	@Transactional
 	public void deleteComment(Comment comment) {

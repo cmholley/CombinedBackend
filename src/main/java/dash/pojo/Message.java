@@ -20,36 +20,36 @@ import javax.xml.bind.annotation.XmlRootElement;
 import dash.security.IAclObject;
 
 @Entity
-@Table(name="message")
+@Table(name = "message")
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Message implements IAclObject {
 
 	@Id
 	@GeneratedValue
-	@XmlElement(name="id")
-	@Column(name="id")
+	@XmlElement(name = "id")
+	@Column(name = "id")
 	private Long id;
-	
-    @XmlElement(name="sender_id")
-	@Column(name="sender_id")
+
+	@XmlElement(name = "sender_id")
+	@Column(name = "sender_id")
 	private Long sender_id;
-	
-	@XmlElement(name="task_id")
-    @Column(name="task_id")
+
+	@XmlElement(name = "task_id")
+	@Column(name = "task_id")
 	private Long task_id;
-	
-	@XmlElement(name="time")
-    @Column(name="time")
+
+	@XmlElement(name = "time")
+	@Column(name = "time")
 	private Date creation_timestamp;
-	
-	@XmlElement(name="content")
-    @Column(name="content")
+
+	@XmlElement(name = "content")
+	@Column(name = "content")
 
 	private String content;
 
-	
-	public Message(){}
+	public Message() {
+	}
 
 	@Override
 	public Long getId() {

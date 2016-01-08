@@ -31,8 +31,7 @@ import dash.pojo.User;
 import dash.security.CustomPermission;
 import dash.security.GenericAclController;
 
-public class ClassServiceDbAccessImpl extends ApplicationObjectSupport
-		implements ClassService {
+public class ClassServiceDbAccessImpl extends ApplicationObjectSupport implements ClassService {
 
 	@Autowired
 	ClassDao classDao;
@@ -45,14 +44,16 @@ public class ClassServiceDbAccessImpl extends ApplicationObjectSupport
 
 	@Autowired
 	private GenericAclController<Class> aclController;
-	
+
 	@Autowired
 	private JavaMailSender mailSender;
 
 	@Autowired
 	private SimpleMailMessage templateMessage;
-	
-	/********************* Create related methods implementation ***********************/
+
+	/*********************
+	 * Create related methods implementation
+	 ***********************/
 	@Override
 	@Transactional
 	public Long createClass(Class clas, Location loc) throws AppException {
@@ -67,8 +68,7 @@ public class ClassServiceDbAccessImpl extends ApplicationObjectSupport
 
 	@Override
 	@Transactional
-	public void createClasses(List<Class> classes, Location location)
-			throws AppException {
+	public void createClasses(List<Class> classes, Location location) throws AppException {
 		for (Class clas : classes) {
 			createClass(clas, location);
 		}
@@ -76,34 +76,27 @@ public class ClassServiceDbAccessImpl extends ApplicationObjectSupport
 
 	private void validateInputForCreation(Class clas) throws AppException {
 		if (clas.getName() == null) {
-			throw new AppException(
-					Response.Status.BAD_REQUEST.getStatusCode(),
-					400,
+			throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(), 400,
 					"Provided data not sufficient for insertion",
-					"Please verify that the classname is properly generated/set",
-					AppConstants.DASH_POST_URL);
+					"Please verify that the classname is properly generated/set", AppConstants.DASH_POST_URL);
 		}
 	}
 
 	// ******************** Read related methods implementation
 	// **********************
 	@Override
-	public List<Class> getClasses(String orderByInsertionDate,
-			Integer numberDaysToLookBack) throws AppException {
+	public List<Class> getClasses(String orderByInsertionDate, Integer numberDaysToLookBack) throws AppException {
 
 		// verify optional parameter numberDaysToLookBack first
 		if (numberDaysToLookBack != null) {
-			List<Class> recentClasses = classDao
-					.getRecentClasses(numberDaysToLookBack);
+			List<Class> recentClasses = classDao.getRecentClasses(numberDaysToLookBack);
 			return getClassesFromEntities(recentClasses);
 		}
 
 		if (isOrderByInsertionDateParameterValid(orderByInsertionDate)) {
-			throw new AppException(
-					Response.Status.BAD_REQUEST.getStatusCode(),
-					400,
-					"Please set either ASC or DESC for the orderByInsertionDate parameter",
-					null, AppConstants.DASH_POST_URL);
+			throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(), 400,
+					"Please set either ASC or DESC for the orderByInsertionDate parameter", null,
+					AppConstants.DASH_POST_URL);
 		}
 		List<Class> classes = classDao.getClasses(orderByInsertionDate);
 
@@ -118,30 +111,27 @@ public class ClassServiceDbAccessImpl extends ApplicationObjectSupport
 
 	}
 
-	private boolean isOrderByInsertionDateParameterValid(
-			String orderByInsertionDate) {
+	private boolean isOrderByInsertionDateParameterValid(String orderByInsertionDate) {
 		return orderByInsertionDate != null
-				&& !("ASC".equalsIgnoreCase(orderByInsertionDate) || "DESC"
-						.equalsIgnoreCase(orderByInsertionDate));
+				&& !("ASC".equalsIgnoreCase(orderByInsertionDate) || "DESC".equalsIgnoreCase(orderByInsertionDate));
 	}
 
 	@Override
 	public Class getClassById(Long id) throws AppException {
 		Class classById = classDao.getClassById(id);
 		if (classById == null) {
-			throw new AppException(Response.Status.NOT_FOUND.getStatusCode(),
-					404, "The class you requested with id " + id
-							+ " was not found in the database",
-					"Verify the existence of the class with the id " + id
-							+ " in the database", AppConstants.DASH_POST_URL);
+			throw new AppException(Response.Status.NOT_FOUND.getStatusCode(), 404,
+					"The class you requested with id " + id + " was not found in the database",
+					"Verify the existence of the class with the id " + id + " in the database",
+					AppConstants.DASH_POST_URL);
 		}
 
 		return classDao.getClassById(id);
 	}
 
 	@Override
-	public List<Class> getClassesByMembership(String orderByInsertionDate,
-			Integer numberDaysToLookBack) throws AppException {
+	public List<Class> getClassesByMembership(String orderByInsertionDate, Integer numberDaysToLookBack)
+			throws AppException {
 
 		return getClasses(orderByInsertionDate, numberDaysToLookBack);
 	}
@@ -149,9 +139,7 @@ public class ClassServiceDbAccessImpl extends ApplicationObjectSupport
 	private List<Class> getClassesFromEntities(List<Class> classEntities) {
 		List<Class> response = new ArrayList<Class>();
 		for (Class clas : classEntities) {
-			clas
-					.setFinished((clas.getTime() != null) ? (clas
-							.getTime().before(new Date()) ? 1 : 0) : 0);
+			clas.setFinished((clas.getTime() != null) ? (clas.getTime().before(new Date()) ? 1 : 0) : 0);
 			response.add(clas);
 		}
 
@@ -159,13 +147,14 @@ public class ClassServiceDbAccessImpl extends ApplicationObjectSupport
 	}
 
 	public List<Class> getRecentClasses(int numberOfDaysToLookBack) {
-		List<Class> recentClasses = classDao
-				.getRecentClasses(numberOfDaysToLookBack);
+		List<Class> recentClasses = classDao.getRecentClasses(numberOfDaysToLookBack);
 
 		return getClassesFromEntities(recentClasses);
 	}
 
-	/********************* DELETE-related methods implementation ***********************/
+	/*********************
+	 * DELETE-related methods implementation
+	 ***********************/
 	@Override
 	@Transactional
 	public void deleteClass(Class clas, Location loc) throws AppException {
@@ -178,25 +167,21 @@ public class ClassServiceDbAccessImpl extends ApplicationObjectSupport
 	/****************** Update Related Methods ***********************/
 	@Override
 	@Transactional
-	public void updatePartiallyClass(Class clas, Location loc)
-			throws AppException {
+	public void updatePartiallyClass(Class clas, Location loc) throws AppException {
 		try {
 			// do a validation to verify existence of the resource
 			Class verifyClassExistenceById = getClassById(clas.getId());
 			copyPartialProperties(verifyClassExistenceById, clas);
 			classDao.updateClass(verifyClassExistenceById);
 		} catch (AppException ex) {
-			throw new AppException(
-					Response.Status.NOT_FOUND.getStatusCode(),
-					404,
+			throw new AppException(Response.Status.NOT_FOUND.getStatusCode(), 404,
 					"The resource you are trying to update does not exist in the database",
-					"Please verify existence of data in the database for the id - "
-							+ clas.getId(), AppConstants.DASH_POST_URL);
+					"Please verify existence of data in the database for the id - " + clas.getId(),
+					AppConstants.DASH_POST_URL);
 		}
 	}
 
-	private void copyPartialProperties(Class verifyClassExistenceById,
-			Class clas) {
+	private void copyPartialProperties(Class verifyClassExistenceById, Class clas) {
 
 		BeanUtilsBean notNull = new NullAwareBeanUtilsBean();
 		try {
@@ -211,15 +196,13 @@ public class ClassServiceDbAccessImpl extends ApplicationObjectSupport
 	@Override
 	@Transactional
 	public void addMember(User user, Class clas) throws AppException {
-		aclController.createAce(clas, CustomPermission.MEMBER,
-				new PrincipalSid(user.getUsername()));
+		aclController.createAce(clas, CustomPermission.MEMBER, new PrincipalSid(user.getUsername()));
 	}
 
 	@Override
 	@Transactional
 	public void deleteMember(User user, Class clas) throws AppException {
-		aclController.deleteACE(clas, CustomPermission.MEMBER,
-				new PrincipalSid(user.getUsername()));
+		aclController.deleteACE(clas, CustomPermission.MEMBER, new PrincipalSid(user.getUsername()));
 	}
 
 	@Override
@@ -231,7 +214,7 @@ public class ClassServiceDbAccessImpl extends ApplicationObjectSupport
 			helper = new MimeMessageHelper(message, true);
 			helper.setFrom("NOREPLY@Housuggest.org");
 			helper.setTo("NOREPLY@Housuggest.org");
-			String [] memberArray = new String[membersForClass.size()];
+			String[] memberArray = new String[membersForClass.size()];
 			membersForClass.toArray(memberArray);
 			helper.setBcc(memberArray);
 			helper.setSubject("You have a class coming up soon.");
@@ -244,7 +227,7 @@ public class ClassServiceDbAccessImpl extends ApplicationObjectSupport
 			mailSender.send(message);
 		} catch (MailException e) {
 			// TODO: Do we need a front end error if the sending fails?
-			logger.debug("debugging info for exception: ", e); 
+			logger.debug("debugging info for exception: ", e);
 		}
 	}
 
@@ -252,8 +235,7 @@ public class ClassServiceDbAccessImpl extends ApplicationObjectSupport
 		String html = "<html><body><p> Good Morning! </p><p> This is a friendly reminder that you have an upcoming class in 24 hours. </p>";
 		html += "<p>Name: " + clas.getName() + " <br/>";
 		if (clas.getTime() != null) {
-			SimpleDateFormat formater = new SimpleDateFormat(
-					"MMM dd yyyy 'at' hh:mm a");
+			SimpleDateFormat formater = new SimpleDateFormat("MMM dd yyyy 'at' hh:mm a");
 			String formattedDate = formater.format(clas.getTime());
 			html += "Time: " + formattedDate + " <br/>";
 		}
@@ -263,21 +245,18 @@ public class ClassServiceDbAccessImpl extends ApplicationObjectSupport
 		html += "</p>";
 		Location trainingCenter = null;
 		try {
-			trainingCenter = locationService.getLocationById(clas
-					.getLocation_id());
+			trainingCenter = locationService.getLocationById(clas.getLocation_id());
 		} catch (AppException e) {
-			logger.debug("debugging info for exception: ", e); 
+			logger.debug("debugging info for exception: ", e);
 		}
-		html += "<p> Please contact " + trainingCenter.getName()
-				+ " if you have any questions or concerns. </p>";
+		html += "<p> Please contact " + trainingCenter.getName() + " if you have any questions or concerns. </p>";
 		html += "<p> We hope you enjoy this class! </p><p> CHWApp Support Team </p></body></html>";
 		return html;
 	}
 
 	@Override
 	public List<String> getMembersForClass(Class clas) {
-		List<String> members = classDao
-				.getMembersForClass(clas);
+		List<String> members = classDao.getMembersForClass(clas);
 		return members;
 	}
 

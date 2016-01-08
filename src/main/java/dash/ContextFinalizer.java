@@ -14,8 +14,7 @@ import com.mysql.jdbc.AbandonedConnectionCleanupThread;
 
 public class ContextFinalizer implements ServletContextListener {
 
-	private static final Logger LOGGER = LoggerFactory
-			.getLogger(ContextFinalizer.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ContextFinalizer.class);
 
 	public void contextInitialized(ServletContextEvent sce) {
 	}
@@ -29,15 +28,15 @@ public class ContextFinalizer implements ServletContextListener {
 				DriverManager.deregisterDriver(d);
 				LOGGER.warn(String.format("Driver %s deregistered", d));
 			} catch (SQLException ex) {
-				LOGGER.warn(String.format("Error deregistering driver %s", d),
-						ex);
+				LOGGER.warn(String.format("Error deregistering driver %s", d), ex);
 			}
 		}
 		try {
 			AbandonedConnectionCleanupThread.shutdown();
 		} catch (InterruptedException e) {
 			LOGGER.warn("SEVERE problem cleaning up: " + e.getMessage());
-			e.printStackTrace();
+			Logger logger = LoggerFactory.getLogger(this.getClass());
+			logger.error("Exception thrown in " + this.getClass().getName(), e);
 		}
 	}
 

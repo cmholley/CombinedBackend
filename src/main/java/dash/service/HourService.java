@@ -15,9 +15,10 @@ public interface HourService {
 	/*
 	 * ******************** Create related methods **********************
 	 */
-	
+
 	/**
 	 * Create a new hour and set the current user as owner and manager.
+	 * 
 	 * @param hour
 	 * @return
 	 * @throws AppException
@@ -39,15 +40,13 @@ public interface HourService {
 	 * @throws AppException
 	 */
 
-	public List<Hour> getHours(int numberOfHours, Long startIndex,
-			boolean onlyPending) throws AppException;
+	public List<Hour> getHours(int numberOfHours, Long startIndex, boolean onlyPending) throws AppException;
 
-	public List<Hour> getHoursByGroup(int numberOfHours, Long startIndex,
-			Group group, boolean onlyPending) throws AppException;
+	public List<Hour> getHoursByGroup(int numberOfHours, Long startIndex, Group group, boolean onlyPending)
+			throws AppException;
 
 	@PostFilter("hasPermission(filterObject, 'WRITE')")
 	public List<Hour> getHoursByMyUser(int numberOfHours, Long startIndex, boolean onlyPending) throws AppException;
-
 
 	/**
 	 * Returns a hour given its id
@@ -75,27 +74,25 @@ public interface HourService {
 
 	@PreAuthorize("hasPermission(#group, 'manager') or hasRole('ROLE_MODERATOR')")
 	public void approveHour(Hour hour, Group group, boolean approved) throws AppException;
-	
+
 	/*
 	 * ******************** Delete related methods **********************
 	 */
 	@PreAuthorize("hasPermission(#hour, 'delete') or hasRole('ROLE_MODERATOR')")
 	public void deleteHour(Hour hour);
-	
+
 	/*
 	 * ******************** Upload related methods **********************
 	 */
 	@PreAuthorize("hasPermission(#hour, 'delete') or hasRole('ROLE_ADMIN')")
-	public void deleteUploadFile(String uploadedFileLocation, Hour hour)
-			throws AppException;
+	public void deleteUploadFile(String uploadedFileLocation, Hour hour) throws AppException;
 
 	@PreAuthorize("hasPermission(#hour, 'write') or hasRole('ROLE_ADMIN')")
-	public void uploadFile(InputStream uploadedInputStream,
-			String uploadedFileLocation, Hour hour) throws AppException;
+	public void uploadFile(InputStream uploadedInputStream, String uploadedFileLocation, Hour hour) throws AppException;
 
 	@PreAuthorize("hasPermission(#hour, 'read') or hasRole('ROLE_ADMIN')")
 	public List<String> getFileNames(Hour hour);
-	
+
 	@PreAuthorize("hasRole('ROLE_ADMIN_APPROVER')")
 	public void approveHour(Hour hour, boolean approved) throws AppException;
 

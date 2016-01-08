@@ -16,7 +16,8 @@ public interface LocationService {
 	/*
 	 * ******************** Create related methods **********************
 	 *
-	 *Create a new location. If user is set, it's set this user as owner and manager, otherwise Admin will be the owner.
+	 * Create a new location. If user is set, it's set this user as owner and
+	 * manager, otherwise Admin will be the owner.
 	 */
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public Long createLocation(Location location, String user_name) throws AppException;
@@ -26,7 +27,7 @@ public interface LocationService {
 	 */
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public void createLocations(List<Location> locations, String user_name) throws AppException;
-	
+
 	/*
 	 * ******************* Read related methods ********************
 	 */
@@ -36,23 +37,22 @@ public interface LocationService {
 	 *            - if set, it represents the order by criteria (ASC or DESC)
 	 *            for displaying locations
 	 * @param numberDaysToLookBack
-	 *            - if set, it represents number of days to look back for locations,
-	 *            null
+	 *            - if set, it represents number of days to look back for
+	 *            locations, null
 	 * @return list with locations corresponding to search criteria
 	 * @throws AppException
 	 */
-	
-	public List<Location> getLocations(String orderByInsertionDate,
-			Integer numberDaysToLookBack) throws AppException;
+
+	public List<Location> getLocations(String orderByInsertionDate, Integer numberDaysToLookBack) throws AppException;
 
 	@PostFilter("hasPermission(filterObject, 'Manager')")
-	public List<Location> getLocationsByManager(String orderByInsertionDate,
-			Integer numberDaysToLookBack) throws AppException;
-	
+	public List<Location> getLocationsByManager(String orderByInsertionDate, Integer numberDaysToLookBack)
+			throws AppException;
+
 	public Location getLocationById(Long id) throws AppException;
-	
+
 	public Location verifyLocationExistenceById(Long id);
-	
+
 	/*
 	 * ******************** Update related methods **********************
 	 */
@@ -67,20 +67,20 @@ public interface LocationService {
 	 */
 	@PreAuthorize("hasPermission(#location, 'MANAGER') or hasRole('ROLE_MODERATOR')")
 	public void deleteLocation(Location location);
-	
+
 	/**
 	 * ACL related methods
 	 */
 	// Adds an additional manager to the location
 	@PreAuthorize("hasPermission(#location, 'MANAGER') or hasRole('ROLE_ADMIN')")
-	public void addManager(User user, Location location)throws AppException;
-	
-	//Removes all managers and sets new manager to user
+	public void addManager(User user, Location location) throws AppException;
+
+	// Removes all managers and sets new manager to user
 	@PreAuthorize("hasRole('ROLE_MODERATOR')")
-	public void resetManager(User user, Location location)throws AppException;
-	
-	//Removes a single manager from a location
+	public void resetManager(User user, Location location) throws AppException;
+
+	// Removes a single manager from a location
 	@PreAuthorize("hasPermission(#user, 'WRITE') or hasRole('ROLE_MODERATOR')")
-	public void deleteManager(User user, Location location)throws AppException;
-	
+	public void deleteManager(User user, Location location) throws AppException;
+
 }

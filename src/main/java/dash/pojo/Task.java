@@ -67,19 +67,12 @@ public class Task implements IAclObject {
 
 	@Override
 	public String toString() {
-		return "Task ["
-				+ (id != null ? "id=" + id + ", " : "")
-				+ (group_id != null ? "group_id=" + group_id + ", " : "")
-				+ (name != null ? "name=" + name + ", " : "")
-				+ (description != null ? "description=" + description + ", "
-						: "")
-				+ (time != null ? "time=" + time + ", " : "")
-				+ "duration="
-				+ duration
-				+ ", "
+		return "Task [" + (id != null ? "id=" + id + ", " : "")
+				+ (group_id != null ? "group_id=" + group_id + ", " : "") + (name != null ? "name=" + name + ", " : "")
+				+ (description != null ? "description=" + description + ", " : "")
+				+ (time != null ? "time=" + time + ", " : "") + "duration=" + duration + ", "
 				+ (location != null ? "location=" + location + ", " : "")
-				+ (creation_timestamp != null ? "creation_timestamp="
-						+ creation_timestamp + ", " : "") + "finished="
+				+ (creation_timestamp != null ? "creation_timestamp=" + creation_timestamp + ", " : "") + "finished="
 				+ finished + ", badge_id=" + badge_id + "]";
 	}
 

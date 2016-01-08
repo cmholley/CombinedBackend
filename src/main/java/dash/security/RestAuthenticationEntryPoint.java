@@ -17,17 +17,14 @@ import org.springframework.stereotype.Component;
  * 401
  */
 @Component("restAuthenticationEntryPoint")
-public final class RestAuthenticationEntryPoint extends
-		BasicAuthenticationEntryPoint {
+public final class RestAuthenticationEntryPoint extends BasicAuthenticationEntryPoint {
 
 	private static final RequestMatcher requestMatcher = new ELRequestMatcher(
 			"hasHeader('X-Requested-With','XMLHttpRequest')");
 
 	@Override
-	public void commence(final HttpServletRequest request,
-			final HttpServletResponse response,
-			final AuthenticationException authException) throws IOException,
-			ServletException {
+	public void commence(final HttpServletRequest request, final HttpServletResponse response,
+			final AuthenticationException authException) throws IOException, ServletException {
 
 		if (isPreflight(request)) {
 			response.setStatus(HttpServletResponse.SC_OK);

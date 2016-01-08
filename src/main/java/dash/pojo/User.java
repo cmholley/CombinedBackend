@@ -24,7 +24,7 @@ import dash.helpers.DateISO8601Adapter;
  *
  */
 @Entity
-@Table(name="user_data")
+@Table(name = "user_data")
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class User implements Serializable {
@@ -35,12 +35,12 @@ public class User implements Serializable {
 	@Id
 	@GeneratedValue
 	@XmlElement(name = "id")
-    @Column(name = "id")
+	@Column(name = "id")
 	private Long id;
 
 	/** username of the user */
 	@XmlElement(name = "username")
-    @Column(name = "username")
+	@Column(name = "username")
 	private String username;
 
 	/** password of the user */
@@ -50,55 +50,54 @@ public class User implements Serializable {
 
 	/** firstname of the user */
 	@XmlElement(name = "firstName")
-    @Column(name = "firstName")
+	@Column(name = "firstName")
 	private String firstName;
 
 	/** lastname of the user */
 	@XmlElement(name = "lastName")
-    @Column(name = "lastName")
+	@Column(name = "lastName")
 	private String lastName;
 
 	/** city of the user */
 	@XmlElement(name = "city")
-    @Column(name = "city")
+	@Column(name = "city")
 	private String city;
 
 	/** home phone number of the user */
 	@XmlElement(name = "homePhone")
-    @Column(name = "homePhone")
+	@Column(name = "homePhone")
 	private String homePhone;
 
 	/** cellPhone number of the user */
 	@XmlElement(name = "cellPhone")
-    @Column(name = "cellPhone")
+	@Column(name = "cellPhone")
 	private String cellPhone;
 
 	/** email address of the user */
 	@XmlElement(name = "email")
-    @Column(name = "email")
+	@Column(name = "email")
 	private String email;
 
 	/** path to stored picture of the user */
 	@XmlElement(name = "picturePath")
-    @Column(name = "picture")
+	@Column(name = "picture")
 	private String picturePath;
-	
-	/** name of a photo stored at picturePath that is the selected profile photo*/
-	@Column(name= "profile_picture_filename")
-	@XmlElement(name= "profile_picture_filename")
+
+	/**
+	 * name of a photo stored at picturePath that is the selected profile photo
+	 */
+	@Column(name = "profile_picture_filename")
+	@XmlElement(name = "profile_picture_filename")
 	private String profile_picture_filename;
 
 	/** insertion date in the database */
 	@XmlElement(name = "insertionDate")
-    @Column(name = "insertion_date")
+	@Column(name = "insertion_date")
 	@XmlJavaTypeAdapter(DateISO8601Adapter.class)
 	private Date insertionDate;
 
-
-	public User( String username,  String password,
-			String firstName,  String lastName,  String city,
-			String homePhone,  String cellPhone,  String email,
-			String picturePath, String profile_picture_filename) {
+	public User(String username, String password, String firstName, String lastName, String city, String homePhone,
+			String cellPhone, String email, String picturePath, String profile_picture_filename) {
 
 		this.username = username;
 		this.password = password;
@@ -109,13 +108,12 @@ public class User implements Serializable {
 		this.cellPhone = cellPhone;
 		this.email = email;
 		this.picturePath = picturePath;
-		this.profile_picture_filename= profile_picture_filename;
+		this.profile_picture_filename = profile_picture_filename;
 	}
 
 	public User() {
 	}
 
-	
 	public String getProfile_picture_filename() {
 		return profile_picture_filename;
 	}
@@ -128,7 +126,7 @@ public class User implements Serializable {
 		return username;
 	}
 
-	public void setUsername( String username) {
+	public void setUsername(String username) {
 		this.username = username;
 	}
 
@@ -136,7 +134,7 @@ public class User implements Serializable {
 		return password;
 	}
 
-	public void setPassword( String password) {
+	public void setPassword(String password) {
 		this.password = password;
 	}
 
@@ -144,7 +142,7 @@ public class User implements Serializable {
 		return firstName;
 	}
 
-	public void setFirstName( String firstName) {
+	public void setFirstName(String firstName) {
 		this.firstName = firstName;
 	}
 
@@ -152,7 +150,7 @@ public class User implements Serializable {
 		return lastName;
 	}
 
-	public void setLastName( String lastName) {
+	public void setLastName(String lastName) {
 		this.lastName = lastName;
 	}
 
@@ -160,7 +158,7 @@ public class User implements Serializable {
 		return city;
 	}
 
-	public void setCity( String city) {
+	public void setCity(String city) {
 		this.city = city;
 	}
 
@@ -168,7 +166,7 @@ public class User implements Serializable {
 		return homePhone;
 	}
 
-	public void setHomePhone( String homePhone) {
+	public void setHomePhone(String homePhone) {
 		this.homePhone = homePhone;
 	}
 
@@ -176,7 +174,7 @@ public class User implements Serializable {
 		return cellPhone;
 	}
 
-	public void setCellPhone( String cellPhone) {
+	public void setCellPhone(String cellPhone) {
 		this.cellPhone = cellPhone;
 	}
 
@@ -184,7 +182,7 @@ public class User implements Serializable {
 		return email;
 	}
 
-	public void setEmail( String email) {
+	public void setEmail(String email) {
 		this.email = email;
 	}
 
@@ -192,7 +190,7 @@ public class User implements Serializable {
 		return picturePath;
 	}
 
-	public void setPicture( String picturePath) {
+	public void setPicture(String picturePath) {
 		this.picturePath = picturePath;
 	}
 
@@ -200,7 +198,7 @@ public class User implements Serializable {
 		return id;
 	}
 
-	public void setId( Long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -208,10 +206,8 @@ public class User implements Serializable {
 		return insertionDate;
 	}
 
-	public void setInsertionDate( Date insertionDate) {
+	public void setInsertionDate(Date insertionDate) {
 		this.insertionDate = insertionDate;
 	}
-
-
 
 }

@@ -10,9 +10,10 @@ public interface PostService {
 	/*
 	 * ******************** Create related methods **********************
 	 */
-	
+
 	/**
 	 * Create a new post and set the current user as owner and manager.
+	 * 
 	 * @param post
 	 * @param group
 	 * @return
@@ -20,6 +21,7 @@ public interface PostService {
 	 */
 	@PreAuthorize("hasPermission(#group, 'member') or hasPermission(#group, 'manager')")
 	public Long createPost(Post post, Group group) throws AppException;
+
 	/*
 	 * ******************* Read related methods ********************
 	 */
@@ -35,11 +37,11 @@ public interface PostService {
 	 * @throws AppException
 	 */
 	public List<Post> getPosts(int numberOfPosts, Long startIndex) throws AppException;
-	
+
 	public List<Post> getPostsByMyGroups(int numberOfPosts, Long startIndex) throws AppException;
-	
+
 	public List<Post> getPostsByGroup(int numberOfPosts, Long startIndex, Group group) throws AppException;
-	
+
 	public Post getPostById(Long id) throws AppException;
 
 	/*
@@ -56,8 +58,8 @@ public interface PostService {
 	 */
 
 	@PreAuthorize("hasPermission(#post, 'delete') or hasRole('ROLE_MODERATOR')")
-	public void deletePost(Post post);	
-	
+	public void deletePost(Post post);
+
 	/*
 	 * ******************** Helper methods **********************
 	 */

@@ -37,7 +37,7 @@ public class PostResource {
 
 	@Autowired
 	GroupService groupService;
-	
+
 	@POST
 	@Consumes({ MediaType.APPLICATION_JSON })
 	@Produces({ MediaType.TEXT_HTML })
@@ -45,11 +45,9 @@ public class PostResource {
 		Group group = new Group();
 		group.setId(post.getGroup_id());
 		Long createPostId = postService.createPost(post, group);
-		return Response
-				.status(Response.Status.CREATED)
+		return Response.status(Response.Status.CREATED)
 				// 201
-				.entity("A new post has been created")
-				.header("Location", String.valueOf(createPostId))
+				.entity("A new post has been created").header("Location", String.valueOf(createPostId))
 				.header("ObjectId", String.valueOf(createPostId)).build();
 	}
 
@@ -68,15 +66,12 @@ public class PostResource {
 	 */
 	@GET
 	@Produces({ MediaType.APPLICATION_JSON })
-	public List<Post> getPosts(
-			@QueryParam("numberOfPosts") @DefaultValue("25") int numberOfPosts,
-			@QueryParam("startIndex") @DefaultValue("0") Long startIndex,
-			@QueryParam("group_id") Long group_id) throws IOException,
-			AppException {
+	public List<Post> getPosts(@QueryParam("numberOfPosts") @DefaultValue("25") int numberOfPosts,
+			@QueryParam("startIndex") @DefaultValue("0") Long startIndex, @QueryParam("group_id") Long group_id)
+					throws IOException, AppException {
 		if (group_id != null) {
 			Group group = groupService.getGroupById(group_id);
-			List<Post> posts = postService.getPostsByGroup(numberOfPosts,
-					startIndex, group);
+			List<Post> posts = postService.getPostsByGroup(numberOfPosts, startIndex, group);
 			return posts;
 		}
 
@@ -89,26 +84,21 @@ public class PostResource {
 	@GET
 	@Path("myPosts")
 	@Produces({ MediaType.APPLICATION_JSON })
-	public List<Post> getMyPosts(
-			@QueryParam("numberOfPosts") @DefaultValue("25") int numberOfPosts,
-			@QueryParam("startIndex") @DefaultValue("0") Long startIndex)
-			throws IOException, AppException {
+	public List<Post> getMyPosts(@QueryParam("numberOfPosts") @DefaultValue("25") int numberOfPosts,
+			@QueryParam("startIndex") @DefaultValue("0") Long startIndex) throws IOException, AppException {
 
-		List<Post> posts = postService.getPostsByMyGroups(numberOfPosts,
-				startIndex);
+		List<Post> posts = postService.getPostsByMyGroups(numberOfPosts, startIndex);
 		return posts;
 	}
 
 	@GET
 	@Path("{id}")
 	@Produces({ MediaType.APPLICATION_JSON })
-	public Response getPostById(@PathParam("id") Long id,
-			@QueryParam("detailed") boolean detailed) throws IOException,
-			AppException {
+	public Response getPostById(@PathParam("id") Long id, @QueryParam("detailed") boolean detailed)
+			throws IOException, AppException {
 		Post postById = postService.getPostById(id);
 		return Response.status(200).entity(new GenericEntity<Post>(postById) {
-		}).header("Access-Control-Allow-Headers", "X-extra-header")
-				.allow("OPTIONS").build();
+		}).header("Access-Control-Allow-Headers", "X-extra-header").allow("OPTIONS").build();
 
 	}
 
@@ -119,8 +109,7 @@ public class PostResource {
 	@Path("{id}")
 	@Consumes({ MediaType.APPLICATION_JSON })
 	@Produces({ MediaType.TEXT_HTML })
-	public Response putPostById(@PathParam("id") Long id, Post post)
-			throws AppException {
+	public Response putPostById(@PathParam("id") Long id, Post post) throws AppException {
 
 		Group group = new Group();
 
@@ -130,11 +119,9 @@ public class PostResource {
 			if (ex.getStatus() == 404) {
 				// post not existent yet, will be created
 				Long createPostId = postService.createPost(post, group);
-				return Response
-						.status(Response.Status.CREATED)
+				return Response.status(Response.Status.CREATED)
 						// 201
-						.entity("A new post with id " + createPostId
-								+ " has been created.").build();
+						.entity("A new post with id " + createPostId + " has been created.").build();
 			}
 		}
 
@@ -144,9 +131,7 @@ public class PostResource {
 		return Response.status(Response.Status.OK)
 				// 200
 				.entity("The post with id: " + id + " has been fully updated.")
-				.header("Location",
-						"http://localhost:8888/services/posts/"
-								+ String.valueOf(id)).build();
+				.header("Location", "http://localhost:8888/services/posts/" + String.valueOf(id)).build();
 
 	}
 
@@ -155,8 +140,7 @@ public class PostResource {
 	@Path("{id}")
 	@Consumes({ MediaType.APPLICATION_JSON })
 	@Produces({ MediaType.TEXT_HTML })
-	public Response partialUpdatePost(@PathParam("id") Long id, Post post)
-			throws AppException {
+	public Response partialUpdatePost(@PathParam("id") Long id, Post post) throws AppException {
 		post.setId(id);
 		post.setGroup_id(postService.getPostById(id).getGroup_id());
 		Group group = new Group();
@@ -164,8 +148,7 @@ public class PostResource {
 		postService.updatePartiallyPost(post);
 		return Response.status(Response.Status.OK)
 				// 200
-				.entity("The post you specified has been successfully updated")
-				.build();
+				.entity("The post you specified has been successfully updated").build();
 	}
 
 	/*

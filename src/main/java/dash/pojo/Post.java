@@ -1,6 +1,5 @@
 package dash.pojo;
 
-
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,52 +14,51 @@ import javax.xml.bind.annotation.XmlRootElement;
 import dash.security.IAclObject;
 
 @Entity
-@Table(name="post")
+@Table(name = "post")
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Post implements IAclObject {
 
 	@Id
-	@GeneratedValue	
-	@XmlElement(name="id")
-    @Column(name="id")
+	@GeneratedValue
+	@XmlElement(name = "id")
+	@Column(name = "id")
 	private Long id;
-	
-	@XmlElement(name="group_id")
-    @Column(name="group_id")
+
+	@XmlElement(name = "group_id")
+	@Column(name = "group_id")
 	private Long group_id;
-	
-	@XmlElement(name="user_id")
-    @Column(name="user_id")
+
+	@XmlElement(name = "user_id")
+	@Column(name = "user_id")
 	private Long user_id;
-	
-	@XmlElement(name="content")
-    @Column(name="content")
+
+	@XmlElement(name = "content")
+	@Column(name = "content")
 	private String content;
-	
-	@XmlElement(name="image")
-    @Column(name="image")
+
+	@XmlElement(name = "image")
+	@Column(name = "image")
 	private String image;
-	
-	
-	@XmlElement(name="creation_timestamp")
-    @Column(name="creation_timestamp")
+
+	@XmlElement(name = "creation_timestamp")
+	@Column(name = "creation_timestamp")
 	private Date creation_timestamp;
-	
-	@XmlElement(name="latest_activity_timestamp")
-    @Column(name="latest_activity_timestamp")
+
+	@XmlElement(name = "latest_activity_timestamp")
+	@Column(name = "latest_activity_timestamp")
 	private Date latest_activity_timestamp;
-	
-	@XmlElement(name="like_count")
-    @Column(name="like_counts")
+
+	@XmlElement(name = "like_count")
+	@Column(name = "like_counts")
 	private int like_count;
-	
-	@XmlElement(name="task_link_id")
-    @Column(name="task_link_id")
+
+	@XmlElement(name = "task_link_id")
+	@Column(name = "task_link_id")
 	private Long task_link_id;
 
-
-	public Post(){}
+	public Post() {
+	}
 
 	public Long getId() {
 		return id;

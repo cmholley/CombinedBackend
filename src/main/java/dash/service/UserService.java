@@ -10,8 +10,9 @@ import dash.pojo.User;
 /**
  *
  * @author plindner
- * @see <a
- *      href="http://www.codingpedia.org/ama/spring-mybatis-integration-example/">http://www.codingpedia.org/ama/spring-mybatis-integration-example/</a>
+ * @see <a href=
+ *      "http://www.codingpedia.org/ama/spring-mybatis-integration-example/">
+ *      http://www.codingpedia.org/ama/spring-mybatis-integration-example/</a>
  */
 public interface UserService {
 
@@ -38,13 +39,10 @@ public interface UserService {
 	 * @throws AppException
 	 */
 	@PostFilter("hasPermission(filterObject, 'READ') or hasRole('ROLE_ADMIN')")
-	public List<User> getUsers(String orderByInsertionDate,
-			Integer numberDaysToLookBack) throws AppException;
+	public List<User> getUsers(String orderByInsertionDate, Integer numberDaysToLookBack) throws AppException;
 
 	@PostFilter("hasPermission(filterObject, 'READ')")
-	public List<User> getMyUser(String orderByInsertionDate,
-			Integer numberDaysToLookBack) throws AppException;
-
+	public List<User> getMyUser(String orderByInsertionDate, Integer numberDaysToLookBack) throws AppException;
 
 	/**
 	 * Returns a user given its id
@@ -75,7 +73,7 @@ public interface UserService {
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public void setRoleAdmin(User user);
-	
+
 	@PreAuthorize("hasPermission(#user, 'DELETE') or hasRole('ROLE_ADMIN')")
 	public void deleteUser(User user);
 
@@ -86,12 +84,10 @@ public interface UserService {
 	 */
 
 	@PreAuthorize("hasPermission(#user, 'delete') or hasRole('ROLE_ADMIN')")
-	public void deleteUploadFile(String uploadedFileLocation, User user)
-			throws AppException;
+	public void deleteUploadFile(String uploadedFileLocation, User user) throws AppException;
 
 	@PreAuthorize("hasPermission(#user, 'write') or hasRole('ROLE_ADMIN')")
-	public void uploadFile(InputStream uploadedInputStream,
-			String uploadedFileLocation, User user) throws AppException;
+	public void uploadFile(InputStream uploadedInputStream, String uploadedFileLocation, User user) throws AppException;
 
 	@PreAuthorize("hasPermission(#user, 'read') or hasRole('ROLE_ADMIN')")
 	public List<String> getFileNames(User user);

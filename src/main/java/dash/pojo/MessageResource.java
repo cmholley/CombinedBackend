@@ -42,7 +42,7 @@ public class MessageResource {
 
 	@Autowired
 	private UserService userService;
-	
+
 	@POST
 	@Consumes({ MediaType.APPLICATION_JSON })
 	@Produces({ MediaType.TEXT_HTML })
@@ -53,9 +53,7 @@ public class MessageResource {
 		return Response.status(Response.Status.CREATED)
 				// 201
 				.entity("A new message has been created")
-				.header("Location",
-						"http://localhost:8080/messages/"
-								+ String.valueOf(createMessageId)).build();
+				.header("Location", "http://localhost:8080/messages/" + String.valueOf(createMessageId)).build();
 	}
 
 	@POST
@@ -82,28 +80,22 @@ public class MessageResource {
 	 */
 	@GET
 	@Produces({ MediaType.APPLICATION_JSON })
-	public List<Message> getMessages(
-			@QueryParam("numberOfMessages") @DefaultValue("25") int numberOfMessages,
-			@QueryParam("startIndex") @DefaultValue("0") Long startIndex,
-			@QueryParam("task_id") Long task_id) throws IOException,
-			AppException {
+	public List<Message> getMessages(@QueryParam("numberOfMessages") @DefaultValue("25") int numberOfMessages,
+			@QueryParam("startIndex") @DefaultValue("0") Long startIndex, @QueryParam("task_id") Long task_id)
+					throws IOException, AppException {
 		Task task = taskService.getTaskById(task_id);
-		List<Message> messages = messageService.getMessagesByTask(
-				numberOfMessages, startIndex, task);
+		List<Message> messages = messageService.getMessagesByTask(numberOfMessages, startIndex, task);
 		return messages;
 	}
 
 	@GET
 	@Path("{id}")
 	@Produces({ MediaType.APPLICATION_JSON })
-	public Response getPostById(@PathParam("id") Long id,
-			@QueryParam("detailed") boolean detailed) throws IOException,
-			AppException {
+	public Response getPostById(@PathParam("id") Long id, @QueryParam("detailed") boolean detailed)
+			throws IOException, AppException {
 		Message messageById = messageService.getMessageById(id);
-		return Response.status(200)
-				.entity(new GenericEntity<Message>(messageById) {
-				}).header("Access-Control-Allow-Headers", "X-extra-header")
-				.allow("OPTIONS").build();
+		return Response.status(200).entity(new GenericEntity<Message>(messageById) {
+		}).header("Access-Control-Allow-Headers", "X-extra-header").allow("OPTIONS").build();
 	}
 
 	/************************ Update Methods *********************/
@@ -113,25 +105,22 @@ public class MessageResource {
 	@Path("{id}")
 	@Consumes({ MediaType.APPLICATION_JSON })
 	@Produces({ MediaType.TEXT_HTML })
-	public Response putPostById(@PathParam("id") Long id, Message post)
-			throws AppException {
+	public Response putPostById(@PathParam("id") Long id, Message post) throws AppException {
 
 		Task task = new Task();
 		try {
-			//check whether message exists
+			// check whether message exists
 			messageService.getMessageById(id);
 		} catch (AppException ex) {
 
 			if (ex.getStatus() == 404) {
 				// resource not existent yet, and should be created
 				Long createPostId = messageService.createMessage(post, task);
-				return Response
-						.status(Response.Status.CREATED)
+				return Response.status(Response.Status.CREATED)
 						// 201
 						.entity("A new post has been created AT THE LOCATION you specified")
-						.header("Location",
-								"http://localhost:8080/services/posts/"
-										+ String.valueOf(createPostId)).build();
+						.header("Location", "http://localhost:8080/services/posts/" + String.valueOf(createPostId))
+						.build();
 			}
 
 		}
@@ -139,8 +128,7 @@ public class MessageResource {
 		messageService.updateFullyMessage(post);
 		return Response.status(Response.Status.OK)
 				// 200
-				.entity("The post with id: " + id + " has been fully updated.")
-				.build();
+				.entity("The post with id: " + id + " has been fully updated.").build();
 
 	}
 
@@ -149,26 +137,19 @@ public class MessageResource {
 	@Path("{id}")
 	@Consumes({ MediaType.APPLICATION_JSON })
 	@Produces({ MediaType.TEXT_HTML })
-	public Response partialUpdatePost(@PathParam("id") Long id, Message message)
-			throws AppException {
+	public Response partialUpdatePost(@PathParam("id") Long id, Message message) throws AppException {
 		message.setId(id);
 		Task task = new Task();
 		if (message.getTask_id() == null) {
-			return Response
-					.status(Response.Status.BAD_REQUEST)
-					.entity("Must have set task_id")
-					.header("Location",
-							"http://localhost:8080/services/posts/"
-									+ String.valueOf(message)).build();
+			return Response.status(Response.Status.BAD_REQUEST).entity("Must have set task_id")
+					.header("Location", "http://localhost:8080/services/posts/" + String.valueOf(message)).build();
 		} else {
 			task.setId(message.getTask_id());
 		}
 		messageService.updatePartiallyMessage(message, task);
-		return Response
-				.status(Response.Status.OK)
+		return Response.status(Response.Status.OK)
 				// 200
-				.entity("The message you specified has been successfully updated")
-				.build();
+				.entity("The message you specified has been successfully updated").build();
 	}
 
 	/*
@@ -182,12 +163,8 @@ public class MessageResource {
 		Task task = new Task();
 		Message message = messageService.getMessageById(id);
 		if (message.getTask_id() == null) {
-			return Response
-					.status(Response.Status.BAD_REQUEST)
-					.entity("Post Id not found")
-					.header("Location",
-							"http://localhost:8080/services/messages/"
-									+ String.valueOf(message)).build();
+			return Response.status(Response.Status.BAD_REQUEST).entity("Post Id not found")
+					.header("Location", "http://localhost:8080/services/messages/" + String.valueOf(message)).build();
 		} else {
 			task.setId(message.getTask_id());
 		}

@@ -22,8 +22,7 @@ import dash.pojo.User;
 import dash.security.CustomPermission;
 import dash.security.GenericAclController;
 
-public class TaskServiceDbAccessImpl extends ApplicationObjectSupport implements
-		TaskService {
+public class TaskServiceDbAccessImpl extends ApplicationObjectSupport implements TaskService {
 
 	@Autowired
 	TaskDao taskDao;
@@ -37,7 +36,9 @@ public class TaskServiceDbAccessImpl extends ApplicationObjectSupport implements
 	@Autowired
 	private GenericAclController<Group> groupAclController;
 
-	/********************* Create related methods implementation ***********************/
+	/*********************
+	 * Create related methods implementation
+	 ***********************/
 	@Override
 	@Transactional
 	public Long createTask(Task task, Group group) throws AppException {
@@ -47,13 +48,9 @@ public class TaskServiceDbAccessImpl extends ApplicationObjectSupport implements
 		// verify existence of resource in the db (feed must be unique)
 		Task taskByName = taskDao.getTaskByName(task.getName());
 		if (taskByName != null) {
-			throw new AppException(
-					Response.Status.CONFLICT.getStatusCode(),
-					409,
-					"Task with taskname already existing in the database with the id "
-							+ taskByName.getId(),
-					"Please verify that the taskname and password are properly generated",
-					AppConstants.DASH_POST_URL);
+			throw new AppException(Response.Status.CONFLICT.getStatusCode(), 409,
+					"Task with taskname already existing in the database with the id " + taskByName.getId(),
+					"Please verify that the taskname and password are properly generated", AppConstants.DASH_POST_URL);
 		}
 
 		long taskId = taskDao.createTask(task);
@@ -65,35 +62,28 @@ public class TaskServiceDbAccessImpl extends ApplicationObjectSupport implements
 
 	private void validateInputForCreation(Task task) throws AppException {
 		if (task.getName() == null) {
-			throw new AppException(
-					Response.Status.BAD_REQUEST.getStatusCode(),
-					400,
+			throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(), 400,
 					"Provided data not sufficient for insertion",
-					"Please verify that the taskname is properly generated/set",
-					AppConstants.DASH_POST_URL);
+					"Please verify that the taskname is properly generated/set", AppConstants.DASH_POST_URL);
 		}
 	}
 
 	// ******************** Read related methods implementation
 	// **********************
 	@Override
-	public List<Task> getTasks(String orderByInsertionDate,
-			Integer numberDaysToLookBack, boolean completedOnly)
+	public List<Task> getTasks(String orderByInsertionDate, Integer numberDaysToLookBack, boolean completedOnly)
 			throws AppException {
 
 		// verify optional parameter numberDaysToLookBack first
 		if (numberDaysToLookBack != null) {
-			List<Task> recentTasks = taskDao
-					.getRecentTasks(numberDaysToLookBack);
+			List<Task> recentTasks = taskDao.getRecentTasks(numberDaysToLookBack);
 			return getTasksFromEntities(recentTasks);
 		}
 
 		if (isOrderByInsertionDateParameterValid(orderByInsertionDate)) {
-			throw new AppException(
-					Response.Status.BAD_REQUEST.getStatusCode(),
-					400,
-					"Please set either ASC or DESC for the orderByInsertionDate parameter",
-					null, AppConstants.DASH_POST_URL);
+			throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(), 400,
+					"Please set either ASC or DESC for the orderByInsertionDate parameter", null,
+					AppConstants.DASH_POST_URL);
 		}
 		List<Task> tasks = taskDao.getTasks(orderByInsertionDate);
 
@@ -109,39 +99,32 @@ public class TaskServiceDbAccessImpl extends ApplicationObjectSupport implements
 	}
 
 	@Override
-	public List<Task> getTasksByMembership(String orderByInsertionDate,
-			Integer numberDaysToLookBack, boolean completedOnly)
-			throws AppException {
+	public List<Task> getTasksByMembership(String orderByInsertionDate, Integer numberDaysToLookBack,
+			boolean completedOnly) throws AppException {
 
-		return getTasks(orderByInsertionDate, numberDaysToLookBack,
-				completedOnly);
+		return getTasks(orderByInsertionDate, numberDaysToLookBack, completedOnly);
 	}
 
 	@Override
-	public List<Task> getTasksByManager(String orderByInsertionDate,
-			Integer numberDaysToLookBack, boolean completedOnly)
-			throws AppException {
+	public List<Task> getTasksByManager(String orderByInsertionDate, Integer numberDaysToLookBack,
+			boolean completedOnly) throws AppException {
 
-		return getTasks(orderByInsertionDate, numberDaysToLookBack,
-				completedOnly);
+		return getTasks(orderByInsertionDate, numberDaysToLookBack, completedOnly);
 	}
 
-	private boolean isOrderByInsertionDateParameterValid(
-			String orderByInsertionDate) {
+	private boolean isOrderByInsertionDateParameterValid(String orderByInsertionDate) {
 		return orderByInsertionDate != null
-				&& !("ASC".equalsIgnoreCase(orderByInsertionDate) || "DESC"
-						.equalsIgnoreCase(orderByInsertionDate));
+				&& !("ASC".equalsIgnoreCase(orderByInsertionDate) || "DESC".equalsIgnoreCase(orderByInsertionDate));
 	}
 
 	@Override
 	public Task getTaskById(Long id) throws AppException {
 		Task taskById = taskDao.getTaskById(id);
 		if (taskById == null) {
-			throw new AppException(Response.Status.NOT_FOUND.getStatusCode(),
-					404, "The task you requested with id " + id
-							+ " was not found in the database",
-					"Verify the existence of the task with the id " + id
-							+ " in the database", AppConstants.DASH_POST_URL);
+			throw new AppException(Response.Status.NOT_FOUND.getStatusCode(), 404,
+					"The task you requested with id " + id + " was not found in the database",
+					"Verify the existence of the task with the id " + id + " in the database",
+					AppConstants.DASH_POST_URL);
 		}
 
 		return taskDao.getTaskById(id);
@@ -170,7 +153,9 @@ public class TaskServiceDbAccessImpl extends ApplicationObjectSupport implements
 
 	}
 
-	/********************* UPDATE-related methods implementation ***********************/
+	/*********************
+	 * UPDATE-related methods implementation
+	 ***********************/
 	@Override
 	@Transactional
 	public void updateFullyTask(Task task, Group group) throws AppException {
@@ -180,12 +165,10 @@ public class TaskServiceDbAccessImpl extends ApplicationObjectSupport implements
 			copyAllProperties(verifyTaskExistenceById, task);
 			taskDao.updateTask(verifyTaskExistenceById);
 		} catch (AppException ex) {
-			throw new AppException(
-					Response.Status.NOT_FOUND.getStatusCode(),
-					404,
+			throw new AppException(Response.Status.NOT_FOUND.getStatusCode(), 404,
 					"The resource you are trying to update does not exist in the database",
-					"Please verify existence of data in the database for the id - "
-							+ task.getId(), AppConstants.DASH_POST_URL);
+					"Please verify existence of data in the database for the id - " + task.getId(),
+					AppConstants.DASH_POST_URL);
 		}
 	}
 
@@ -193,18 +176,12 @@ public class TaskServiceDbAccessImpl extends ApplicationObjectSupport implements
 
 		BeanUtilsBean withNull = new BeanUtilsBean();
 		try {
-			withNull.copyProperty(verifyTaskExistenceById, "description",
-					task.getDescription());
-			withNull.copyProperty(verifyTaskExistenceById, "name",
-					task.getName());
-			withNull.copyProperty(verifyTaskExistenceById, "time",
-					task.getTime());
-			withNull.copyProperty(verifyTaskExistenceById, "duration",
-					task.getDuration());
-			withNull.copyProperty(verifyTaskExistenceById, "location",
-					task.getLocation());
-			withNull.copyProperty(verifyTaskExistenceById, "badge_id",
-					task.getBadge_id());
+			withNull.copyProperty(verifyTaskExistenceById, "description", task.getDescription());
+			withNull.copyProperty(verifyTaskExistenceById, "name", task.getName());
+			withNull.copyProperty(verifyTaskExistenceById, "time", task.getTime());
+			withNull.copyProperty(verifyTaskExistenceById, "duration", task.getDuration());
+			withNull.copyProperty(verifyTaskExistenceById, "location", task.getLocation());
+			withNull.copyProperty(verifyTaskExistenceById, "badge_id", task.getBadge_id());
 		} catch (IllegalAccessException e) {
 			logger.debug("debugging info for exception: ", e);
 		} catch (InvocationTargetException e) {
@@ -213,7 +190,9 @@ public class TaskServiceDbAccessImpl extends ApplicationObjectSupport implements
 
 	}
 
-	/********************* DELETE-related methods implementation ***********************/
+	/*********************
+	 * DELETE-related methods implementation
+	 ***********************/
 
 	@Override
 	@Transactional
@@ -236,12 +215,10 @@ public class TaskServiceDbAccessImpl extends ApplicationObjectSupport implements
 			taskDao.updateTask(verifyTaskExistenceById);
 		} catch (AppException ex) {
 
-			throw new AppException(
-					Response.Status.NOT_FOUND.getStatusCode(),
-					404,
+			throw new AppException(Response.Status.NOT_FOUND.getStatusCode(), 404,
 					"The resource you are trying to update does not exist in the database",
-					"Please verify existence of data in the database for the id - "
-							+ task.getId(), AppConstants.DASH_POST_URL);
+					"Please verify existence of data in the database for the id - " + task.getId(),
+					AppConstants.DASH_POST_URL);
 		}
 	}
 
@@ -264,23 +241,18 @@ public class TaskServiceDbAccessImpl extends ApplicationObjectSupport implements
 	// Adds an additional manager to the task
 	@Override
 	@Transactional
-	public void addManager(User user, Task task, Group group)
-			throws AppException {
+	public void addManager(User user, Task task, Group group) throws AppException {
 		if (isGroupManager(user, group) || isGroupMember(user, group)) {
-			aclController.createAce(task, CustomPermission.MANAGER,
-					new PrincipalSid(user.getUsername()));
-			if (aclController.hasPermission(task, CustomPermission.MEMBER,
-					new PrincipalSid(user.getUsername())))
-				aclController.deleteACE(task, CustomPermission.MEMBER,
-						new PrincipalSid(user.getUsername()));
+			aclController.createAce(task, CustomPermission.MANAGER, new PrincipalSid(user.getUsername()));
+			if (aclController.hasPermission(task, CustomPermission.MEMBER, new PrincipalSid(user.getUsername())))
+				aclController.deleteACE(task, CustomPermission.MEMBER, new PrincipalSid(user.getUsername()));
 		} else {
-			throw new AppException(
-					Response.Status.CONFLICT.getStatusCode(),
-					409,
+			throw new AppException(Response.Status.CONFLICT.getStatusCode(), 409,
 					"Cannot add user as manager because user is already manager of the group"
 							+ "or they are not a member of the group to which this task belongs.",
 					"Users with group manager status may not have task specific permissions for that groups tasks"
-							+ task.getId(), AppConstants.DASH_POST_URL);
+							+ task.getId(),
+					AppConstants.DASH_POST_URL);
 		}
 	}
 
@@ -292,32 +264,25 @@ public class TaskServiceDbAccessImpl extends ApplicationObjectSupport implements
 		group.setId(task.getGroup_id());
 		if (isGroupManager(user, group) || isGroupMember(user, group)) {
 			aclController.clearPermission(task, CustomPermission.MANAGER);
-			aclController.createAce(task, CustomPermission.MANAGER,
-					new PrincipalSid(user.getUsername()));
-			if (aclController.hasPermission(task, CustomPermission.MEMBER,
-					new PrincipalSid(user.getUsername())))
-				aclController.deleteACE(task, CustomPermission.MEMBER,
-						new PrincipalSid(user.getUsername()));
+			aclController.createAce(task, CustomPermission.MANAGER, new PrincipalSid(user.getUsername()));
+			if (aclController.hasPermission(task, CustomPermission.MEMBER, new PrincipalSid(user.getUsername())))
+				aclController.deleteACE(task, CustomPermission.MEMBER, new PrincipalSid(user.getUsername()));
 		} else {
-			throw new AppException(
-					Response.Status.CONFLICT.getStatusCode(),
-					409,
+			throw new AppException(Response.Status.CONFLICT.getStatusCode(), 409,
 					"Cannot add user as manager because user is already manager of the group"
 							+ "or they are not a member of the group to which this task belongs.",
 					"Users with group manager status may not have task specific permissions for that groups tasks"
-							+ task.getId(), AppConstants.DASH_POST_URL);
+							+ task.getId(),
+					AppConstants.DASH_POST_URL);
 		}
 	}
 
 	// Removes a single manager from a task
 	@Override
 	@Transactional
-	public void deleteManager(User user, Task task, Group group)
-			throws AppException {
-		aclController.deleteACE(task, CustomPermission.MANAGER,
-				new PrincipalSid(user.getUsername()));
-		aclController.createAce(task, CustomPermission.MEMBER,
-				new PrincipalSid(user.getUsername()));
+	public void deleteManager(User user, Task task, Group group) throws AppException {
+		aclController.deleteACE(task, CustomPermission.MANAGER, new PrincipalSid(user.getUsername()));
+		aclController.createAce(task, CustomPermission.MEMBER, new PrincipalSid(user.getUsername()));
 	}
 
 	// Adds a member to the task
@@ -327,20 +292,16 @@ public class TaskServiceDbAccessImpl extends ApplicationObjectSupport implements
 		Group group = new Group();
 		group.setId(task.getGroup_id());
 		if (isGroupManager(user, group) || isGroupMember(user, group)) {
-			aclController.createAce(task, CustomPermission.MEMBER,
-					new PrincipalSid(user.getUsername()));
-			if (aclController.hasPermission(task, CustomPermission.MANAGER,
-					new PrincipalSid(user.getUsername())))
-				aclController.deleteACE(task, CustomPermission.MANAGER,
-						new PrincipalSid(user.getUsername()));
+			aclController.createAce(task, CustomPermission.MEMBER, new PrincipalSid(user.getUsername()));
+			if (aclController.hasPermission(task, CustomPermission.MANAGER, new PrincipalSid(user.getUsername())))
+				aclController.deleteACE(task, CustomPermission.MANAGER, new PrincipalSid(user.getUsername()));
 		} else {
-			throw new AppException(
-					Response.Status.CONFLICT.getStatusCode(),
-					409,
+			throw new AppException(Response.Status.CONFLICT.getStatusCode(), 409,
 					"Cannot add user as member because user is already manager of the group"
 							+ " or they are not a member of the group to which this task belongs.",
 					" Users with group manager status may not have task specific permissions for that groups tasks"
-							+ task.getId(), AppConstants.DASH_POST_URL);
+							+ task.getId(),
+					AppConstants.DASH_POST_URL);
 		}
 
 	}
@@ -348,25 +309,23 @@ public class TaskServiceDbAccessImpl extends ApplicationObjectSupport implements
 	// Removes single member
 	@Override
 	@Transactional
-	public void deleteMember(User user, Task task, Group group)
-			throws AppException {
-		aclController.deleteACE(task, CustomPermission.MEMBER,
-				new PrincipalSid(user.getUsername()));
+	public void deleteMember(User user, Task task, Group group) throws AppException {
+		aclController.deleteACE(task, CustomPermission.MEMBER, new PrincipalSid(user.getUsername()));
 	}
 
-	/*********************** Helper Methods **************************************/
+	/***********************
+	 * Helper Methods
+	 **************************************/
 
 	// Verifies that an user is not already a manager of the group
 	// This avoids having a group manager also have task level permissions since
 	// they are redundant
 	private boolean isGroupManager(User user, Group group) {
-		return groupAclController.hasPermission(group,
-				CustomPermission.MANAGER, new PrincipalSid(user.getUsername()));
+		return groupAclController.hasPermission(group, CustomPermission.MANAGER, new PrincipalSid(user.getUsername()));
 	}
 
 	private boolean isGroupMember(User user, Group group) {
-		return groupAclController.hasPermission(group, CustomPermission.MEMBER,
-				new PrincipalSid(user.getUsername()));
+		return groupAclController.hasPermission(group, CustomPermission.MEMBER, new PrincipalSid(user.getUsername()));
 	}
 
 }

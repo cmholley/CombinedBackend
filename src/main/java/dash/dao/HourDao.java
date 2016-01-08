@@ -11,9 +11,8 @@ import dash.pojo.Task;
 public interface HourDao {
 
 	public List<Hour> getHours(int numberOfHours, Long startIndex, boolean onlyPending, String orderBy);
-	
-	public List<Hour> getHours(int numberOfHours, Long startIndex, Task task, boolean onlyPending);
 
+	public List<Hour> getHours(int numberOfHours, Long startIndex, Task task, boolean onlyPending);
 
 	public int getNumberOfHours();
 
@@ -24,7 +23,7 @@ public interface HourDao {
 	 * @return
 	 */
 	public Hour getHourById(Long id);
-	
+
 	public void deleteHourById(Hour hour);
 
 	public Long createHour(Hour hour);

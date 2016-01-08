@@ -14,15 +14,15 @@ import javax.xml.bind.annotation.XmlRootElement;
 import dash.security.IAclObject;
 
 @Entity
-@Table(name="group_data")
+@Table(name = "group_data")
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Group implements  IAclObject{
+public class Group implements IAclObject {
 
 	@Id
 	@GeneratedValue
 	@XmlElement(name = "id")
-    @Column(name = "id")
+	@Column(name = "id")
 	private Long id;
 
 	@Column(name = "name")
@@ -37,13 +37,14 @@ public class Group implements  IAclObject{
 	@Column(name = "creation_timestamp")
 	@XmlElement(name = "creation_timestamp")
 	private Date creation_timestamp;
-	
+
 	@Override
 	public Long getId() {
 		return id;
 	}
-	
-	public Group(){}
+
+	public Group() {
+	}
 
 	public void setId(Long id) {
 		this.id = id;

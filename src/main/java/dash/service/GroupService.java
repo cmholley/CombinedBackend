@@ -30,16 +30,15 @@ public interface GroupService {
 	 * @throws AppException
 	 */
 
-	public List<Group> getGroups(String orderByInsertionDate,
-			Integer numberDaysToLookBack) throws AppException;
+	public List<Group> getGroups(String orderByInsertionDate, Integer numberDaysToLookBack) throws AppException;
 
 	@PostFilter("hasPermission(filterObject, 'MEMBER')")
-	public List<Group> getGroupsByMembership(String orderByInsertionDate,
-			Integer numberDaysToLookBack) throws AppException;
+	public List<Group> getGroupsByMembership(String orderByInsertionDate, Integer numberDaysToLookBack)
+			throws AppException;
 
 	@PostFilter("hasPermission(filterObject, 'Manager')")
-	public List<Group> getGroupsByManager(String orderByInsertionDate,
-			Integer numberDaysToLookBack) throws AppException;
+	public List<Group> getGroupsByManager(String orderByInsertionDate, Integer numberDaysToLookBack)
+			throws AppException;
 
 	public Group getGroupById(Long id) throws AppException;
 
@@ -57,6 +56,7 @@ public interface GroupService {
 	 */
 	@PreAuthorize("hasPermission(#group, 'MANAGER') or hasRole('ROLE_MODERATOR')")
 	public void deleteGroup(Group group);
+
 	/**
 	 * ACL related methods
 	 */
@@ -76,8 +76,7 @@ public interface GroupService {
 	@PreAuthorize("hasRole('ROLE_USER')")
 	public void addMember(User user, Group group) throws AppException;
 
-	
-	//Removes member
+	// Removes member
 	@PreAuthorize("hasPermission(#user, 'WRITE') or hasRole('ROLE_MODERATOR') or hasPermission(#group, 'MANAGER')")
 	public void deleteMember(User user, Group group) throws AppException;
 

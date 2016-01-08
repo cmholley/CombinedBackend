@@ -46,15 +46,13 @@ public class HourResource {
 
 	@Autowired
 	private GroupService groupService;
-	
+
 	@Autowired
 	private TaskService taskService;
-	
-	private static final String hourPicturePathCHW = AppConstants.APPLICATION_UPLOAD_LOCATION_FOLDER_CHW
-			+ "/hours";
-	
-	private static final String hourPicturePathVMA = AppConstants.APPLICATION_UPLOAD_LOCATION_FOLDER_CHW
-			+ "/hours";
+
+	private static final String hourPicturePathCHW = AppConstants.APPLICATION_UPLOAD_LOCATION_FOLDER_CHW + "/hours";
+
+	private static final String hourPicturePathVMA = AppConstants.APPLICATION_UPLOAD_LOCATION_FOLDER_CHW + "/hours";
 
 	@POST
 	@Consumes({ MediaType.APPLICATION_JSON })
@@ -65,8 +63,8 @@ public class HourResource {
 		return Response.status(Response.Status.CREATED)
 				// 201
 				.entity(new GenericEntity<Hour>(hour) {
-				}).header("Location", String.valueOf(createHourId))
-				.header("ObjectId", String.valueOf(createHourId)).build();
+				}).header("Location", String.valueOf(createHourId)).header("ObjectId", String.valueOf(createHourId))
+				.build();
 	}
 
 	/**
@@ -84,21 +82,16 @@ public class HourResource {
 	 */
 	@GET
 	@Produces({ MediaType.APPLICATION_JSON })
-	public List<Hour> getHours(
-			@QueryParam("numberOfHours") @DefaultValue("25") int numberOfHours,
-			@QueryParam("startIndex") @DefaultValue("0") Long startIndex,
-			@QueryParam("group_id") Long group_id,
-			@QueryParam("onlyPending") @DefaultValue("true") boolean onlyPending)
-			throws IOException, AppException {
+	public List<Hour> getHours(@QueryParam("numberOfHours") @DefaultValue("25") int numberOfHours,
+			@QueryParam("startIndex") @DefaultValue("0") Long startIndex, @QueryParam("group_id") Long group_id,
+			@QueryParam("onlyPending") @DefaultValue("true") boolean onlyPending) throws IOException, AppException {
 		if (group_id != null) {
 			Group group = groupService.getGroupById(group_id);
-			List<Hour> hours = hourService.getHoursByGroup(numberOfHours,
-					startIndex, group, onlyPending);
+			List<Hour> hours = hourService.getHoursByGroup(numberOfHours, startIndex, group, onlyPending);
 			return hours;
 		}
 
-		List<Hour> hours = hourService.getHours(numberOfHours, startIndex,
-				onlyPending);
+		List<Hour> hours = hourService.getHours(numberOfHours, startIndex, onlyPending);
 		return hours;
 	}
 
@@ -107,23 +100,19 @@ public class HourResource {
 	@GET
 	@Path("myHours")
 	@Produces({ MediaType.APPLICATION_JSON })
-	public List<Hour> getMyHours(
-			@QueryParam("numberOfHours") @DefaultValue("25") int numberOfHours,
+	public List<Hour> getMyHours(@QueryParam("numberOfHours") @DefaultValue("25") int numberOfHours,
 			@QueryParam("startIndex") @DefaultValue("0") Long startIndex,
-			@QueryParam("onlyPending") @DefaultValue("true") boolean onlyPending)
-			throws IOException, AppException {
+			@QueryParam("onlyPending") @DefaultValue("true") boolean onlyPending) throws IOException, AppException {
 
-		List<Hour> hours = hourService.getHoursByMyUser(numberOfHours,
-				startIndex, onlyPending);
+		List<Hour> hours = hourService.getHoursByMyUser(numberOfHours, startIndex, onlyPending);
 		return hours;
 	}
 
 	@GET
 	@Path("{id}")
 	@Produces({ MediaType.APPLICATION_JSON })
-	public Response getHourById(@PathParam("id") Long id,
-			@QueryParam("detailed") boolean detailed) throws IOException,
-			AppException {
+	public Response getHourById(@PathParam("id") Long id, @QueryParam("detailed") boolean detailed)
+			throws IOException, AppException {
 		Hour hourById = hourService.getHourById(id);
 		return Response.status(200).entity(new GenericEntity<Hour>(hourById) {
 		}).header("Access-Control-Allow-Headers", "X-extra-header")
@@ -138,8 +127,7 @@ public class HourResource {
 	@Path("{id}")
 	@Consumes({ MediaType.APPLICATION_JSON })
 	@Produces({ MediaType.TEXT_HTML })
-	public Response putHourById(@PathParam("id") Long id, Hour hour)
-			throws AppException {
+	public Response putHourById(@PathParam("id") Long id, Hour hour) throws AppException {
 
 		try {
 			Hour hourById = hourService.getHourById(id);
@@ -157,18 +145,15 @@ public class HourResource {
 			if (ex.getStatus() == 404) {
 				// resource not existent yet, and should be created
 				Long createHourId = hourService.createHour(hour);
-				return Response
-						.status(Response.Status.CREATED)
+				return Response.status(Response.Status.CREATED)
 						// 201
-						.entity("A new hour entry with id " + createHourId
-								+ " has been created").build();
+						.entity("A new hour entry with id " + createHourId + " has been created").build();
 			}
 		}
 
 		return Response.status(Response.Status.OK)
 				// 200
-				.entity("The hour with id " + id + " has been fully updated.")
-				.build();
+				.entity("The hour with id " + id + " has been fully updated.").build();
 
 	}
 
@@ -177,8 +162,7 @@ public class HourResource {
 	@Path("{id}")
 	@Consumes({ MediaType.APPLICATION_JSON })
 	@Produces({ MediaType.TEXT_HTML })
-	public Response partialUpdateHour(@PathParam("id") Long id, Hour hour)
-			throws AppException {
+	public Response partialUpdateHour(@PathParam("id") Long id, Hour hour) throws AppException {
 		hour.setId(id);
 		// verify whether hour entry exists
 		hourService.getHourById(id);
@@ -193,22 +177,19 @@ public class HourResource {
 		}
 		return Response.status(Response.Status.OK)
 				// 200
-				.entity("The hour you specified has been successfully updated")
-				.build();
+				.entity("The hour you specified has been successfully updated").build();
 	}
 
 	@POST
 	@Path("approve/{id}")
 	@Produces({ MediaType.TEXT_HTML })
-	public Response approveHour(@PathParam("id") Long id,
-			@QueryParam("isApproved") boolean isApproved) throws AppException {
+	public Response approveHour(@PathParam("id") Long id, @QueryParam("isApproved") boolean isApproved)
+			throws AppException {
 		Hour hour = hourService.getHourById(id);
 		if (hour == null) {
-			throw new AppException(Response.Status.NOT_FOUND.getStatusCode(),
-					404,
+			throw new AppException(Response.Status.NOT_FOUND.getStatusCode(), 404,
 					"The resource with this id does not exist in the database",
-					"Please verify existence of hours in the database for the id - "
-							+ id, AppConstants.DASH_POST_URL);
+					"Please verify existence of hours in the database for the id - " + id, AppConstants.DASH_POST_URL);
 		}
 		try {
 			Task task = taskService.getTaskById(hour.getTask_id());
@@ -221,8 +202,7 @@ public class HourResource {
 
 		return Response.status(Response.Status.OK)
 				// 200
-				.entity("The hour you specified has been successfully updated")
-				.build();
+				.entity("The hour you specified has been successfully updated").build();
 	}
 
 	/*
@@ -243,11 +223,9 @@ public class HourResource {
 	@POST
 	@Path("/upload")
 	@Consumes({ MediaType.MULTIPART_FORM_DATA })
-	public Response uploadFile(@QueryParam("id") Long id,
-			@FormDataParam("file") InputStream uploadedInputStream,
+	public Response uploadFile(@QueryParam("id") Long id, @FormDataParam("file") InputStream uploadedInputStream,
 			@FormDataParam("file") FormDataContentDisposition fileDetail,
-			@HeaderParam("Content-Length") final long fileSize)
-			throws AppException {
+			@HeaderParam("Content-Length") final long fileSize) throws AppException {
 
 		Hour hour = hourService.getHourById(id);
 
@@ -274,9 +252,8 @@ public class HourResource {
 				deleteUpload(hour.getId(), file);
 			}
 		}
-		//TODO: Switch statement for datasources to select proper path
-		String uploadedFileLocation = hourPicturePathCHW + "/"
-				+ hour.getPicturePath() + "/"
+		// TODO: Switch statement for datasources to select proper path
+		String uploadedFileLocation = hourPicturePathCHW + "/" + hour.getPicturePath() + "/"
 				+ fileDetail.getFileName().replaceAll("%20", "_").toLowerCase();
 		;
 		// save it
@@ -292,12 +269,10 @@ public class HourResource {
 	@GET
 	@Path("/upload")
 	@Produces({ MediaType.APPLICATION_JSON })
-	public Response getFileNames(@QueryParam("hourId") Long id)
-			throws AppException {
+	public Response getFileNames(@QueryParam("hourId") Long id) throws AppException {
 
 		Hour hour = hourService.getHourById(id);
-		JaxbList<String> fileNames = new JaxbList<String>(
-				hourService.getFileNames(hour));
+		JaxbList<String> fileNames = new JaxbList<String>(hourService.getFileNames(hour));
 		return Response.status(200).entity(fileNames).build();
 	}
 
@@ -325,14 +300,13 @@ public class HourResource {
 
 	@DELETE
 	@Path("/upload")
-	public Response deleteUpload(@QueryParam("hourId") Long id,
-			@QueryParam("fileName") String fileName) throws AppException {
+	public Response deleteUpload(@QueryParam("hourId") Long id, @QueryParam("fileName") String fileName)
+			throws AppException {
 
 		Hour hour = hourService.getHourById(id);
 
-		//TODO: Switch statement for datasources to select proper path
-		String uploadedFileLocation = hourPicturePathCHW + "/"
-				+ hour.getPicturePath() + "/" + fileName;
+		// TODO: Switch statement for datasources to select proper path
+		String uploadedFileLocation = hourPicturePathCHW + "/" + hour.getPicturePath() + "/" + fileName;
 		// save it
 		hourService.deleteUploadFile(uploadedFileLocation, hour);
 

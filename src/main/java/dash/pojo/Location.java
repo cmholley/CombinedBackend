@@ -16,75 +16,76 @@ import dash.security.IAclObject;
 
 /**
  * Location Pojo
+ * 
  * @Author plindner
  */
 @Entity
-@Table(name="locations")
+@Table(name = "locations")
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Location implements  IAclObject {
+public class Location implements IAclObject {
 
 	@Id
 	@GeneratedValue
 	@XmlElement(name = "id")
-    @Column(name = "id")
+	@Column(name = "id")
 	private Long id;
-	
+
 	/** path to stored images for this object */
 	@XmlElement(name = "image_folder")
-    @Column(name = "image_folder")
+	@Column(name = "image_folder")
 	private String image_folder;
-	
+
 	@XmlElement(name = "name")
-    @Column(name = "name")
+	@Column(name = "name")
 	private String name;
-	
+
 	@XmlElement(name = "description")
-    @Column(name = "description")
+	@Column(name = "description")
 	private String description;
-	
+
 	@XmlElement(name = "creation_timestamp")
-    @Column(name = "creation_timestamp")
+	@Column(name = "creation_timestamp")
 	private Date creation_timestamp;
-	
-	@XmlElement(name="address")
-    @Column(name="address")
+
+	@XmlElement(name = "address")
+	@Column(name = "address")
 	private String address;
-	
-	@XmlElement(name="city")
-    @Column(name="city")
+
+	@XmlElement(name = "city")
+	@Column(name = "city")
 	private String city;
-	
-	@XmlElement(name="zip")
-    @Column(name="zip")
+
+	@XmlElement(name = "zip")
+	@Column(name = "zip")
 	private Long zip;
-	
-	@XmlElement(name="state")
-    @Column(name="state")
+
+	@XmlElement(name = "state")
+	@Column(name = "state")
 	private String state;
-	
-	@XmlElement(name="county")
-    @Column(name="county")
+
+	@XmlElement(name = "county")
+	@Column(name = "county")
 	private String county;
-	
-	@XmlElement(name="contact_name")
-    @Column(name="contact_name")
+
+	@XmlElement(name = "contact_name")
+	@Column(name = "contact_name")
 	private String contact_name;
-	
-	@XmlElement(name="phone_number")
-    @Column(name="phone_number")
+
+	@XmlElement(name = "phone_number")
+	@Column(name = "phone_number")
 	private String phone_number;
-	
-	@XmlElement(name="email")
-    @Column(name="email")
+
+	@XmlElement(name = "email")
+	@Column(name = "email")
 	private String email;
-	
-	@XmlElement(name="website")
-    @Column(name="website")
+
+	@XmlElement(name = "website")
+	@Column(name = "website")
 	private String website;
-	
-	public Location(){};
-	
+
+	public Location() {
+	};
 
 	@Override
 	public Long getId() {

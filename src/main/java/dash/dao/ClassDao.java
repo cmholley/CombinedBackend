@@ -5,7 +5,6 @@ import java.util.List;
 import dash.pojo.Class;
 import dash.pojo.Location;
 
-
 /*
  * @Author tswensen
  */
@@ -23,7 +22,7 @@ public interface ClassDao {
 	 * @return the class with the name specified or null if not existent
 	 */
 	public Class getClassByName(String name);
-	
+
 	/**
 	 * Returns all of the classes by a given location
 	 * 
