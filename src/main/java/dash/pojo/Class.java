@@ -76,16 +76,17 @@ public class Class implements IAclObject {
 
 	/*
 	 * This attribute contains a list of Longs that corresponds to the core
-	 * competencies for the class. 0 = Advocacy 1 = Capacity_Building, 2 =
-	 * Communication_Skills, 3 = Community_Service, 4 = Coordination, 5 =
-	 * Interpersonal_Communication, 6 = Knowledge_Base, 7 = Organizational, 8 =
-	 * Service_Coordination, 9 = Skills, 10 = Teaching_Skills,
+	 * competencies for the class.
 	 */
 
 	@XmlElement(name = "cores")
 	@ElementCollection(fetch = FetchType.EAGER)
-	@CollectionTable(name = "class_cores", joinColumns = { @JoinColumn(name = "class_id") })
-	private Set<Cores> cores; // enum
+	@CollectionTable(
+			name = "classes_cores", 
+			joinColumns =@JoinColumn(name = "class_id")
+	)
+	@Column(name="core_id")
+	private Set<Long> cores;
 
 	@XmlElement(name = "forCHW")
 	@Column(name = "forCHW")
@@ -230,11 +231,11 @@ public class Class implements IAclObject {
 		this.active = active;
 	}
 
-	public Set<Cores> getCores() {
+	public Set<Long> getCores() {
 		return cores;
 	}
 
-	public void setCores(Set<Cores> cores) {
+	public void setCores(Set<Long> cores) {
 		this.cores = cores;
 	}
 }

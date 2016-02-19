@@ -194,4 +194,11 @@ public class ClassResource {
 
 	}
 
+	@GET
+	@Path("/coresmap")
+	@Produces({MediaType.APPLICATION_JSON})
+	public String[] getCoresMap(){
+			return classService.getCoresMap();
+		}
+	
 }

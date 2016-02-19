@@ -161,4 +161,12 @@ public class ClassDaoJPA2Impl implements ClassDao {
 		List<String> userNames = query.list();
 		return userNames;
 	}
+
+	@Override
+	public List<String> getCoresMap(){
+		Session session = entityManager.unwrap(Session.class);
+		String qlString = "SELECT name FROM cores";
+		SQLQuery query = session.createSQLQuery(qlString);
+		return query.list();
+	}
 }

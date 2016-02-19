@@ -265,4 +265,15 @@ public class ClassServiceDbAccessImpl extends ApplicationObjectSupport implement
 		List<Class> classes = classDao.getTodaysClasses();
 		return getClassesFromEntities(classes);
 	}
+
+	@Override
+	@Transactional
+	public String[] getCoresMap() {
+		List<String> coresList = classDao.getCoresMap();
+		String[] coresArray = new String[coresList.size()];
+		for(int i = 0; i < coresList.size(); i++){
+			coresArray[i] = coresList.get(i);
+		}
+		return coresArray;
+	}
 }

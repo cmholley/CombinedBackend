@@ -120,4 +120,6 @@ public interface ClassService {
 
 	public List<Class> getTodaysClasses();
 
+	public String[] getCoresMap();
+
 }

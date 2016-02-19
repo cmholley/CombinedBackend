@@ -45,4 +45,6 @@ public interface ClassDao {
 
 	public List<String> getMembersForClass(Class clas);
 
+	public List<String> getCoresMap();
+
 }
