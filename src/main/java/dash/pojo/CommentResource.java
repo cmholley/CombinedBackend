@@ -86,7 +86,7 @@ public class CommentResource {
 			throws IOException, AppException {
 		Comment commentById = commentService.getCommentById(id);
 		return Response.status(200).entity(new GenericEntity<Comment>(commentById) {
-		}).header("Access-Control-Allow-Headers", "X-extra-header").allow("OPTIONS").build();
+		}).header("Access-Control-Allow-Headers", "X-extra-header,X-TenantId").allow("OPTIONS").build();
 	}
 
 	/************************ Update Methods *********************/

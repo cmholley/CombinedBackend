@@ -89,7 +89,7 @@ public class ClassResource {
 			throws IOException, AppException {
 		Class classById = classService.getClassById(id);
 		return Response.status(Response.Status.OK).entity(new GenericEntity<Class>(classById) {
-		}).header("Access-Control-Allow-Headers", "X-extra-header").allow("OPTIONS").build();
+		}).header("Access-Control-Allow-Headers", "X-extra-header, X-TenantId").allow("OPTIONS").build();
 	}
 
 	// TODO: Modify so it filters out completed classes by default

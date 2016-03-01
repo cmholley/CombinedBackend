@@ -115,7 +115,7 @@ public class HourResource {
 			throws IOException, AppException {
 		Hour hourById = hourService.getHourById(id);
 		return Response.status(200).entity(new GenericEntity<Hour>(hourById) {
-		}).header("Access-Control-Allow-Headers", "X-extra-header")
+		}).header("Access-Control-Allow-Headers", "X-extra-header,X-TenantId")
 
 				.allow("OPTIONS").build();
 	}

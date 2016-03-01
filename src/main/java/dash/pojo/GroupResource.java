@@ -76,7 +76,7 @@ public class GroupResource {
 	public Response getGroupById(@PathParam("id") Long id) throws IOException, AppException {
 		Group groupById = groupService.getGroupById(id);
 		return Response.status(200).entity(new GenericEntity<Group>(groupById) {
-		}).header("Access-Control-Allow-Headers", "X-extra-header").allow("OPTIONS").build();
+		}).header("Access-Control-Allow-Headers", "X-extra-header,X-TenantId").allow("OPTIONS").build();
 
 	}
 
